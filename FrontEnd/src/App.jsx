@@ -5,6 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from './Componentes/NavBar/Navbar'
 import Login from './pages/Login/Login'
+import RegistroCliente from './pages/RegistroCliente/RegistroCliente'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,6 +14,7 @@ function App() {
     <>
       <Navbar/>
       <Route path={"/Login"} component={Login}/>
+      <Route path={"/RegistroCliente"} component={RegistroCliente}/>
 
     </>
   )
