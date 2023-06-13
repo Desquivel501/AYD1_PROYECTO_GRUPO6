@@ -6,6 +6,7 @@ import { Landing } from './pages/Landing/Landing'
 import RegistroCliente from './pages/RegistroCliente/RegistroCliente'
 import RegistroEmpresa from './pages/RegistroEmpresa/RegistroEmpresa'
 import RegistroRepartidor from './pages/RegistroRepartidor/RegistroRepartidor'
+import { About } from './pages/About/About'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path={"/RegistroCliente"} component={RegistroCliente}/>
       <Route path={"/RegistroEmpresa"} component={RegistroEmpresa}/>
       <Route path={"/RegistroRepartidor"} component={RegistroRepartidor}/>
+      <Route path={"/About"} component={About}/>
 
     </>
   )
