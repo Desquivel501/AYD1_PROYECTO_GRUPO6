@@ -1,0 +1,15 @@
+.about-me{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.about-me img {
+  width: 120px;
+}
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-top: 60px;
+}
+
