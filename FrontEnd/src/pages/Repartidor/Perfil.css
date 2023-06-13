@@ -1,0 +1,26 @@
+.person-attribute {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.person-attribute p {
+  padding: 10px;
+  width: 70%;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  color: #444;
+  margin: 5px;
+}
+.calificacion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stars{
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: space-between;
+}
