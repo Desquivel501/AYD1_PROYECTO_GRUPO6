@@ -12,6 +12,7 @@ import { PerfilRepartidor } from './pages/Repartidor/Perfil'
 import { Solicitudes } from './pages/Administrador/Solicitudes'
 import CrearProducto from  './pages/CrearProducto/CrearProducto'
 import EditarProductos from './pages/EditarProductos/EditarProductos'
+import CrearCombo from './pages/CrearCombo/CrearCombo'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
       <Route path={"/Administrador"} component={Solicitudes}/>
       <Route path={"/CrearProducto"} component={CrearProducto}/>
       <Route path={"/EditarProductos"} component={EditarProductos}/>
+      <Route path={"/CrearCombo"} component={CrearCombo}/>
     </>
   )
 }
