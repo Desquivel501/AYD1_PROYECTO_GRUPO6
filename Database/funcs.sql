@@ -107,3 +107,18 @@ BEGIN
 	WHERE Usuarios.correo = correo;
     RETURN(pendiente);
 END $$
+
+-- ########################### FUNCION PARA SABER SI UN USUARIO SE ENCUENTRA HABILITADO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS UsuarioHabilitado $$
+CREATE FUNCTION UsuarioHabilitado(
+	correo VARCHAR(150)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE Habilitado BOOLEAN;
+    SELECT Usuarios.habilitado = 1 INTO Habilitado
+    WHERE Usuarios.correo = correo;
+    RETURN(Habilitado);
+END $$
