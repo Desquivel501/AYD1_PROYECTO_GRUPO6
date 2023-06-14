@@ -28,7 +28,10 @@ export default function RegistroRepartidor() {
     });
     fetch("http://localhost:3000/", {
       method: "POST",
-      mode: "no-cors",
+      headers: {
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin_Origin': '*'
+      },
       body: data,
     });
     event.target.reset();
