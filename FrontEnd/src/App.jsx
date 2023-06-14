@@ -10,6 +10,8 @@ import RegistroRepartidor from './pages/RegistroRepartidor/RegistroRepartidor'
 import { About } from './pages/About/About'
 import { PerfilRepartidor } from './pages/Repartidor/Perfil'
 import { Solicitudes } from './pages/Administrador/Solicitudes'
+import CrearProducto from  './pages/CrearProducto/CrearProducto'
+import EditarProductos from './pages/EditarProductos/EditarProductos'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <Route path={"/About"} component={About}/>
       <Route path={"/Repartidor"} component={PerfilRepartidor}/>
       <Route path={"/Administrador"} component={Solicitudes}/>
+      <Route path={"/CrearProducto"} component={CrearProducto}/>
+      <Route path={"/EditarProductos"} component={EditarProductos}/>
     </>
   )
 }
