@@ -37,10 +37,11 @@ export const MenuProducto = (props) => {
         const jsonData = {
             "id": id,
             "name": name_,
-            "description":desc_,
-            "image":"",
-            "categoria":categoria_,
-            "disponible":disponible_
+            "description": desc_,
+            "cost": cost_,
+            "image": "",
+            "categoria": categoria_,
+            "disponible": disponible_
         }
 
         fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {

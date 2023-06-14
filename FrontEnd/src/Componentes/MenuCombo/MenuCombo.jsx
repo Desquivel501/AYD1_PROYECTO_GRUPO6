@@ -42,9 +42,10 @@ export const MenuCombo = (props) => {
         const jsonData = {
             "id": id,
             "name": name_,
-            "description":desc_,
-            "disponible":disponible_,
-            "productos":listado
+            "description": desc_,
+            "cost": cost_,
+            "disponible": disponible_,
+            "productos": listado
         }
 
         fetch("http://localhost:3000/CrearCombo", {
