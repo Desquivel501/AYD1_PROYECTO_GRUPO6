@@ -55,8 +55,9 @@ export default function CrearProducto() {
                     >
                         <MenuProducto 
                             title={"Crear Producto"}
-                            logo={"https://picsum.photos/200"}
+                            image={"https://picsum.photos/200"}
                             edicion={false}
+                            addCategorias={true}
                         />
                     </Grid>
         
