@@ -22,7 +22,7 @@ RETURNS INTEGER
 DETERMINISTIC
 BEGIN
 	DECLARE id_dep INTEGER;
-    SELECT Departamentos.id_dep INTO id_dep 
+    SELECT Departamentos.id_dep INTO id_dep
     FROM Departamentos
     WHERE Departamentos.nombre = departamento;
     RETURN(id_dep);
@@ -90,4 +90,20 @@ BEGIN
     SELECT EXISTS( SELECT 1 FROM Repartidores r
     WHERE r.correo = correo) INTO existe;
     RETURN(existe);
+END $$
+
+-- ########################### FUNCION PARA SABER SI UN USUARIO TIENE ESTADO PENDIENTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS UsuarioPendiente $$
+CREATE FUNCTION UsuarioPendiente(
+	correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE pendiente BOOLEAN;
+    SELECT Usuarios.estado = 0 INTO pendiente
+    FROM Usuarios
+	WHERE Usuarios.correo = correo;
+    RETURN(pendiente);
 END $$

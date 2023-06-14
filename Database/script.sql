@@ -1,4 +1,19 @@
 -- SCRIPT DE CREACIÓN DE BASE DE DATOS
+/*
+	ROLES:
+    0- ADMINISTRADOR
+    1- CLIENTE
+    2- REPARTIDOR
+    3- EMPRESA
+*/
+
+/*
+	ESTADOS DE CUENTA:
+    0- PENDIENTE
+    1- HABILITADA
+    2- DESHABILITADA
+*/
+
 DROP DATABASE IF EXISTS PROY1;
 CREATE DATABASE PROY1;
 USE PROY1;
@@ -47,13 +62,6 @@ INSERT INTO Departamentos VALUES (21, 'Totonicapán');
 INSERT INTO Departamentos VALUES (22, 'Zacapa');
 
 -- ########################### CREACIÓN DE LA TABLA DE USUARIOS ###########################
-/*
-	ROLES:
-    1- ADMINISTRADOR
-    2- CLIENTE
-    3- REPARTIDOR
-    4- EMPRESA
-*/
 
 DROP TABLE IF EXISTS Usuarios;
 CREATE TABLE Usuarios (
@@ -62,9 +70,8 @@ CREATE TABLE Usuarios (
     apellidos VARCHAR(150),
     contrasenia VARCHAR(100) NOT NULL,
     rol INTEGER NOT NULL,
-    celular INTEGER,
     fecha_registro DATETIME DEFAULT current_timestamp,
-    habilitado BOOLEAN NOT NULL,
+    estado INTEGER NOT NULL,
     PRIMARY KEY(correo)
 );
 
@@ -89,10 +96,12 @@ DROP TABLE IF EXISTS Repartidores;
 CREATE TABLE Repartidores (
 	correo VARCHAR(200) NOT NULL,
     municipio VARCHAR(200),
-    licencia BOOLEAN,
     tipo_licencia VARCHAR(10),
     motocicleta BOOLEAN,
     id_dep INTEGER NOT NULL,
+    direccion VARCHAR(200),
+    celular INTEGER,
+    cv VARCHAR(250),
     PRIMARY KEY(correo),
     FOREIGN KEY(correo) REFERENCES Usuarios(correo),
     FOREIGN KEY(id_dep) REFERENCES Departamentos(id_dep)
@@ -108,6 +117,7 @@ CREATE TABLE Empresas (
     ciudad VARCHAR(200),
     id_dep INTEGER NOT NULL,
     id_cat INTEGER NOT NULL,
+    doc VARCHAR(250),
     PRIMARY KEY(correo),
     UNIQUE(id_dep, nombre_entidad),
     FOREIGN KEY(correo) REFERENCES Usuarios(correo),

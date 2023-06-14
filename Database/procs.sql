@@ -13,12 +13,18 @@ registrar_cliente:BEGIN
 	IF(ExisteUsuario(correo_in)) THEN
 		SELECT 'El correo ingresado ya se encuentra vinculado a una cuenta en la plataforma' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
-        LEAVE registrar_repartidor;
+        LEAVE registrar_cliente;
     END IF;
     
-    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, celular, habilitado)
-    VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 2, 0, false);
+    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, estado)
+    VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 1, 1);
+    
+    INSERT INTO Clientes VALUES (correo_in);
+    
+	SELECT 'Se registró correctamente en la aplicación' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
 END $$
+
 
 -- ########################### INSERTAR UN REPARTIDOR NUEVO A TABLA USUARIOS ###########################
 DELIMITER $$
@@ -29,11 +35,12 @@ CREATE PROCEDURE RegistrarRepartidor(
     IN correo_in VARCHAR(200),
     IN contrasenia_in VARCHAR(150),
 	IN celular_in INTEGER,
-    IN existe_licencia BOOLEAN,
     IN tipo_licencia_in VARCHAR(10),
     IN existe_moto BOOLEAN,
     IN municipio_in VARCHAR(200),
-    IN departamento VARCHAR(200)
+    IN departamento VARCHAR(200),
+    IN direccion_in VARCHAR(200),
+    IN cv_in VARCHAR(250)
 )
 registrar_repartidor:BEGIN
 	DECLARE id_dep_in INTEGER;
@@ -46,15 +53,49 @@ registrar_repartidor:BEGIN
     
 	SELECT ObtenerDepartamento(departamento) INTO id_dep_in;
     
-    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, celular, habilitado)
-    VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 3, celular_in, false);
+    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, estado)
+    VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 2, 0);
     
-    INSERT INTO Repartidores (correo, municipio, licencia, tipo_licencia, motocicleta, id_dep)
-    VALUES(correo_in, municipio_in, existe_licencia, tipo_licencia_in, existe_moto, id_dep_in);
+    INSERT INTO Repartidores (correo, municipio, tipo_licencia, motocicleta, id_dep, direccion, celular, cv)
+    VALUES(correo_in, municipio_in, tipo_licencia_in, existe_moto, id_dep_in, celular_in, direccion_in, cv_in);
 
 	SELECT 'La solicitud fue ingresada correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+
+-- ########################### ACEPTAR LA PETICIÓN DE UN REPARTIDOR ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarRepartidor $$
+CREATE PROCEDURE AceptarRepartidor(
+	IN correo_in VARCHAR(200)
+)
+aceptar_repartidor:BEGIN
+	IF(NOT UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta aceptar no tiene estado pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_repartidor;
+    END IF;
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_repartidor;
+    END IF;
+
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_repartidor;
+    END IF;
+    
+    UPDATE Usuarios SET estado=1
+    WHERE Usuarios.correo = correo_in;
+    
+	SELECT 'La solicitud fue aceptada correctamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
 
 -- ########################### RECHAZAR LA PETICIÓN DE UN REPARTIDOR ###########################
 DELIMITER $$
@@ -63,6 +104,12 @@ CREATE PROCEDURE RechazarRepartidor(
 	IN correo_in VARCHAR(200)
 )
 rechazar_repartidor:BEGIN
+	IF(NOT UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta rechazar no tiene estado pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_repartidor;
+    END IF;
+    
 	IF(NOT ExisteUsuario(correo_in)) THEN
 		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -85,6 +132,7 @@ rechazar_repartidor:BEGIN
 	'EXITO' AS 'TIPO';
 END $$
 
+
 -- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
 DELIMITER $$
 DROP PROCEDURE IF EXISTS RegistrarEmpresa $$
@@ -96,7 +144,8 @@ CREATE PROCEDURE RegistrarEmpresa(
     IN categoria_in VARCHAR(150),
     IN departamento_in VARCHAR(200),
     IN ciudad_in VARCHAR(200),
-    IN direccion_in VARCHAR(200)
+    IN direccion_in VARCHAR(200),
+    IN doc_in VARCHAR(200)
 )
 registrar_empresa:BEGIN
 	DECLARE id_cat_in INTEGER;
@@ -118,15 +167,50 @@ registrar_empresa:BEGIN
     
     SELECT ObtenerCategoria(categoria_in) INTO id_cat_in;
     
-    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, celular, habilitado)
-    VALUES(correo_in, nombre_entidad_in, '', contrasenia_in, 4, 0, false);
+    INSERT INTO Usuarios (correo, nombre, apellidos, contrasenia, rol, estado)
+    VALUES(correo_in, nombre_entidad_in, '', contrasenia_in, 3, 0);
     
-    INSERT INTO Empresas (correo, descripcion, nombre_entidad, direccion, ciudad, id_dep, id_cat)
-    VALUES(correo_in, descripcion_in, nombre_entidad_in, direccion_in, ciudad_in, id_dep_in, id_cat_in);
+    INSERT INTO Empresas (correo, descripcion, nombre_entidad, direccion, ciudad, id_dep, id_cat, doc)
+    VALUES(correo_in, descripcion_in, nombre_entidad_in, direccion_in, ciudad_in, id_dep_in, id_cat_in, doc_in);
 
 	SELECT 'La solicitud fue ingresada correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+
+-- ########################### ACEPTAR LA PETICIÓN DE UNA EMPRESA ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarEmpresa $$
+CREATE PROCEDURE AceptarEmpresa(
+	IN correo_in VARCHAR(200)
+)
+aceptar_empresa:BEGIN
+
+	IF(NOT UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta aceptar no tiene estado pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_empresa;
+    END IF;
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_empresa;
+    END IF;
+
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a una empresa' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_empresa;
+    END IF;
+    
+    UPDATE Usuarios SET estado=1
+    WHERE Usuarios.correo = correo_in;
+
+	SELECT 'La solicitud fue aceptada correctamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
 
 -- ########################### RECHAZAR LA PETICIÓN DE UNA EMPRESA ###########################
 DELIMITER $$
@@ -135,6 +219,13 @@ CREATE PROCEDURE RechazarEmpresa(
 	IN correo_in VARCHAR(200)
 )
 rechazar_empresa:BEGIN
+
+	IF(NOT UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta rechazar no tiene estado pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_empresa;
+    END IF;
+    
 	IF(NOT ExisteUsuario(correo_in)) THEN
 		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
