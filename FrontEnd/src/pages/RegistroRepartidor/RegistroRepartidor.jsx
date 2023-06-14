@@ -18,6 +18,7 @@ import FormGroup from "@mui/material/FormGroup";
 import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
 
 export default function RegistroRepartidor() {
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
