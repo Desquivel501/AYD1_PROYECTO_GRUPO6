@@ -1,4 +1,5 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
+import { PersonAttribute } from "../../Componentes/Persona";
 import "./Perfil.css"
 
 export function PerfilRepartidor() {
@@ -122,13 +123,4 @@ export function PerfilRepartidor() {
     </Box>
   );
 }
-function PersonAttribute({ attribute, value }) {
-  return (
-    <div className="person-attribute">
-      <label>{attribute}</label>
-      <p>
-        {value}
-      </p>
-    </div>
-  );
-}
+
