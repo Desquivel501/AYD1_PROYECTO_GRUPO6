@@ -25,12 +25,15 @@ export default function RegistroEmpresa() {
       password: data.get("password"),
       documento: data.get("document"),
     });
-    fetch("http://localhost:3000/", {
+
+    fetch("http://localhost:3000/login", {
       method: "POST",
-      mode: "no-cors",
       body: data,
-    });
-    event.target.reset()
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+    event.target.reset();
   };
 
   const customTheme = createTheme({
@@ -58,7 +61,7 @@ export default function RegistroEmpresa() {
           <CssBaseline />
 
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -70,7 +73,7 @@ export default function RegistroEmpresa() {
           >
             <Box
               sx={{
-                my: 8,
+                my: 1,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -79,10 +82,7 @@ export default function RegistroEmpresa() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
-                  mr: 2,
                   fontFamily: "monospace",
                   fontWeight: 700,
                   letterSpacing: ".3rem",
@@ -91,7 +91,7 @@ export default function RegistroEmpresa() {
                 }}
                 component="h1"
               >
-                Registrar Empresa
+                Nueva Empresa
               </Typography>
 
               <Box
@@ -148,7 +148,7 @@ export default function RegistroEmpresa() {
                   fullWidth
                   variant="contained"
                   component="label"
-                  sx={{ mt: 3, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, bgcolor: "#F2890D" }}
                 >
                   Agregar Documentos (PDF)
                   <input
@@ -165,7 +165,7 @@ export default function RegistroEmpresa() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, mb: 2, bgcolor: "#F2890D" }}
                   // onClick={showFile2}
                 >
                   Registrarme

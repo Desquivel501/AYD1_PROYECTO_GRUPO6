@@ -25,11 +25,14 @@ export default function RegistroRepartidor() {
       email: data.get("email"),
       password: data.get("password"),
     });
-    fetch("http://localhost:3000/", {
+
+    fetch("http://localhost:3000/login", {
       method: "POST",
-      mode: "no-cors",
       body: data,
-    });
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
     event.target.reset();
   };
 
@@ -57,7 +60,7 @@ export default function RegistroRepartidor() {
           <CssBaseline />
 
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -69,7 +72,7 @@ export default function RegistroRepartidor() {
           >
             <Box
               sx={{
-                my: 8,
+                my: 1,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -78,8 +81,6 @@ export default function RegistroRepartidor() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
                   mr: 2,
                   fontFamily: "monospace",
@@ -90,7 +91,7 @@ export default function RegistroRepartidor() {
                 }}
                 component="h1"
               >
-                Registrar Repartidor
+                Nuevo Repartidor
               </Typography>
 
               <Box
@@ -182,7 +183,7 @@ export default function RegistroRepartidor() {
                   fullWidth
                   variant="contained"
                   component="label"
-                  sx={{ mt: 3, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, bgcolor: "#F2890D" }}
                 >
                   Agregar Hoja de Vida (PDF)
                   <input
@@ -200,7 +201,7 @@ export default function RegistroRepartidor() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, mb: 2, bgcolor: "#F2890D" }}
                   // onClick={showFile2}
                 >
                   Registrarme

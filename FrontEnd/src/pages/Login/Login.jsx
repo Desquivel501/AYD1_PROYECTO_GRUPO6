@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -17,6 +16,16 @@ export default function Login() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    fetch("http://localhost:3000/login", {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
+    event.target.reset();
   };
 
   const customTheme = createTheme({
@@ -61,7 +70,7 @@ export default function Login() {
           />
 
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -82,8 +91,6 @@ export default function Login() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
                   mr: 2,
                   fontFamily: "monospace",
@@ -91,6 +98,7 @@ export default function Login() {
                   letterSpacing: ".3rem",
                   color: "#bd4f23",
                   textDecoration: "none",
+                  width: "100%",
                 }}
                 component="h1"
               >
@@ -99,7 +107,6 @@ export default function Login() {
 
               <Box
                 component="form"
-                noValidate
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
@@ -110,7 +117,6 @@ export default function Login() {
                   id="email"
                   label="Correo Electronico"
                   name="email"
-                  autoComplete="email"
                   autoFocus
                 />
                 <TextField
@@ -121,7 +127,6 @@ export default function Login() {
                   label="Contraseña"
                   type="password"
                   id="password"
-                  autoComplete="current-password"
                 />
                 <Button
                   type="submit"

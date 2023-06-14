@@ -12,16 +12,14 @@ export default function RegistroCliente() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    fetch("http://localhost:3000/", {
+    fetch("http://localhost:3000/login", {
       method: "POST",
-      mode: "no-cors",
       body: data,
-    });
-    event.target.reset()
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+    event.target.reset();
   };
 
   const customTheme = createTheme({
@@ -48,10 +46,8 @@ export default function RegistroCliente() {
         >
           <CssBaseline />
 
-          
-
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -72,8 +68,6 @@ export default function RegistroCliente() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
                   mr: 2,
                   fontFamily: "monospace",
@@ -156,7 +150,6 @@ export default function RegistroCliente() {
               backgroundPosition: "center",
             }}
           />
-          
         </Grid>
       </Box>
     </ThemeProvider>
