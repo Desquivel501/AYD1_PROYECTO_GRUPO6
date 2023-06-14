@@ -14,31 +14,20 @@ export default function RegistroCliente() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const data = new FormData(event.currentTarget);
-    
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
-
-    console.log(data)
-
-    var object = {};
-    data.forEach(function(value, key){
-      object[key] = value;
+    console.log({
+      email: data.get("email"),
+      password: data.get("password")
     });
-
-    fetch("http://127.0.0.1:3000/", {
+    fetch("http://localhost:3000/", {
       method: "POST",
       headers: {
         'Content-Type':'application/json',
         'Access-Control-Allow-Origin_Origin': '*'
       },
-      body: JSON.stringify(object),
+      body: data,
     });
-    
-    // event.target.reset()
+    event.target.reset()
   };
 
   const customTheme = createTheme({
