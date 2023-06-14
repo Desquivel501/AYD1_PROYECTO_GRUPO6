@@ -14,6 +14,9 @@ import { useEffect } from "react";
 export default function EditarProductos() {
 
     // const [productos, setProductos] = useState([]);
+    const [count, setCount] = useState(0);
+    
+    const [catalogo, setCatalogo] = useState([])
     const [actual, setActual] = useState(
         {
             id: 0,     
@@ -25,6 +28,25 @@ export default function EditarProductos() {
             disponible: true
         }
     );
+
+    useEffect(() => {
+        if(count == 0){
+            
+            fetch("http://localhost:3000/GetProductos", {
+                method: "GET",
+                headers: {
+                    'Content-Type':'application/json',
+                    'Access-Control-Allow-Origin_Origin': '*'
+                }
+            })
+            .then(res => res.json())
+            .then(response =>{
+                setCatalogo(response)
+            })
+            
+            setCount(1)
+        }
+    })
 
     const handlePress = (id) => {
         console.log(id)
@@ -122,14 +144,14 @@ export default function EditarProductos() {
                                     logo={"https://picsum.photos/200"}
                                 /> */}
 
-                                {Productos.map((producto, i) => (
+                                {catalogo.map((item, i) => (
                                     <ProductCard 
                                         key={i}
-                                        id={producto.id}
-                                        title={producto.title}
-                                        cost={producto.cost}
-                                        image={producto.image}
-                                        descripcion={producto.descripcion}
+                                        id={item.id}
+                                        title={item.title}
+                                        cost={item.cost}
+                                        image={item.image}
+                                        descripcion={item.descripcion}
                                         onSelect={handlePress}
                                         addDesc={true}
                                     />
@@ -158,7 +180,7 @@ export default function EditarProductos() {
                             desc={actual.descripcion}
                             categoria={actual.categoria}
                             disponible={actual.disponible}
-                            edicion={false}
+                            edicion={true}
                             addCategorias={true}
                         />
                     </Grid>

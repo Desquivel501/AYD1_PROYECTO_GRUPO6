@@ -31,25 +31,43 @@ export const MenuProducto = (props) => {
 
     const [count, setCount] = useState(0);
 
+
+    function enviar() {
+
+        const jsonData = {
+            "id": id,
+            "name": name_,
+            "description":desc_,
+            "image":"",
+            "categoria":categoria_,
+            "disponible":disponible_
+        }
+
+        fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin_Origin': '*'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(res => res.json())
+        .then(response =>{
+          console.log(response)
+        })
+    }
+
+    
     useEffect(() => {
-        // if(count == 0){
-        //     setName(name)
-        //     setCount(1)
-        // }
-
-
         if(name_ != null && count != id){
             setName(name)
             setDesc(desc)
             setCost(cost)
             setCategoria(categoria)
             setDisponible(disponible)
-
             setCount(id)
         }
-
-
-      })
+    })
 
     return (
 
@@ -270,6 +288,7 @@ export const MenuProducto = (props) => {
                     size="large"
                     sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
                     endIcon={<SaveIcon />}
+                    onClick={() => enviar()}
                 >
                     Guardar Producto
                 </Button>
