@@ -8,6 +8,7 @@ import RegistroEmpresa from './pages/RegistroEmpresa/RegistroEmpresa'
 import RegistroRepartidor from './pages/RegistroRepartidor/RegistroRepartidor'
 import { About } from './pages/About/About'
 import { PerfilRepartidor } from './pages/Repartidor/Perfil'
+import { Solicitudes } from './pages/Administrador/Solicitudes'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path={"/RegistroRepartidor"} component={RegistroRepartidor}/>
       <Route path={"/About"} component={About}/>
       <Route path={"/Repartidor"} component={PerfilRepartidor}/>
+      <Route path={"/Administrador"} component={Solicitudes}/>
     </>
   )
 }
