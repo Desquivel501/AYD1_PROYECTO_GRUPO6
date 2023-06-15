@@ -87,7 +87,7 @@ export default function EditarProductos() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "80vw", pt: 11 }}
+                    sx={{ width: "80vw", pt: 6 }}
                     alignItems="center"
                     justifyContent="center"
                 > 
