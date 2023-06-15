@@ -11,6 +11,7 @@ import Productos from '../../assets/productos.js'
 import { useState } from "react";
 import { useEffect } from "react";
 import { MenuCombo } from '../../Componentes/MenuCombo/MenuCombo';
+import SaveIcon from '@mui/icons-material/Save';
 
 export default function CrearCombo() {
 
@@ -96,7 +97,7 @@ export default function CrearCombo() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "80vw", pt: 11 }}
+                    sx={{ width: "80vw", pt: 6 }}
                     alignItems="center"
                     justifyContent="center"
                 > 
@@ -144,8 +145,18 @@ export default function CrearCombo() {
                                     edicion={false}
                                     addCategorias={false}
                                     addComp={null}
+                                    productos={combo}
                                 />
                             </Grid>
+                            {/* <Button
+                                variant="contained"
+                                size="large"
+                                sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
+                                endIcon={<SaveIcon />}
+                            >
+                                Guardar Combo
+                            </Button> */}
+
 
                             <Grid
                                 item
@@ -205,6 +216,7 @@ export default function CrearCombo() {
                                                 descripcion={item.descripcion}
                                                 onSelect={handlePressCombo}
                                                 addDesc={false}
+                                                size={10}
                                             />
                                         ))}
 
@@ -283,6 +295,7 @@ export default function CrearCombo() {
                                         descripcion={item.descripcion}
                                         onSelect={handlePressCatalogo}
                                         addDesc={false}
+                                        size={10}
                                     />
                                 ))}
 

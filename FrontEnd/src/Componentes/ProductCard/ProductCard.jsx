@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 
 export const ProductCard = (props) => {
 
-    const {image, id, title, cost, descripcion, onSelect, addDesc} = props;
+    const {image, id, title, cost, descripcion, onSelect, addDesc, size} = props;
     
 
     const handleSelect = () => {
@@ -24,7 +24,7 @@ export const ProductCard = (props) => {
   return (
     <Grid
         item
-        xs={10}
+        xs={size}
         sx={{border:0, my:1, mx:2, 
             '&:hover': {
                 backgroundColor: '#f1dbd3'

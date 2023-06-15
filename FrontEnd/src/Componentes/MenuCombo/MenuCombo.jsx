@@ -21,7 +21,7 @@ import { useEffect } from "react";
 
 export const MenuCombo = (props) => {
     
-    const {title, id, name, desc, cost, image, categoria, disponible, addCategorias, edicion, addComp} = props;
+    const {title, id, name, desc, cost, disponible, edicion, addComp, productos} = props;
 
     const [name_, setName] = useState("")
     const [desc_, setDesc] = useState("")
@@ -31,24 +31,45 @@ export const MenuCombo = (props) => {
 
     const [count, setCount] = useState(0);
 
+    function enviar() {
+
+        var listado = []
+
+        for (var i = 0; i < productos.length; i++){
+            listado.push(productos[i].id)
+        }
+
+        const jsonData = {
+            "id": id,
+            "name": name_,
+            "description": desc_,
+            "cost": cost_,
+            "disponible": disponible_,
+            "productos": listado
+        }
+
+        fetch("http://localhost:3000/CrearCombo", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin_Origin': '*'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(res => res.json())
+        .then(response =>{
+          console.log(response)
+        })
+    }
+
     useEffect(() => {
-        // if(count == 0){
-        //     setName(name)
-        //     setCount(1)
-        // }
-
-
         if(name_ != null && count != id){
             setName(name)
             setDesc(desc)
             setCost(cost)
-            setCategoria(categoria)
             setDisponible(disponible)
-
             setCount(id)
         }
-
-
       })
 
     return (
@@ -168,6 +189,7 @@ export const MenuCombo = (props) => {
                     size="large"
                     sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
                     endIcon={<SaveIcon />}
+                    onClick={() => enviar()}
                 >
                     Guardar Combo
                 </Button>

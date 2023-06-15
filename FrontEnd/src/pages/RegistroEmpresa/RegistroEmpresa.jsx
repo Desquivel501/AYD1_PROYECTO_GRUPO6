@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 export default function RegistroEmpresa() {
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -27,7 +28,10 @@ export default function RegistroEmpresa() {
     });
     fetch("http://localhost:3000/", {
       method: "POST",
-      mode: "no-cors",
+      headers: {
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin_Origin': '*'
+      },
       body: data,
     });
     event.target.reset()

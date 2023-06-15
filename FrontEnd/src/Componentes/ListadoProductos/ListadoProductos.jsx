@@ -55,6 +55,7 @@ export const ListadoProductos = (props) => {
                     cost={producto.cost}
                     image={producto.image}
                     descripcion={producto.descripcion}
+                    size={10}
                 />
             ))}
 

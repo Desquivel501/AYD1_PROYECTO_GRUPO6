@@ -18,6 +18,7 @@ import FormGroup from "@mui/material/FormGroup";
 import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
 
 export default function RegistroRepartidor() {
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -27,7 +28,10 @@ export default function RegistroRepartidor() {
     });
     fetch("http://localhost:3000/", {
       method: "POST",
-      mode: "no-cors",
+      headers: {
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin_Origin': '*'
+      },
       body: data,
     });
     event.target.reset();
