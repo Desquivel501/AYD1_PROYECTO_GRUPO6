@@ -118,7 +118,7 @@ RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
 	DECLARE Habilitado BOOLEAN;
-    SELECT Usuarios.habilitado = 1 INTO Habilitado
+    SELECT Usuarios.estado = 1 INTO Habilitado
     FROM Usuarios
     WHERE Usuarios.correo = correo;
     RETURN(Habilitado);
