@@ -118,7 +118,41 @@ RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
 	DECLARE Habilitado BOOLEAN;
-    SELECT Usuarios.habilitado = 1 INTO Habilitado
+    SELECT Usuarios.estado = 1 INTO Habilitado
+    FROM Usuarios
     WHERE Usuarios.correo = correo;
     RETURN(Habilitado);
+END $$
+
+-- ########################### OBTENER CATEGORÍA DE PRODUCTO EN BASE A SU NOMBRE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ObtenerCategoriaP $$
+CREATE FUNCTION ObtenerCategoriaP(
+	categoria VARCHAR(150)
+)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+	DECLARE id_cat INTEGER;
+    SELECT Categorias_productos.id_catp INTO id_cat
+    FROM Categorias_productos
+    WHERE Categorias_productos.nombre = categoria;
+    RETURN(id_cat);
+END $$
+
+-- ########################### VERIFICAR SI UN PRODUCTO CON EL MISMO NOMBRE YA EXISTE PARA UNA EMPRESA DETERMINADA ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ProductoRepetido $$
+CREATE FUNCTION ProductoRepetido(
+	correo VARCHAR(200),
+    nombre VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Productos p 
+    WHERE p.nombre = nombre 
+    AND p.correo = correo) INTO existe;
+    RETURN(existe);
 END $$

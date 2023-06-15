@@ -247,3 +247,58 @@ rechazar_empresa:BEGIN
 	SELECT 'La solicitud fue rechazada correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+
+-- ########################### ALMACENAR PRODUCTOS ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AlmacenarProducto $$
+CREATE PROCEDURE AlmacenarProducto(
+	IN imagen_in VARCHAR(250),
+	IN nombre_in VARCHAR(200),
+    IN categoria_in VARCHAR(200),
+    IN descripcion_in VARCHAR(250),
+    IN precio_in DECIMAL(12,2),
+    IN disponibilidad_in BOOLEAN,
+    IN correo_in VARCHAR(200)
+)
+almacenar_producto:BEGIN
+	DECLARE id_catp_in INTEGER;
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a una empresa' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+    
+    SELECT ObtenerCategoriaP(categoria_in) INTO id_catp_in;
+    
+    IF(precio_in < 0) THEN
+		SELECT 'El precio de un producto debe ser positivo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+    
+    IF(NOT UsuarioHabilitado(correo_in)) THEN
+		SELECT 'La cuenta debe estar habilitada para poder añadir productos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+    
+    IF(ProductoRepetido(correo_in, nombre_in)) THEN
+		SELECT 'El nombre que se le quiere asignar al producto ya se encuentra en uso' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+    
+    INSERT INTO Productos(imagen, id_catp, nombre, descripcion, precio, disponibilidad, correo)
+    VALUES (imagen_in, id_catp_in, nombre_in, descripcion_in, precio_in, disponibilidad_in, correo_in);
+
+	SELECT 'El producto se ha añadido exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
