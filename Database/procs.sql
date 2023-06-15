@@ -284,8 +284,14 @@ almacenar_producto:BEGIN
         LEAVE almacenar_producto;
     END IF;
     
-    IF(NOT Habilitado(correo_in)) THEN
+    IF(NOT UsuarioHabilitado(correo_in)) THEN
 		SELECT 'La cuenta debe estar habilitada para poder añadir productos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_producto;
+    END IF;
+    
+    IF(ProductoRepetido(correo_in, nombre_in)) THEN
+		SELECT 'El nombre que se le quiere asignar al producto ya se encuentra en uso' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE almacenar_producto;
     END IF;
