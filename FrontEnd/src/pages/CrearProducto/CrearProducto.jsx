@@ -34,7 +34,7 @@ export default function CrearProducto() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "80vw", pt: 11 }}
+                    sx={{ width: "80vw", pt: 6 }}
                     alignItems="left"
                     justifyContent="center"
                 > 

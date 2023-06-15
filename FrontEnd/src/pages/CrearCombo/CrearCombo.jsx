@@ -97,7 +97,7 @@ export default function CrearCombo() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "80vw", pt: 11 }}
+                    sx={{ width: "80vw", pt: 6 }}
                     alignItems="center"
                     justifyContent="center"
                 > 
@@ -216,6 +216,7 @@ export default function CrearCombo() {
                                                 descripcion={item.descripcion}
                                                 onSelect={handlePressCombo}
                                                 addDesc={false}
+                                                size={10}
                                             />
                                         ))}
 
@@ -294,6 +295,7 @@ export default function CrearCombo() {
                                         descripcion={item.descripcion}
                                         onSelect={handlePressCatalogo}
                                         addDesc={false}
+                                        size={10}
                                     />
                                 ))}
 

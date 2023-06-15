@@ -17,6 +17,7 @@ export default function EditarProductos() {
     const [count, setCount] = useState(0);
     
     const [catalogo, setCatalogo] = useState([])
+
     const [actual, setActual] = useState(
         {
             id: 0,     
@@ -86,7 +87,7 @@ export default function EditarProductos() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "80vw", pt: 11 }}
+                    sx={{ width: "80vw", pt: 6 }}
                     alignItems="center"
                     justifyContent="center"
                 > 
@@ -154,6 +155,7 @@ export default function EditarProductos() {
                                         descripcion={item.descripcion}
                                         onSelect={handlePress}
                                         addDesc={true}
+                                        size={10}
                                     />
                                 ))}
 
