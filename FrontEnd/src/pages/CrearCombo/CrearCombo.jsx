@@ -216,6 +216,7 @@ export default function CrearCombo() {
                                                 descripcion={item.descripcion}
                                                 onSelect={handlePressCombo}
                                                 addDesc={false}
+                                                size={10}
                                             />
                                         ))}
 
@@ -294,6 +295,7 @@ export default function CrearCombo() {
                                         descripcion={item.descripcion}
                                         onSelect={handlePressCatalogo}
                                         addDesc={false}
+                                        size={10}
                                     />
                                 ))}
 
