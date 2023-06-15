@@ -119,6 +119,23 @@ DETERMINISTIC
 BEGIN
 	DECLARE Habilitado BOOLEAN;
     SELECT Usuarios.habilitado = 1 INTO Habilitado
+    FROM Usuarios
     WHERE Usuarios.correo = correo;
     RETURN(Habilitado);
+END $$
+
+-- ########################### OBTENER CATEGORÍA DE PRODUCTO EN BASE A SU NOMBRE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ObtenerCategoriaP $$
+CREATE FUNCTION ObtenerCategoriaP(
+	categoria VARCHAR(150)
+)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+	DECLARE id_cat INTEGER;
+    SELECT Categorias_productos.id_catp INTO id_cat
+    FROM Categorias_productos
+    WHERE Categorias_productos.nombre = categoria;
+    RETURN(id_cat);
 END $$
