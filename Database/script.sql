@@ -124,3 +124,34 @@ CREATE TABLE Empresas (
     FOREIGN KEY(id_dep) REFERENCES Departamentos(id_dep),
     FOREIGN KEY(id_cat) REFERENCES Categorias_empresa(id_cat)
 );
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR LAS CATEGORÍAS DE LOS PRODUCTOS ###########################
+DROP TABLE IF EXISTS Categorias_productos;
+CREATE TABLE Categorias_productos (
+	id_catp INTEGER NOT NULL,
+    nombre VARCHAR(200),
+	PRIMARY KEY(id_catp)
+);
+
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (1, 'Entradas');
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (2, 'Platos Fuertes');
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (3, 'Postres');
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (4, 'Bebidas');
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (5, 'Niños');
+INSERT INTO Categorias_productos(id_catp, nombre) VALUES (6, 'Combos');
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR PRODUCTOS ###########################
+DROP TABLE IF EXISTS Productos;
+CREATE TABLE Productos (
+	id_prod INTEGER AUTO_INCREMENT NOT NULL,
+	imagen VARCHAR(250),
+	id_catp INTEGER,
+    nombre VARCHAR(200),
+    descripcion VARCHAR(250),
+    precio DECIMAL(12,2),
+    disponibilidad BOOLEAN,
+    correo VARCHAR(200),
+    PRIMARY KEY(id_prod),
+    FOREIGN KEY(correo) REFERENCES Empresas(correo),
+    FOREIGN KEY(id_catp) REFERENCES Categorias_productos(id_catp)
+);
