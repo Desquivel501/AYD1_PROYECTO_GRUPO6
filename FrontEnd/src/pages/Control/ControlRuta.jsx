@@ -1,20 +1,14 @@
-import { useContext } from "react";
-import { sesionContext } from "../../context/SesionContext";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { useSesion } from "../../hooks/useSesion";
 
-export function ControlRuta({ children }) {
-  const { user } = useContext(sesionContext);
+export function ControlRuta({ usuario, children }) {
+  const { user } = useSesion();
   const [location, setLocation] = useLocation();
   useEffect(() => {
-    if (user.rol == "Usuario") {
-      setLocation("/Usuario");
-    } else if (user.rol == "Administrador") {
-      setLocation("/Administrador");
-    } else if (user.rol == "Repartidor") {
-      setLocation("/Repartidor");
+    if (user.rol != usuario) {
+      setLocation("/Login");
     }
-    return setLocation("/Login");
   }, [user]);
   return (
     <>

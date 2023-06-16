@@ -25,11 +25,15 @@ function App() {
       <Route path={"/RegistroEmpresa"} component={RegistroEmpresa} />
       <Route path={"/RegistroRepartidor"} component={RegistroRepartidor} />
       <Route path={"/About"} component={About} />
-      <Route path={"/CrearProducto"} component={CrearProducto} />
-      <Route path={"/EditarProductos"} component={EditarProductos} />
-      <Route path={"/CrearCombo"} component={CrearCombo} />
-      <ControlRuta>
+      <ControlRuta usuario={"Repartidor"}>
         <Route path={"/Repartidor"} component={PerfilRepartidor} />
+      </ControlRuta>
+      <ControlRuta usuario={"Empresa"}>
+        <Route path={"/CrearProducto"} component={CrearProducto} />
+        <Route path={"/EditarProductos"} component={EditarProductos} />
+        <Route path={"/CrearCombo"} component={CrearCombo} />
+      </ControlRuta>
+      <ControlRuta usuario={"Administrador"}>
         <Route path={"/Administrador"} component={Solicitudes} />
       </ControlRuta>
     </SesionProvider>
