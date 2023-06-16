@@ -9,11 +9,12 @@ import RegistroRepartidor from "./pages/RegistroRepartidor/RegistroRepartidor";
 import { About } from "./pages/About/About";
 import { PerfilRepartidor } from "./pages/Repartidor/Perfil";
 import { Solicitudes } from "./pages/Administrador/Solicitudes";
-import { SesionProvider } from "./context/SesionContext";
 import { ControlRuta } from "./pages/Control/ControlRuta";
+import { SesionProvider } from "./context/SesionContext";
 import CrearProducto from "./pages/CrearProducto/CrearProducto";
-import EditarProductos from "./pages/EditarProductos/EditarProductos";
 import CrearCombo from "./pages/CrearCombo/CrearCombo";
+import CatalogoEmpresa from './pages/CatalogoEmpresa/CatalogoEmpresa'
+import EditarProductos from "./pages/EditarProductos/EditarProductos";
 
 function App() {
   return (
