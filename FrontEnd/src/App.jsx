@@ -33,6 +33,7 @@ function App() {
         <Route path={"/CrearProducto"} component={CrearProducto} />
         <Route path={"/EditarProductos"} component={EditarProductos} />
         <Route path={"/CrearCombo"} component={CrearCombo} />
+        <Route path={"/CatalogoEmpresa"} component={CatalogoEmpresa} />
       </ControlRuta>
       <ControlRuta usuario={"Administrador"}>
         <Route path={"/Administrador"} component={Solicitudes} />
