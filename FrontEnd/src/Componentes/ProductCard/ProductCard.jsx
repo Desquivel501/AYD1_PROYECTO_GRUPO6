@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 
 export const ProductCard = (props) => {
 
-    const {image, id, title, cost, descripcion, onSelect, addDesc, size} = props;
+    const {image, id, title, cost, descripcion, onSelect, addDesc, addCost, size} = props;
     
 
     const handleSelect = () => {
@@ -25,7 +25,7 @@ export const ProductCard = (props) => {
     <Grid
         item
         xs={size}
-        sx={{border:0, my:1, mx:2, 
+        sx={{border:0, my:1, mx:1, 
             '&:hover': {
                 backgroundColor: '#f1dbd3'
               },
@@ -52,7 +52,7 @@ export const ProductCard = (props) => {
                 <Box
                     component="img"
                     sx={{
-                    height: 'auto', maxWidth: '80%', mt:2, 
+                    height: 'auto', maxWidth: '80%', mt:2, ml:1
                     }}
                     alt="Logo"
                     src={image}
@@ -106,22 +106,25 @@ export const ProductCard = (props) => {
                             </Typography>
                         </Grid>
                    }
+
+                    {addCost &&
                     
-                    <Grid
-                        item
-                        xs={12}
-                        sx={{border:0}}
-                    >
-                        <Typography variant="h6" component="h6" align='right' 
-                            sx={{
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: '#973f1c',
-                            }}>
-                                ${cost}
-                        </Typography>
-                    </Grid>
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{border:0}}
+                        >
+                            <Typography variant="h6" component="h6" align='right' 
+                                sx={{
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: '#973f1c',
+                                }}>
+                                    ${cost}
+                            </Typography>
+                        </Grid>
+                    }
 
                 </Grid>
 
