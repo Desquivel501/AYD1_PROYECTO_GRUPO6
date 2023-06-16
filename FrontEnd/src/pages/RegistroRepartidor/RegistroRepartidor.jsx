@@ -16,24 +16,19 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
+import { useContext } from "react";
+import { sesionContext } from "../../context/SesionContext.jsx";
+import { useState } from "react";
+import { Link } from "wouter";
 
 export default function RegistroRepartidor() {
-  
+  const { registrarme } = useContext(sesionContext);
+  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    fetch("http://localhost:3000/", {
-      method: "POST",
-      headers: {
-        'Content-Type':'application/json',
-        'Access-Control-Allow-Origin_Origin': '*'
-      },
-      body: data,
-    });
+    const mensaje = registrarme("Repartidor", data);
+    setMensaje(mensaje);
     event.target.reset();
   };
 
@@ -61,7 +56,7 @@ export default function RegistroRepartidor() {
           <CssBaseline />
 
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -73,7 +68,7 @@ export default function RegistroRepartidor() {
           >
             <Box
               sx={{
-                my: 8,
+                my: 1,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -82,8 +77,6 @@ export default function RegistroRepartidor() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
                   mr: 2,
                   fontFamily: "monospace",
@@ -94,7 +87,7 @@ export default function RegistroRepartidor() {
                 }}
                 component="h1"
               >
-                Registrar Repartidor
+                Nuevo Repartidor
               </Typography>
 
               <Box
@@ -186,7 +179,7 @@ export default function RegistroRepartidor() {
                   fullWidth
                   variant="contained"
                   component="label"
-                  sx={{ mt: 3, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, bgcolor: "#F2890D" }}
                 >
                   Agregar Hoja de Vida (PDF)
                   <input
@@ -204,11 +197,28 @@ export default function RegistroRepartidor() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, bgcolor: "#F2890D" }}
+                  sx={{ mt: 1, mb: 2, bgcolor: "#F2890D" }}
                   // onClick={showFile2}
                 >
                   Registrarme
                 </Button>
+                {mensaje.tipo != "" &&
+                  (
+                    <p
+                      className="mensaje"
+                      style={{
+                        backgroundColor: mensaje.tipo == "Error"
+                          ? "#c00"
+                          : "#080",
+                      }}
+                    >
+                      {mensaje.mensaje}
+                    </p>
+                  )}
+
+                <Link href="/Login" style={{ color: "#F2890D" }}>
+                  ¿Ya tienes una cuenta?
+                </Link>
               </Box>
             </Box>
           </Grid>

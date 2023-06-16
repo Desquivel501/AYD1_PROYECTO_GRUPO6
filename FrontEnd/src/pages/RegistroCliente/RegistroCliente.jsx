@@ -7,27 +7,20 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useSesion } from "../../hooks/useSesion";
 import { useState } from "react";
-import { useEffect } from "react";
+import { Link } from "wouter";
 
 export default function RegistroCliente() {
-
+  const { registrarme } = useSesion();
+  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password")
-    });
-    fetch("http://localhost:3000/", {
-      method: "POST",
-      headers: {
-        'Content-Type':'application/json',
-        'Access-Control-Allow-Origin_Origin': '*'
-      },
-      body: data,
-    });
-    event.target.reset()
+    const mensaje = registrarme("Usuario", data);
+    setMensaje(mensaje);
+    //setMensaje({mensaje:"Hubo un error",tipo:"Error"});
+    event.target.reset();
   };
 
   const customTheme = createTheme({
@@ -54,10 +47,8 @@ export default function RegistroCliente() {
         >
           <CssBaseline />
 
-          
-
           <Grid
-            container
+            item
             xs={12}
             sm={8}
             md={5}
@@ -78,8 +69,6 @@ export default function RegistroCliente() {
             >
               <Typography
                 variant="h4"
-                noWrap
-                href="/"
                 sx={{
                   mr: 2,
                   fontFamily: "monospace",
@@ -142,6 +131,22 @@ export default function RegistroCliente() {
                 >
                   Registrarme
                 </Button>
+                {mensaje.tipo != "" &&
+                  (
+                    <p
+                      className="mensaje"
+                      style={{
+                        backgroundColor: mensaje.tipo == "Error"
+                          ? "#c00"
+                          : "#080",
+                      }}
+                    >
+                      {mensaje.mensaje}
+                    </p>
+                  )}
+                <Link href="/Login" style={{ color: "#F2890D" }}>
+                  ¿Ya tienes una cuenta?
+                </Link>
               </Box>
             </Box>
           </Grid>
@@ -162,7 +167,6 @@ export default function RegistroCliente() {
               backgroundPosition: "center",
             }}
           />
-          
         </Grid>
       </Box>
     </ThemeProvider>

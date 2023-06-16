@@ -1,6 +1,6 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAttribute } from "../../Componentes/Persona";
-import "./Perfil.css"
+import "./Perfil.css";
 
 export function PerfilRepartidor() {
   return (
@@ -49,7 +49,6 @@ export function PerfilRepartidor() {
         <Grid
           item
           xs={6}
-          direction={"column"}
           justifyContent={"center"}
           alignItems={"center"}
         >
@@ -66,14 +65,14 @@ export function PerfilRepartidor() {
             <h2 className="calificacion">
               Calificación:
               <div className="stars">
-              <img src="./src/assets/icons/star.png"/>
-              <img src="./src/assets/icons/star.png"/>
-              <img src="./src/assets/icons/star.png"/>
-              <img src="./src/assets/icons/star.png"/>
-              <img src="./src/assets/icons/halfStar.png"/>
+                <img src="./src/assets/icons/star.png" />
+                <img src="./src/assets/icons/star.png" />
+                <img src="./src/assets/icons/star.png" />
+                <img src="./src/assets/icons/star.png" />
+                <img src="./src/assets/icons/halfStar.png" />
               </div>
             </h2>
-            <h3 style={{margin:0}}>
+            <h3 style={{ margin: 0 }}>
               Total de comisiones
             </h3>
             <h1>
@@ -123,4 +122,3 @@ export function PerfilRepartidor() {
     </Box>
   );
 }
-
