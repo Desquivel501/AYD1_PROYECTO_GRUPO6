@@ -8,13 +8,18 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSesion } from "../../hooks/useSesion";
+import { useState } from "react";
+import { Link } from "wouter";
 
 export default function RegistroCliente() {
-  const { registrarme } = useSesion()
+  const { registrarme } = useSesion();
+  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    registrarme("Usuario",data)
+    const mensaje = registrarme("Usuario", data);
+    setMensaje(mensaje);
+    //setMensaje({mensaje:"Hubo un error",tipo:"Error"});
     event.target.reset();
   };
 
@@ -126,6 +131,22 @@ export default function RegistroCliente() {
                 >
                   Registrarme
                 </Button>
+                {mensaje.tipo != "" &&
+                  (
+                    <p
+                      className="mensaje"
+                      style={{
+                        backgroundColor: mensaje.tipo == "Error"
+                          ? "#c00"
+                          : "#080",
+                      }}
+                    >
+                      {mensaje.mensaje}
+                    </p>
+                  )}
+                <Link href="/Login" style={{ color: "#F2890D" }}>
+                  ¿Ya tienes una cuenta?
+                </Link>
               </Box>
             </Box>
           </Grid>

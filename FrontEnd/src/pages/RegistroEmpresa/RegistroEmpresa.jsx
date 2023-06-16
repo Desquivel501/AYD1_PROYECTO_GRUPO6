@@ -15,13 +15,16 @@ import Departamentos from "../../assets/departamentos.js";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
+import { Link } from "wouter";
 
 export default function RegistroEmpresa() {
   const { registrarme } = useContext(sesionContext);
+  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    registrarme("Empresa", data);
+    const mensaje = registrarme("Empresa", data);
+    setMensaje(mensaje);
     event.target.reset();
   };
 
@@ -159,6 +162,22 @@ export default function RegistroEmpresa() {
                 >
                   Registrarme
                 </Button>
+                {mensaje.tipo != "" &&
+                  (
+                    <p
+                      className="mensaje"
+                      style={{
+                        backgroundColor: mensaje.tipo == "Error"
+                          ? "#c00"
+                          : "#080",
+                      }}
+                    >
+                      {mensaje.mensaje}
+                    </p>
+                  )}
+                <Link href="/Login" style={{ color: "#F2890D" }}>
+                  ¿Ya tienes una cuenta?
+                </Link>
               </Box>
             </Box>
           </Grid>
