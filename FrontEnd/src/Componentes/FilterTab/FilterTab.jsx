@@ -20,12 +20,14 @@ export const FilterTab = (props) => {
 
     const {onChange} = props;
     
-    const [categoria, setCategoria] = useState([])
+    const [categoria, setCategoria] = useState(["Entradas", "PlatosFuertes", "Bebidas", "Postres", "Ninos", "Combos"])
     const [search, setSearch] = useState("")
 
-    const changeCataegory = (event) => {
-        // console.log(event.target.id)
+    // const [checked, setChecked] = React.useState([true, true, true, true, true, true])
 
+    const changeCategory = (event) => {
+        // console.log(event.target.id)        
+        
         var found = false
         for (var i = 0; i < categoria.length; i++){
             if(categoria[i] == event.target.id){
@@ -115,12 +117,12 @@ export const FilterTab = (props) => {
                     
 
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="Entrada" sx={checkColor}/>} label="Entradas" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="PlatoFuerte" sx={checkColor}/>} label="Platos Fuertes" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="Bebida" sx={checkColor}/>} label="Bebidas" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="Postre" sx={checkColor}/>} label="Postres" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="Ninos" sx={checkColor}/>} label="Niños" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCataegory} id="Combo" sx={checkColor}/>} label="Combos" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Entradas" sx={checkColor}/>} label="Entradas" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="PlatosFuertes" sx={checkColor}/>} label="Platos Fuertes" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Bebidas" sx={checkColor}/>} label="Bebidas" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Postres" sx={checkColor}/>} label="Postres" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Ninos" sx={checkColor}/>} label="Niños" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Combos" sx={checkColor}/>} label="Combos" />
                     </FormGroup>
 
                 </Grid>

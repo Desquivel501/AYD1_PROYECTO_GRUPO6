@@ -90,7 +90,7 @@ export const ProductDialog = (props) => {
                             sx={{border:0}}
                         >
                             <Box
-                                component="form"
+                                
                                 noValidate
                                 sx={{ mt: 1 }}
                             >

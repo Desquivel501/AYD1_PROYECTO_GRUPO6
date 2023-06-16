@@ -48,34 +48,50 @@ export default function CatalogoEmpresa() {
     const [search, setSearch] = useState(
         {
             keyword: "",     
-            categories: [],
-            changed: false
+            categorias: ["Entradas", "PlatosFuertes", "Bebidas", "Postres", "Ninos", "Combos"]
         }
     );
 
-    useEffect(() => {
-        if(count == 0){
-            
-            fetch("http://localhost:3000/GetAll", {
-                method: "GET",
-                headers: {
-                    'Content-Type':'application/json',
-                    'Access-Control-Allow-Origin_Origin': '*'
-                }
-            })
-            .then(res => res.json())
-            .then(response =>{
-                setCatalogo(response.productos)
-                setCombo(response.combos)
-            })
-            
-            setCount(1)
-        }
-    })
-
     const handleSearch = (values) => {
         console.log(values)
+        setSearch(values)
     }
+
+    function filtrar(item, combo) {
+        
+        // if( ! search.categories.includes(item.categoria)){
+        //     return false
+        // }
+
+        const str = item.title.toLowerCase()
+        const substr = search.keyword.toLowerCase()
+
+        if(!str.includes(substr)){
+            return false
+        }
+
+        if (combo){
+            return search.categorias.includes("Combos")
+        }
+        return search.categorias.includes(item.categoria)
+    }
+
+    useEffect(() => {
+        fetch("http://localhost:3000/GetAll", {
+            method: "GET",
+            headers: {
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin_Origin': '*'
+            }
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setCatalogo(response.productos)
+            setCombo(response.combos)
+        })
+    }, [])
+
+    
 
     const handleClickOpen = (id) => {
         console.log(id)
@@ -242,19 +258,21 @@ export default function CatalogoEmpresa() {
                                 )
                             }
 
-                            {combo.map((item, i) => (
-                                <ProductCard 
-                                  key={i}
-                                  id={item.id}
-                                  title={item.title}
-                                  cost={item.cost}
-                                  image={"https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png"}
-                                  descripcion={item.descripcion}
-                                  onSelect={handleClickOpen2}
-                                  addDesc={false}
-                                  size={3.7}
-                                />
-                            ))}
+                            {combo.map((item, i) => {
+                                return filtrar(item, true) ?
+                                    <ProductCard 
+                                        key={i}
+                                        id={item.id}
+                                        title={item.title}
+                                        cost={item.cost}
+                                        image={"https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png"}
+                                        descripcion={item.descripcion}
+                                        onSelect={handleClickOpen2}
+                                        addDesc={false}
+                                        size={3.7}
+                                        />
+                                    : null
+                            })}
 
                             <Grid
                                 item
@@ -286,20 +304,22 @@ export default function CatalogoEmpresa() {
                                 </Typography>
                             }
 
-                            {catalogo.map((item, i) => (
-                                <ProductCard 
-                                    key={i}
-                                    id={item.id}
-                                    title={item.title}
-                                    cost={item.cost}
-                                    image={item.image}
-                                    descripcion={item.descripcion}
-                                    // onSelect={handlePress}
-                                    onSelect={handleClickOpen}
-                                    addDesc={false}
-                                    size={3.7}
-                                />
-                            ))}
+                            {catalogo.map((item, i) => {
+                                return filtrar(item, false) ?
+                                    <ProductCard 
+                                        key={i}
+                                        id={item.id}
+                                        title={item.title}
+                                        cost={item.cost}
+                                        image={item.image}
+                                        descripcion={item.descripcion}
+                                        // onSelect={handlePress}
+                                        onSelect={handleClickOpen}
+                                        addDesc={false}
+                                        size={3.7}
+                                    />
+                                : null
+                            })}
                         
                         
                         </Grid>

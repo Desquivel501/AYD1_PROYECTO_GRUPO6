@@ -18,22 +18,25 @@ import EditarProductos from "./pages/EditarProductos/EditarProductos";
 
 function App() {
   return (
-      <Navbar/>
-      <Route path={"/"} component={Landing}/>
-      <Route path={"/Login"} component={Login}/>
-      <Route path={"/RegistroCliente"} component={RegistroCliente}/>
-      <Route path={"/RegistroEmpresa"} component={RegistroEmpresa}/>
-      <Route path={"/RegistroRepartidor"} component={RegistroRepartidor}/>
-      <Route path={"/About"} component={About}/>
-      <Route path={"/Repartidor"} component={PerfilRepartidor}/>
-      <Route path={"/Administrador"} component={Solicitudes}/>
-      <Route path={"/CrearProducto"} component={CrearProducto}/>
-      <Route path={"/EditarProductos"} component={EditarProductos}/>
-      <Route path={"/CrearCombo"} component={CrearCombo}/>
-      <Route path={"/CatalogoEmpresa"} component={CatalogoEmpresa}/>
-      <ControlRuta>
-        <Route path={"/Repartidor"} component={PerfilRepartidor} />
-        <Route path={"/Administrador"} component={Solicitudes} />
-      </ControlRuta>
+      <>
+        <Navbar/>
+        <Route path={"/"} component={Landing}/>
+        <Route path={"/Login"} component={Login}/>
+        <Route path={"/RegistroCliente"} component={RegistroCliente}/>
+        <Route path={"/RegistroEmpresa"} component={RegistroEmpresa}/>
+        <Route path={"/RegistroRepartidor"} component={RegistroRepartidor}/>
+        <Route path={"/About"} component={About}/>
+        <Route path={"/Repartidor"} component={PerfilRepartidor}/>
+        <Route path={"/Administrador"} component={Solicitudes}/>
+        <Route path={"/CrearProducto"} component={CrearProducto}/>
+        <Route path={"/EditarProductos"} component={EditarProductos}/>
+        <Route path={"/CrearCombo"} component={CrearCombo}/>
+        <Route path={"/CatalogoEmpresa"} component={CatalogoEmpresa}/>
+        <ControlRuta>
+          <Route path={"/Repartidor"} component={PerfilRepartidor} />
+          <Route path={"/Administrador"} component={Solicitudes} />
+        </ControlRuta>
+      </>
+  );
 }
 export default App;

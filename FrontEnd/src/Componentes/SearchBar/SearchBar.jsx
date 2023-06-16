@@ -12,13 +12,15 @@ export default function SearchBar(props) {
 
     const [value, setValue] = useState("")
 
-    const handleSearch = () => {
+    const handleSearch = (event) => {
+        event.preventDefault(); 
         onSearch(value);            
     }
 
     return (
         <Paper
         component="form"
+        onSubmit={handleSearch}
         sx={{ p: '2px 4px', alignItems: 'center', display: 'flex', width: '80%', border:0 }}
         >
             <InputBase
@@ -29,7 +31,7 @@ export default function SearchBar(props) {
                 onChange={(event) => setValue(event.target.value)}
             />
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={handleSearch}>
+            <IconButton type="submit" sx={{ p: '10px' }} aria-label="search" onClick={handleSearch}>
                 <SearchIcon />
             </IconButton>
         </Paper>
