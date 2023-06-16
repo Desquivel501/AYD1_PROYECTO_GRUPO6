@@ -21,11 +21,12 @@ export function SesionProvider({ children }) {
   const login = (data) => {
     userLogin({ data }).then((newSesion) => setUser(newSesion));
   };
-  const registrarme = (usuario="Usuario",data)=>{
-    registrar(usuario,data)
-  }
+  const registrarme = async (usuario = "Usuario", data) => {
+    const mensaje = await registrar(usuario, data);
+    return mensale;
+  };
   return (
-    <sesionContext.Provider value={{ user, login ,registrarme}}>
+    <sesionContext.Provider value={{ user, login, registrarme }}>
       {children}
     </sesionContext.Provider>
   );
