@@ -302,3 +302,112 @@ almacenar_producto:BEGIN
 	SELECT 'El producto se ha añadido exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+
+-- ########################### ALMACENAR COMBO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AlmacenarCombo $$
+CREATE PROCEDURE AlmacenarCombo(
+	IN correo_in VARCHAR(200),
+    IN nombre_in VARCHAR(200),
+    IN imagen_in VARCHAR(250),
+    IN precio_in DECIMAL(12,2),
+    IN descripcion_in VARCHAR(250),
+    IN disponibilidad_in BOOLEAN
+)
+almacenar_combo:BEGIN
+
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_combo;
+    END IF;
+    
+	IF(ExisteCombo(correo_in, nombre_in)) THEN
+		SELECT 'El nombre ingresado para el combo ya se encuentra en uso' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_combo;
+    END IF;
+    
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a una empresa' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_combo;
+    END IF;
+    
+    IF(precio_in < 0) THEN
+		SELECT 'El precio de un combo debe ser positivo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_combo;
+    END IF;
+    
+    IF(NOT UsuarioHabilitado(correo_in)) THEN
+		SELECT 'La cuenta debe estar habilitada para poder añadir combos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE almacenar_combo;
+    END IF;
+    
+	INSERT INTO Combos(nombre, imagen, correo, id_catp, descripcion, precio, disponibilidad)
+    VALUES (nombre_in, imagen_in, correo_in, 6, descripcion_in, precio_in, disponibilidad_in);
+    
+	SELECT 'El combo se ha añadido exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+
+-- ########################### AGREGAR UN PRODUCTO A COMBO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AgregarProductoCombo $$
+CREATE PROCEDURE AgregarProductoCombo(
+	IN correo_in VARCHAR(200),
+    IN nombre_in VARCHAR(200),
+    IN id_prod_in INTEGER
+)
+agregar_producto_combo:BEGIN
+	DECLARE id_combo_in INTEGER;
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a una empresa' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+    
+	IF(NOT ExisteCombo(correo_in, nombre_in)) THEN
+		SELECT 'El nombre ingresado para el combo no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+    
+	IF(NOT ExisteProducto(id_prod_in)) THEN
+		SELECT 'El producto ingresado para el combo no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+    
+    SELECT ObtenerComboId(correo_in, nombre_in) 
+    INTO id_combo_in;
+
+	IF(ProductoEnCombo(id_combo_in ,id_prod_in)) THEN
+		SELECT 'El producto ingresado ya forma parte del combo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+    
+	IF(NOT ProductoEnEmpresa(correo_in ,id_prod_in)) THEN
+		SELECT 'El producto a ingresar no pertenece a la empresa correcta' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE agregar_producto_combo;
+    END IF;
+    
+    INSERT INTO Detalle_combos
+    VALUES (id_combo_in, id_prod_in);
+    
+	SELECT 'El producto se ha agregado exitosamente al combo' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
