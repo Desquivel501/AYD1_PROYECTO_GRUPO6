@@ -4,9 +4,11 @@ import "./solicitudes.css";
 import repartidores from "../../mocks/repartidores.json";
 import empresas from "../../mocks/empresas.json";
 import { PersonAttribute } from "../../Componentes/Persona";
+import { useSesion } from "../../hooks/useSesion";
 
 export function Solicitudes() {
   const [reporte, setReporte] = useState("Usuarios");
+  const { userId } = useSesion("Administrador");
 
   const handleClick = (e) => {
     setReporte(e.target.innerText);

@@ -16,23 +16,15 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
+import { useContext } from "react";
+import { sesionContext } from "../../context/SesionContext.jsx";
 
 export default function RegistroRepartidor() {
+  const { registrarme } = useContext(sesionContext)
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-
-    fetch("http://localhost:3000/login", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    registrarme("Repartidor",data)
     event.target.reset();
   };
 
