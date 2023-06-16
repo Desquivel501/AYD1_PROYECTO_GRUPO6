@@ -155,3 +155,29 @@ CREATE TABLE Productos (
     FOREIGN KEY(correo) REFERENCES Empresas(correo),
     FOREIGN KEY(id_catp) REFERENCES Categorias_productos(id_catp)
 );
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR COMBOS ###########################
+DROP TABLE IF EXISTS Combos;
+CREATE TABLE Combos (
+	id_combo INTEGER AUTO_INCREMENT NOT NULL,
+    nombre VARCHAR(200),
+    imagen VARCHAR(250),
+    correo VARCHAR(200) NOT NULL,
+    id_catp INTEGER,
+    descripcion VARCHAR(250),
+    precio DECIMAL(12,2),
+    disponibilidad BOOLEAN,
+    PRIMARY KEY(id_combo),
+    FOREIGN KEY(correo) REFERENCES Empresas(correo),
+    FOREIGN KEY(id_catp) REFERENCES Categorias_productos(id_catp)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR DETALLES COMBO ###########################
+DROP TABLE IF EXISTS Detalle_combos;
+CREATE TABLE Detalle_combos(
+	id_combo INTEGER NOT NULL,
+    id_prod INTEGER NOT NULL,
+    PRIMARY KEY(id_combo, id_prod),
+    FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
+    FOREIGN KEY(id_prod) REFERENCES Productos(id_prod)
+);

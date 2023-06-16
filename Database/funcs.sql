@@ -156,3 +156,87 @@ BEGIN
     AND p.correo = correo) INTO existe;
     RETURN(existe);
 END $$
+
+-- ########################### VERIFICAR SI UN PRODUCTO EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteProducto $$
+CREATE FUNCTION ExisteProducto(
+	id_prod_in INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Productos p
+    WHERE p.id_prod = id_prod_in) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI EL NOMBRE DE UN COMBO YA EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteCombo $$
+CREATE FUNCTION ExisteCombo(
+	correo VARCHAR(200),
+	nombre VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Combos c
+    WHERE c.nombre = nombre
+    AND c.correo = correo) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### DEVUELVE EL ID DE UN COMBO DEPENDIENDO DE SU NOMBRE Y EMPRESA ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ObtenerComboId $$
+CREATE FUNCTION ObtenerComboId(
+	correo VARCHAR(200),
+	nombre VARCHAR(200)
+)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+	DECLARE id_combo INTEGER;
+    SELECT c.id_combo INTO id_combo 
+    FROM Combos c
+    WHERE c.nombre = nombre
+    AND c.correo = correo;
+    RETURN(id_combo);
+END $$
+
+-- ########################### VERIFICA SI UN PRODUCTO YA ES PARTE DE UN COMBO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ProductoEnCombo $$
+CREATE FUNCTION ProductoEnCombo(
+	id_combo INTEGER,
+    id_prod INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	Declare existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Detalle_combos dc
+    WHERE dc.id_combo = id_combo 
+    AND dc.id_prod = id_prod) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICA SI UN PRODUCTO ES DE LA EMPRESA CORRECTA ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ProductoEnEmpresa $$
+CREATE FUNCTION ProductoEnEmpresa (
+	correo_in VARCHAR(200),
+    id_prod INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE pertenece BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Productos p
+    WHERE p.correo = correo_in 
+    AND p.id_prod = id_prod) INTO pertenece;
+    RETURN(pertenece);
+END $$
