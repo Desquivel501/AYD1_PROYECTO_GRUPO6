@@ -7,18 +7,14 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useSesion } from "../../hooks/useSesion";
 
 export default function RegistroCliente() {
+  const { registrarme } = useSesion()
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    fetch("http://localhost:3000/login", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    registrarme("Usuario",data)
     event.target.reset();
   };
 

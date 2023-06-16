@@ -2,7 +2,7 @@ import { Route, Router } from "wouter";
 import "./App.css";
 import Navbar from "./Componentes/NavBar/Navbar";
 import Login from "./pages/Login/Login";
-import { Landing } from "./pages/Landing/Landing";
+import { Landing } from "./pages/Landing/Landing2";
 import RegistroCliente from "./pages/RegistroCliente/RegistroCliente";
 import RegistroEmpresa from "./pages/RegistroEmpresa/RegistroEmpresa";
 import RegistroRepartidor from "./pages/RegistroRepartidor/RegistroRepartidor";
@@ -11,6 +11,9 @@ import { PerfilRepartidor } from "./pages/Repartidor/Perfil";
 import { Solicitudes } from "./pages/Administrador/Solicitudes";
 import { SesionProvider } from "./context/SesionContext";
 import { ControlRuta } from "./pages/Control/ControlRuta";
+import CrearProducto from "./pages/CrearProducto/CrearProducto";
+import EditarProductos from "./pages/EditarProductos/EditarProductos";
+import CrearCombo from "./pages/CrearCombo/CrearCombo";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
       <Route path={"/RegistroEmpresa"} component={RegistroEmpresa} />
       <Route path={"/RegistroRepartidor"} component={RegistroRepartidor} />
       <Route path={"/About"} component={About} />
+      <Route path={"/CrearProducto"} component={CrearProducto} />
+      <Route path={"/EditarProductos"} component={EditarProductos} />
+      <Route path={"/CrearCombo"} component={CrearCombo} />
       <ControlRuta>
         <Route path={"/Repartidor"} component={PerfilRepartidor} />
         <Route path={"/Administrador"} component={Solicitudes} />
@@ -29,5 +35,4 @@ function App() {
     </SesionProvider>
   );
 }
-
 export default App;

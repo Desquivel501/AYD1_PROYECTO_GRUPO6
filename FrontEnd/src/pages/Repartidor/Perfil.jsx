@@ -1,10 +1,8 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAttribute } from "../../Componentes/Persona";
 import "./Perfil.css";
-import { useSesion } from "../../hooks/useSesion";
 
 export function PerfilRepartidor() {
-  const { userId } = useSesion("Repartidor");
   return (
     <Box
       display="flex"

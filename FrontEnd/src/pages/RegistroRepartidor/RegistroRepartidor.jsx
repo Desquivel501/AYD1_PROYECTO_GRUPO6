@@ -20,11 +20,11 @@ import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
 
 export default function RegistroRepartidor() {
-  const { registrarme } = useContext(sesionContext)
+  const { registrarme } = useContext(sesionContext);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    registrarme("Repartidor",data)
+    registrarme("Repartidor", data);
     event.target.reset();
   };
 
