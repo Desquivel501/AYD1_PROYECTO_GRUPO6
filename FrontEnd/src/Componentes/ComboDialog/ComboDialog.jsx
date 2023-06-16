@@ -1,26 +1,12 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Typography, Box, Grid } from '@mui/material';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import { ProductCard } from '../ProductCard/ProductCard';
 
 export const ComboDialog = (props) => {
@@ -28,13 +14,7 @@ export const ComboDialog = (props) => {
   const { onClose, open, title, descripcion, cost, disponible, productos } = props;
 
   const handleClose = () => {
-    // onClose(selectedValue);
     onClose(true);
-  };
-
-  const handleListItemClick = (value) => {
-    // onClose(value);
-    onClose(true)
   };
 
   return (

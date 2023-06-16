@@ -1,13 +1,5 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { ButtonGroup, Typography, Box, Container, Grid, Button } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import Paper from "@mui/material/Paper";
 import SearchBar from '../SearchBar/SearchBar';
 import FormGroup from '@mui/material/FormGroup';
@@ -23,7 +15,6 @@ export const FilterTab = (props) => {
     const [categoria, setCategoria] = useState(["Entradas", "PlatosFuertes", "Bebidas", "Postres", "Ninos", "Combos"])
     const [search, setSearch] = useState("")
 
-    // const [checked, setChecked] = React.useState([true, true, true, true, true, true])
 
     const changeCategory = (event) => {
         // console.log(event.target.id)        
@@ -47,10 +38,6 @@ export const FilterTab = (props) => {
             }
         )
     }
-
-    // const handleSelect = () => {
-    //     onSelect(id);            
-    // }
 
     const handlePress = (text) => {
         setSearch(text)

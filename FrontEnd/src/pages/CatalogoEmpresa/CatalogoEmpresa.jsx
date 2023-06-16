@@ -4,7 +4,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ProductCard } from '../../Componentes/ProductCard/ProductCard';
 import Paper from "@mui/material/Paper";
-import Productos from '../../assets/productos.js'
 import { useState } from "react";
 import { useEffect } from "react";
 import { FilterTab } from '../../Componentes/FilterTab/FilterTab';
@@ -13,13 +12,11 @@ import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
 
 export default function CatalogoEmpresa() {
 
-    const [count, setCount] = useState(0);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const [catalogo, setCatalogo] = useState([])
     const [combo, setCombo] = useState([])
 
-    // const [productos, setProductos] = useState([]);
     const [actual, setActual] = useState(
         {
             id: 0,     
@@ -58,11 +55,6 @@ export default function CatalogoEmpresa() {
     }
 
     function filtrar(item, combo) {
-        
-        // if( ! search.categories.includes(item.categoria)){
-        //     return false
-        // }
-
         const str = item.title.toLowerCase()
         const substr = search.keyword.toLowerCase()
 
