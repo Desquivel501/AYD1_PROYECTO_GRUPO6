@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import "./Landing.css";
 import { ButtonGroup, Typography, Box, Container, Grid, Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -208,7 +208,7 @@ export function Landing() {
                         <footer>
                             <ul>
                             <li>Quiénes somos</li>
-                            <li><Link href="/About">Equipo</Link></li>
+                            <li><Link to="/About">Equipo</Link></li>
                             <li>Preguntas frecuentes</li>
                             <li>Terminos y condiciones</li>
                             <li>Políticas de Privacidad</li>

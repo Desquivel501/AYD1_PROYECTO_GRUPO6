@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSesion } from "../../hooks/useSesion";
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 export default function RegistroCliente() {
   const { registrarme } = useSesion();
@@ -144,7 +144,7 @@ export default function RegistroCliente() {
                       {mensaje.mensaje}
                     </p>
                   )}
-                <Link href="/Login" style={{ color: "#F2890D" }}>
+                <Link to="/Login" style={{ color: "#F2890D" }}>
                   ¿Ya tienes una cuenta?
                 </Link>
               </Box>

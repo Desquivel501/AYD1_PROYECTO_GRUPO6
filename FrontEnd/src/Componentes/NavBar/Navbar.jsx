@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
 import "./navbar.css";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 const links = [
   { text: "Iniciar Sesión", path: "/Login" },
@@ -52,7 +52,7 @@ function Navbar() {
               }}
             >
               <Link
-                href={"/"}
+                to={"/"}
               >
                 AlChilazo
               </Link>
@@ -60,7 +60,7 @@ function Navbar() {
 
             {links.map(({ text, path }) => (
               <Link
-                href={path}
+                to={path}
                 key={path}
               >
                 {text}
