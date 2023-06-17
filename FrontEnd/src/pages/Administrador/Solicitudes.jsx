@@ -4,8 +4,10 @@ import "./solicitudes.css";
 import repartidores from "../../mocks/repartidores.json";
 import empresas from "../../mocks/empresas.json";
 import { PersonAttribute } from "../../Componentes/Persona";
+import { useSesion } from "../../hooks/useSesion";
 
 export function Solicitudes() {
+  const { user } = useSesion();
   const [reporte, setReporte] = useState("Usuarios");
 
   const handleClick = (e) => {
@@ -21,7 +23,7 @@ export function Solicitudes() {
     if (email) {
       fetch("http://localhost/aceptar-solicitud", {
         method: "POST",
-        body: JSON.stringify({ email, aceptado }),
+        body: JSON.stringify({ admin: user.id, email, aceptado }),
       });
     }
   };
