@@ -16,14 +16,14 @@ export function SesionProvider({ children }) {
         return acc;
       }, {});
 
-  const [user, setUser] = useState({ id: -1, rol: "" });
+  const [user, setUser] = useState({ id: -1, rol: "Administrador", activo:true });
 
   const login = (data) => {
     userLogin({ data }).then((newSesion) => setUser(newSesion));
   };
   const registrarme = async (usuario = "Usuario", data) => {
     const mensaje = await registrar(usuario, data);
-    return mensale;
+    return mensaje;
   };
   return (
     <sesionContext.Provider value={{ user, login, registrarme }}>
