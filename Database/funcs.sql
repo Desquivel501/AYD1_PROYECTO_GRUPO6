@@ -207,7 +207,7 @@ BEGIN
     RETURN(id_combo);
 END $$
 
--- ########################### VERIFICA SI UN PRODUCTO YA ES PARTE DE UN COMBO ###########################
+-- ########################### VERIFICA SI UN PRODUCTO YA ES PARTE DE UN COMBO ESPECIFICO ###########################
 DELIMITER $$
 DROP FUNCTION IF EXISTS ProductoEnCombo $$
 CREATE FUNCTION ProductoEnCombo(
@@ -256,4 +256,23 @@ BEGIN
     WHERE u.correo = correo
     AND u.contrasenia = contrasenia) INTO valido;
     RETURN(valido);
+END $$
+
+-- ########################### VERIFICAR SI UN PRODUCTO SE ENCUENTRA EN CUALQUIER COMBO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ProductoEnUso $$
+CREATE FUNCTION ProductoEnUso(
+	correo VARCHAR(200),
+	id_prod INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE en_uso BOOLEAN;
+	SELECT EXISTS( SELECT 1 FROM Combos c
+    JOIN Detalle_combos dc
+    ON c.id_combo = dc.id_combo
+    AND c.correo = correo AND dc.id_prod = id_prod)
+    INTO en_uso;
+	RETURN(en_uso);
 END $$
