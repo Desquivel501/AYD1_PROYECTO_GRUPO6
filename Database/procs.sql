@@ -68,9 +68,17 @@ END $$
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AceptarRepartidor $$
 CREATE PROCEDURE AceptarRepartidor(
+	IN correo_admin VARCHAR(200),
 	IN correo_in VARCHAR(200)
 )
 aceptar_repartidor:BEGIN
+
+	IF(NOT ExisteUsuario(correo_admin)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_repartidor;
+    END IF;
+
 	IF(NOT UsuarioPendiente(correo_in)) THEN
 		SELECT 'El usuario que se intenta aceptar no tiene estado pendiente' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -89,6 +97,10 @@ aceptar_repartidor:BEGIN
         LEAVE aceptar_repartidor;
     END IF;
     
+    UPDATE Administradores a
+    SET aceptados = aceptados + 1
+    WHERE a.correo = correo_admin;
+    
     UPDATE Usuarios SET estado=1
     WHERE Usuarios.correo = correo_in;
     
@@ -101,9 +113,17 @@ END $$
 DELIMITER $$
 DROP PROCEDURE IF EXISTS RechazarRepartidor $$
 CREATE PROCEDURE RechazarRepartidor(
+	IN correo_admin VARCHAR(200),
 	IN correo_in VARCHAR(200)
 )
 rechazar_repartidor:BEGIN
+
+	IF(NOT ExisteUsuario(correo_admin)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_repartidor;
+    END IF;
+
 	IF(NOT UsuarioPendiente(correo_in)) THEN
 		SELECT 'El usuario que se intenta rechazar no tiene estado pendiente' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -121,6 +141,10 @@ rechazar_repartidor:BEGIN
         'ERROR' AS 'TIPO';
         LEAVE rechazar_repartidor;
     END IF;
+    
+    UPDATE Administradores a
+    SET rechazados = rechazados + 1
+    WHERE a.correo = correo_admin;
     
     DELETE FROM Repartidores r
     WHERE r.correo = correo_in;
@@ -182,10 +206,17 @@ END $$
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AceptarEmpresa $$
 CREATE PROCEDURE AceptarEmpresa(
+	IN correo_admin VARCHAR(200),
 	IN correo_in VARCHAR(200)
 )
 aceptar_empresa:BEGIN
 
+	IF(NOT ExisteUsuario(correo_admin)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_empresa;
+    END IF;
+    
 	IF(NOT UsuarioPendiente(correo_in)) THEN
 		SELECT 'El usuario que se intenta aceptar no tiene estado pendiente' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -204,6 +235,10 @@ aceptar_empresa:BEGIN
         LEAVE aceptar_empresa;
     END IF;
     
+    UPDATE Administradores a
+    SET aceptados = aceptados + 1
+    WHERE a.correo = correo_admin;
+
     UPDATE Usuarios SET estado=1
     WHERE Usuarios.correo = correo_in;
 
@@ -216,10 +251,17 @@ END $$
 DELIMITER $$
 DROP PROCEDURE IF EXISTS RechazarEmpresa $$
 CREATE PROCEDURE RechazarEmpresa(
+	IN correo_admin VARCHAR(200),
 	IN correo_in VARCHAR(200)
 )
 rechazar_empresa:BEGIN
 
+	IF(NOT ExisteUsuario(correo_admin)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_empresa;
+    END IF;
+    
 	IF(NOT UsuarioPendiente(correo_in)) THEN
 		SELECT 'El usuario que se intenta rechazar no tiene estado pendiente' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -237,6 +279,10 @@ rechazar_empresa:BEGIN
         'ERROR' AS 'TIPO';
         LEAVE rechazar_empresa;
     END IF;
+    
+    UPDATE Administradores a
+    SET rechazados = rechazados + 1
+    WHERE a.correo = correo_admin;
     
     DELETE FROM Empresas e
     WHERE e.correo = correo_in;
