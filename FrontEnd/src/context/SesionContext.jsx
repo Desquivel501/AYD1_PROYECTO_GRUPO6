@@ -16,7 +16,7 @@ export function SesionProvider({ children }) {
         return acc;
       }, {});
 
-  const [user, setUser] = useState({ id: -1, rol: "Administrador", activo:true });
+  const [user, setUser] = useState({ id: "admin@gmail.com", rol: "Administrador", activo:true });
 
   const login = (data) => {
     userLogin({ data }).then((newSesion) => setUser(newSesion));
