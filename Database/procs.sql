@@ -411,3 +411,16 @@ agregar_producto_combo:BEGIN
 	SELECT 'El producto se ha agregado exitosamente al combo' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+-- ########################### OBTENER LOS PRODUCTOS DE UN COMBO ESPECIFICO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ObtenerProductosCombo $$
+CREATE PROCEDURE ObtenerProductosCombo(
+	IN id_combo_in INTEGER
+)
+obtener_producto_combo:BEGIN
+	SELECT * FROM Detalle_combos dc
+    JOIN Productos p
+    ON dc.id_prod = p.id_prod
+    AND dc.id_combo = id_combo_in;
+END $$
