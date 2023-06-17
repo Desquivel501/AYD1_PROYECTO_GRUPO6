@@ -79,6 +79,8 @@ CREATE TABLE Usuarios (
 DROP TABLE IF EXISTS Administradores;
 CREATE TABLE Administradores (
 	correo VARCHAR(200) NOT NULL,
+    aceptados INTEGER DEFAULT 0,
+    rechazados INTEGER DEFAULT 0,
     PRIMARY KEY(correo),
     FOREIGN KEY(correo) REFERENCES Usuarios(correo)
 );
