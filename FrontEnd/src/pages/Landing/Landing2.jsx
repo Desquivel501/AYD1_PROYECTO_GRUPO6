@@ -123,6 +123,9 @@ export function Landing() {
                                             color: '#fff',
                                             fontFamily: 'monospace',
                                             fontWeight: 700,
+                                            '&:hover': {
+                                                backgroundColor: '#973f1c',
+                                            }
                                         }}
                                     onClick={(event) => window.location.href = "/RegistroCliente"}
                                 > Registrate ya! </Button>

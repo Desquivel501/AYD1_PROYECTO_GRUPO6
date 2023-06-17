@@ -43,3 +43,6 @@
   cursor: pointer;
   text-decoration-line: underline;
 }
+.tabla {
+  background-color: #ccc;
+}
