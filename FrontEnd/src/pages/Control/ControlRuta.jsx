@@ -1,19 +1,12 @@
-import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSesion } from "../../hooks/useSesion";
 
 export function ControlRuta({ usuario, children }) {
   const { user } = useSesion();
-  const [location, setLocation] = useLocation();
-  useEffect(() => {
-    if (!user.activo) {
-      console.log(user, usuario);
-      setLocation("/Login");
-    }
-  }, []);
+  if (user.rol != usuario) return <Navigate to={"/404"} />;
   return (
     <>
-      {usuario==user.rol && children}
+      {children ? children : <Outlet />}
     </>
   );
 }

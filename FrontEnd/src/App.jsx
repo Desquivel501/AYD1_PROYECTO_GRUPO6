@@ -1,4 +1,4 @@
-import { Route, Router } from "wouter";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Componentes/NavBar/Navbar";
 import Login from "./pages/Login/Login";
@@ -16,36 +16,53 @@ import CrearCombo from "./pages/CrearCombo/CrearCombo";
 import CatalogoEmpresa from "./pages/CatalogoEmpresa/CatalogoEmpresa";
 import EditarProductos from "./pages/EditarProductos/EditarProductos";
 import { Usuarios } from "./pages/Administrador/Usuarios";
-import page_404 from "./pages/404/404";
+import Page_404 from "./pages/404/404";
 
 function App() {
   return (
     <SesionProvider>
-      <Navbar />
-      <Route path={"/"} component={Landing} />
-      <Route path={"/Login"} component={Login} />
-      <Route path={"/RegistroCliente"} component={RegistroCliente} />
-      <Route path={"/RegistroEmpresa"} component={RegistroEmpresa} />
-      <Route path={"/RegistroRepartidor"} component={RegistroRepartidor} />
-      <Route path={"/About"} component={About} />
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route index path={"/"} element={<Landing />} />
+          <Route path={"/Login"} element={<Login />} />
+          <Route path={"/RegistroCliente"} element={<RegistroCliente />} />
+          <Route path={"/RegistroEmpresa"} element={<RegistroEmpresa />} />
+          <Route
+            path={"/RegistroRepartidor"}
+            element={<RegistroRepartidor />}
+          />
+          <Route path={"/About"} element={<About />} />
 
-      <Route path={"/404"} component={page_404} />
+          <Route path={"/404"} element={<Page_404 />} />
 
-      <ControlRuta usuario={"Repartidor"}>
-        <Route path={"/Repartidor"} component={PerfilRepartidor} />
-      </ControlRuta>
-      <ControlRuta usuario={"Empresa"}>
-        <Route path={"/CrearProducto"} component={CrearProducto} />
-        <Route path={"/EditarProductos"} component={EditarProductos} />
-        <Route path={"/CrearCombo"} component={CrearCombo} />
-        <Route path={"/CatalogoEmpresa"} component={CatalogoEmpresa} />
-      </ControlRuta>
-      <ControlRuta usuario={"Administrador"}>
-        <Router base="/Administrador">
-          <Route path={"/Solicitudes"} component={Solicitudes} />
-          <Route path={"/Usuarios"} component={Usuarios} />
-        </Router>
-      </ControlRuta>
+          <Route
+            path={"/Repartidor"}
+            element={
+              <ControlRuta usuario={"Repartidor"}>
+                <PerfilRepartidor />
+              </ControlRuta>
+            }
+          />
+          <Route element={<ControlRuta usuario={"Empresa"} />}>
+            <Route path="/Empresa">
+              <Route path={"CrearProducto"} element={<CrearProducto />} />
+              <Route path={"EditarProductos"} element={<EditarProductos />} />
+              <Route path={"CrearCombo"} element={<CrearCombo />} />
+              <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
+            </Route>
+          </Route>
+          <Route
+            path={"/Administrador"}
+            element={
+              <ControlRuta usuario={"Administrador"}>
+                <Route path={"/Solicitudes"} element={<Solicitudes />} />
+                <Route path={"/Usuarios"} element={<Usuarios />} />
+              </ControlRuta>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </SesionProvider>
   );
 }
