@@ -240,3 +240,20 @@ BEGIN
     AND p.id_prod = id_prod) INTO pertenece;
     RETURN(pertenece);
 END $$
+
+-- ########################### CREDENCIALES INICIO DE SESION VALIDAS ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS CredencialesValidas $$
+CREATE FUNCTION CredencialesValidas(
+	correo VARCHAR(200),
+    contrasenia VARCHAR(100)
+)
+RETURNS BOOLEAN
+DETERMINISTIC 
+BEGIN
+	DECLARE valido BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Usuarios u
+    WHERE u.correo = correo
+    AND u.contrasenia = contrasenia) INTO valido;
+    RETURN(valido);
+END $$
