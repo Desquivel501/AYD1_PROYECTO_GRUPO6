@@ -41,11 +41,13 @@ export const ProductCard = (props) => {
                 item
                 xs={3}
                 sx={{border:0}}
+                justifyContent="center"
+                alignItems="center"
             >
                 <Box
                     component="img"
                     sx={{
-                    height: 'auto', maxWidth: '80%', mt:2, ml:1
+                    height: 'auto', maxWidth: '80%', mt:2, ml:1, mb:1,
                     }}
                     alt="Logo"
                     src={image}
