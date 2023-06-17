@@ -1,5 +1,28 @@
 USE PROY1;
 
+-- ########################### INICIAR SESIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS InicioSesion $$
+CREATE PROCEDURE InicioSesion(
+	IN correo VARCHAR(200),
+    IN contrasenia VARCHAR(100)
+)
+inicio_sesion:BEGIN
+	DECLARE rol INTEGER;
+	IF(CredencialesValidas(correo, contrasenia)) THEN
+		SELECT u.rol INTO rol 
+        FROM Usuarios u
+        WHERE u.correo = correo;
+        
+        SELECT rol AS 'MENSAJE',
+        'EXITO' AS 'TIPO';
+    ELSE
+		SELECT 'Las credenciales de inicio de sesión son incorrectas' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+    END IF;
+END $$
+
+
 -- ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
 DELIMITER $$
 DROP PROCEDURE IF EXISTS RegistrarCliente $$
