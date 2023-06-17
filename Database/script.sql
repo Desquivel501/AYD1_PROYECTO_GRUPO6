@@ -23,12 +23,31 @@ DROP TABLE IF EXISTS Categorias_empresa;
 CREATE TABLE Categorias_empresa (
 	id_cat INTEGER NOT NULL,
     nombre VARCHAR(150),
+    imagen VARCHAR(200),
     PRIMARY KEY(id_cat)
 );
 
-INSERT INTO Categorias_empresa(id_cat, nombre) VALUES (1, 'Restaurante');
-INSERT INTO Categorias_empresa(id_cat, nombre) VALUES (2, 'Tienda de conveniencia');
-INSERT INTO Categorias_empresa(id_cat, nombre) VALUES (3, 'Supermercado');
+INSERT INTO Categorias_empresa(id_cat, nombre, imagen) VALUES 
+(1, 'Pizza', 'https://shorturl.at/muF09'),
+(2, 'Postres', 'https://shorturl.at/hwHKU'),
+(3, 'Hamburguesas', 'https://shorturl.at/fAD34'),
+(4, 'Sandwiches', 'https://shorturl.at/npDY0'),
+(5, 'Cafeteria', 'https://shorturl.at/lzLY7'),
+(6, 'Hot Dogs', 'https://shorturl.at/koyEZ'),
+(7, 'Comida China', 'https://shorturl.at/atEFM'),
+(8, 'Comida Mexicana', 'https://rb.gy/2mwnq'),
+(9, 'Comida Italiana', 'https://rb.gy/fqb2c'),
+(10, 'Comida Japonesa', 'https://shorturl.at/cfjS7'),
+(11, 'Comida India', 'https://shorturl.at/qKPU7'),
+(12, 'Vegetariano', 'https://shorturl.at/imrw7'),
+(13, 'Mariscos', 'https://shorturl.at/fvyGR'),
+(14, 'Churrascos', 'https://shorturl.at/uEO39'),
+(15, 'Farmacia', 'https://shorturl.at/eqF18'),
+(16, 'Tienda de Conveniencia', 'https://shorturl.at/prsuW'),
+(17, 'Libreria', 'https://rb.gy/jn507'),
+(18, 'Bar', 'https://rb.gy/tmsap'),
+(19, 'Supermercado', 'https://rb.gy/i9zvs'),
+(20, 'Otro', 'https://rb.gy/1jtm6');
 
 -- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR DEPARTAMENTOS ###########################
 DROP TABLE IF EXISTS Departamentos;
