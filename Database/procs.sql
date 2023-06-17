@@ -373,6 +373,96 @@ almacenar_producto:BEGIN
 END $$
 
 
+-- ########################### ACTUALIZAR UN PRODUCTO EN ESPECIFICO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ActualizarProducto $$
+CREATE PROCEDURE ActualizarProducto(
+	IN id_prod_in INTEGER,
+	IN imagen_in VARCHAR(250),
+	IN nombre_in VARCHAR(200),
+    IN categoria_in VARCHAR(200),
+    IN descripcion_in VARCHAR(250),
+    IN precio_in DECIMAL(12,2),
+    IN disponibilidad_in BOOLEAN,
+    IN correo_in VARCHAR(200)
+)
+actualizar_producto:BEGIN
+	DECLARE id_catp_in INTEGER;
+    
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a una empresa' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE actualizar_producto;
+    END IF;
+    
+	IF(NOT ProductoEnEmpresa(correo_in ,id_prod_in)) THEN
+		SELECT 'El producto a actualizar no pertenece a la empresa correcta' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE actualizar_producto;
+    END IF;
+
+	IF(NOT ExisteProducto(id_prod_in)) THEN
+		SELECT 'El producto que desea actualizar no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE actualizar_producto;
+    END IF;
+    
+    SELECT ObtenerCategoriaP(categoria_in) INTO id_catp_in;
+    
+    IF(precio_in < 0) THEN
+		SELECT 'El precio de un producto debe ser positivo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE actualizar_producto;
+    END IF;
+    
+    IF(NOT UsuarioHabilitado(correo_in)) THEN
+		SELECT 'La cuenta debe estar habilitada para poder añadir productos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE actualizar_producto;
+    END IF;
+    
+    UPDATE Productos
+    SET imagen = imagen_in, id_catp = id_catp_in, nombre = nombre_in, descripcion = descripcion_in,
+    precio = precio_in, disponibilidad = disponibilidad_in, correo = correo_in
+    WHERE Productos.id_prod = id_prod_in;
+
+	SELECT 'El producto se ha actualizado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### ELIMINAR UN PRODUCTO EN ESPECIFICO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS EliminarProducto $$
+CREATE PROCEDURE EliminarProducto(
+	IN correo VARCHAR(200),
+	IN id_prod_in INTEGER
+)
+eliminar_producto:BEGIN
+
+	IF(NOT ProductoEnEmpresa(correo ,id_prod_in)) THEN
+		SELECT 'El producto a ingresar no pertenece a la empresa correcta' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE eliminar_producto;
+    END IF;
+
+	IF(NOT ExisteProducto(id_prod_in)) THEN
+		SELECT 'El producto que desea eliminar no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE eliminar_producto;
+    END IF;
+    
+    IF(ProductoEnUso(correo ,id_prod_in)) THEN
+		SELECT 'El producto no se puede eliminar debido a que pertenece a un combo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+    ELSE	
+		DELETE FROM Productos p
+        WHERE p.id_prod = id_prod_in;
+        
+		SELECT 'El producto se ha eliminado exitosamente' AS 'MENSAJE',
+        'EXITO' AS 'TIPO';
+    END IF;
+END $$
+
 -- ########################### ALMACENAR COMBO ###########################
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AlmacenarCombo $$
