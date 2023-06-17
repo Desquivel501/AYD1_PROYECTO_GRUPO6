@@ -13,8 +13,9 @@ import { ControlRuta } from "./pages/Control/ControlRuta";
 import { SesionProvider } from "./context/SesionContext";
 import CrearProducto from "./pages/CrearProducto/CrearProducto";
 import CrearCombo from "./pages/CrearCombo/CrearCombo";
-import CatalogoEmpresa from './pages/CatalogoEmpresa/CatalogoEmpresa'
+import CatalogoEmpresa from "./pages/CatalogoEmpresa/CatalogoEmpresa";
 import EditarProductos from "./pages/EditarProductos/EditarProductos";
+import { Usuarios } from "./pages/Administrador/Usuarios";
 
 function App() {
   return (
@@ -36,7 +37,10 @@ function App() {
         <Route path={"/CatalogoEmpresa"} component={CatalogoEmpresa} />
       </ControlRuta>
       <ControlRuta usuario={"Administrador"}>
-        <Route path={"/Administrador"} component={Solicitudes} />
+        <Router base="/Administrador">
+          <Route path={"/Solicitudes"} component={Solicitudes} />
+          <Route path={"/Usuarios"} component={Usuarios} />
+        </Router>
       </ControlRuta>
     </SesionProvider>
   );

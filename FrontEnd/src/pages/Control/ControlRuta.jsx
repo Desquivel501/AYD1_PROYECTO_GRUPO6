@@ -6,13 +6,14 @@ export function ControlRuta({ usuario, children }) {
   const { user } = useSesion();
   const [location, setLocation] = useLocation();
   useEffect(() => {
-    if (user.rol != usuario) {
+    if (!user.activo) {
+      console.log(user, usuario);
       setLocation("/Login");
     }
-  }, [user]);
+  }, []);
   return (
     <>
-      {children}
+      {usuario==user.rol && children}
     </>
   );
 }

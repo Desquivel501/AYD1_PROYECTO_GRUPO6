@@ -37,9 +37,6 @@ export function Solicitudes() {
       <h1>Solicitudes</h1>
       <div className="tabbed-buttons">
         <button type="button" className="tabbed-button" onClick={handleClick}>
-          Usuarios
-        </button>
-        <button type="button" className="tabbed-button" onClick={handleClick}>
           Repartidores
         </button>
         <button type="button" className="tabbed-button" onClick={handleClick}>
