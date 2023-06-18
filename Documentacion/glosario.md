@@ -4,6 +4,8 @@
 
 ## Glosario
 
+- **Mockups**: Son fotomontajes (imagen resultante de la combinación de otras imagenes) a traves de los cuales se les puede mostrar propuestas de diseño a los clientes.
+
 - **Frontend**: La interfaz de un sitio web es lo que ve e interactúa con su navegador. También conocido como "lado del cliente", incluye todo lo que el usuario experimenta directamente: desde texto y colores hasta botones, imágenes y menús de navegación.
 
 - **Backend**: El desarrollo web del backend es la parte del desarrollo web que se ocupa del lado del servidor de una aplicación web. Esto incluye la creación y administración de la lógica del lado del servidor, la conexión de la aplicación a una base de datos, la creación de API del lado del servidor, el manejo de la autenticación y autorización del usuario, y el procesamiento y la respuesta a las solicitudes de los usuarios.
@@ -17,6 +19,13 @@
 - **React**: React es una biblioteca de JavaScript de código abierto creada por Facebook utilizada para construir interfaces de usuario interactivas y reactivas. Permite la creación de componentes reutilizables que se actualizan de forma eficiente cuando cambian los datos.
 
 - **MySQL**: Sistema de gestión de bases de datos relacional de código abierto. Almacena datos en tablas separadas en lugar de poner todos los datos en un gran almacén. MySQL se basa en el modelo de almacenamiento de datos relacional, lo que significa que los datos se organizan en tablas con filas y columnas, y se establecen relaciones entre ellas utilizando claves primarias y claves externas.
+
+- **Procedimiento almacenado**: Es un programa almacenado físicamente en una base de datos, el cual está compuesto por comnandos SQL. Este procedimiento puede
+recibir parámetros de entrada y devolver una respuesta (ya sea datos o tablas). Son usados ya que estos comandos pueden ser ejecutados directamente en el servidor que contiene a la base de datos por lo que permite realizar consultas con una gran carga de datos de una forma mucho más rápida y fiable.
+
+- **Llave primaria**: Es una columna o conjunto de columnas en una tabla cuyo valor representa de forma única a cada fila de la tabla. Es decir, es el valor que se encarga de que cada tabla tenga, en cada fila, un valor único que pueda identificar de forma exclusiva a cada una de las filas que la componen.
+
+- **Llave foránea**: Es una columna o conjunto de columnas en una tabla que tiene valores que corresponden a la llave primaria de otra tabla. A diferencia de las llaves primarias, esta columna si puede tener valores repetidos.
 
 - **Node.js**: Es un entorno de ejecución de JavaScript basado en el motor de JavaScript V8 de Google Chrome. A diferencia del uso tradicional de JavaScript en el navegador, Node.js permite ejecutar código JavaScript en el lado del servidor. Es conocido por su enfoque de E/S sin bloqueo y orientado a eventos, lo que significa que puede manejar múltiples solicitudes concurrentes de forma eficiente sin bloquear el flujo de ejecución.
 
@@ -33,3 +42,7 @@
 - **Material-UI**: Es una biblioteca de componentes de interfaz de usuario (UI) de código abierto para React. Proporciona una amplia gama de componentes reutilizables y preestilizados que facilitan la creación de interfaces de usuario atractivas y consistentes. Entre los componentes que incluyen se encuentran botones, barras de navegación, campos de entrada, tarjetas, tablas, diálogos y muchos otros.
 
 - **Vite**: Vite es un entorno de desarrollo rápido y liviano para aplicaciones web basadas en JavaScript y TypeScript. Emplea una arquitectura de compilación basada en módulos esenciales de JavaScript (ESM), esto le permite aprovechar la capacidad del navegador para cargar módulos ESM de forma rápida y eficiente, lo que resulta en tiempos de compilación y recarga instantáneos durante el desarrollo.
+
+- **Git**: Es un sistema de control de versiones cuya funcion principal es, tal y como se puede inferir, gestionar las versiones por las que va pasando el código que forma parte de un proyecto.
+
+- **Gitflow**: Es un modelo de manejo de ramas en Git en el cual se usa las ramas principales y la feature. Esta rama feature es donde se almacena una funcionalidad especifica del programa y que posteriormente, se fusiona con la rama principal (donde se almacena todo el proyecto), cuando se haya terminado la funcionalidad que se estaba realizando.
