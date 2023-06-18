@@ -4,14 +4,14 @@ import "./Perfil.css";
 import { useSesion } from "../../hooks/useSesion";
 
 export function PerfilRepartidor() {
-  const { solicitarNuevaDireccion } = useSesion()
-  const handleSubmit = (e)=>{
-    e.preventDefault()
-    const data = new FormData(e.currentTarget)
-    const respuesta = solicitarNuevaDireccion(data)
-    console.log(respuesta)
-    e.target.reset()
-  }
+  const { solicitarNuevaDireccion, user } = useSesion();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const respuesta = solicitarNuevaDireccion(data);
+    console.log(respuesta);
+    e.target.reset();
+  };
   return (
     <Box
       display="flex"
@@ -45,14 +45,22 @@ export function PerfilRepartidor() {
             autoComplete="off"
             sx={{ mt: 1 }}
           >
-            <PersonAttribute attribute={"Nombre"} value={"Daniel"} />
-            <PersonAttribute attribute={"Apellido"} value={"Acabal"} />
-            <PersonAttribute attribute={"Correo"} value={"correo@gmail.com"} />
+            <PersonAttribute attribute={"Nombre"} value={user.nombre} />
+            <PersonAttribute attribute={"Apellido"} value={user.apellido} />
+            <PersonAttribute attribute={"Correo"} value={user.email} />
             <PersonAttribute attribute={"Contraseña"} value={"******"} />
-            <PersonAttribute attribute={"Celular"} value={12345678} />
-            <PersonAttribute attribute={"Dirección"} value={"Casa"} />
-            <PersonAttribute attribute={"Licencia"} value={"A"} />
-            <PersonAttribute attribute={"Hoja de vida"} value={"CV.pdf"} />
+            <PersonAttribute attribute={"Celular"} value={user.phone} />
+            <PersonAttribute attribute={"Dirección"} value={user.address} />
+            <PersonAttribute attribute={"Licencia"} value={user.licencia} />
+            <PersonAttribute attribute={"Hoja de vida"}>
+              <a
+                href={user.documento}
+                target="_blank"
+                className="enlace"
+              >
+                Ver documento
+              </a>
+            </PersonAttribute>
           </Box>
         </Grid>
         <Grid
