@@ -52,15 +52,12 @@ function App() {
               <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
             </Route>
           </Route>
-          <Route
-            path={"/Administrador"}
-            element={
-              <ControlRuta usuario={"Administrador"}>
-                <Route path={"/Solicitudes"} element={<Solicitudes />} />
-                <Route path={"/Usuarios"} element={<Usuarios />} />
-              </ControlRuta>
-            }
-          />
+          <Route element={<ControlRuta usuario={"Administrador"} />}>
+            <Route path="/Administrador">
+              <Route path={"Solicitudes"} element={<Solicitudes />} />
+              <Route path={"Usuarios"} element={<Usuarios />} />
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </SesionProvider>
