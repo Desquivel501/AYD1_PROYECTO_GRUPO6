@@ -52,13 +52,8 @@ app.post('/RegistrarCliente', cors(), (req, res) => {
 // ########################### INICIAR SESIÓN ###########################
 
 app.post('/InicioSesion', cors(), (req, res) => {
-
-  const parametro1 = "carlosquixtan78@gmail.com";
-  const parametro2 = "contraseñaaaaaa";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-  //const parametro1 = req.body.correo;
-  //const parametro2 = req.body.contrasenia;
+  const parametro1 = req.body.correo;
+  const parametro2 = req.body.contrasenia;
 
   mysql.query('CALL InicioSesion(?,?)', [parametro1, parametro2], (err, results) => {
       if (err) {
@@ -71,12 +66,10 @@ app.post('/InicioSesion', cors(), (req, res) => {
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
-      
       res.json(formattedResult);
       console.log(formattedResult);
 
     });
-    
 });
 
 
