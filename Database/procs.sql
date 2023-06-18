@@ -10,6 +10,12 @@ CREATE PROCEDURE InicioSesion(
 inicio_sesion:BEGIN
 	DECLARE rol INTEGER;
 	IF(CredencialesValidas(correo, contrasenia)) THEN
+		
+        IF(NoIngresar(correo)) THEN
+			SELECT 'Su usuario se encuentra deshabilitado o pendiente de aprobación por un administrador' AS 'MENSAJE',
+			'ERROR' AS 'TIPO';
+        END IF;
+    
 		SELECT u.rol INTO rol 
         FROM Usuarios u
         WHERE u.correo = correo;
