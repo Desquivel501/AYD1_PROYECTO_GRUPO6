@@ -22,4 +22,14 @@
 
 - **Middleware**: En middleware es una capa de software que actúa como intermediario entre diferentes componentes o sistemas. Este proporciona funcionalidades comunes y servicios compartidos, como el manejo de sesiones, la autenticación, el enrutamiento, el registro, la compresión de datos, entre otros.
 
+- **Peticion HTTP**: Una petición HTTP (Hypertext Transfer Protocol) es un mensaje enviado por un cliente (como un navegador web) a un servidor para solicitar recursos o servicios específicos. Las peticiones HTTP son la base del intercambio de información en la World Wide Web y se utilizan ampliamente para acceder a recursos web, interactuar con APIs y realizar diversas operaciones en línea.
+
+- **Express.js**: Es un framework de aplicaciones web de código abierto y minimalista para Node.js. Proporciona un conjunto de funciones y herramientas que facilitan la creación de servidores web y APIs de manera rápida y sencilla. Express.js se basa en el enfoque de middleware, lo que significa que permite el uso de múltiples middlewares para manejar solicitudes, enrutamiento, autenticación, validación de datos y más.
+
 - **Multer**: Multer es un middleware de node.js para manejar datos de multipart/form-data, que se usa principalmente para cargar archivos.
+
+- **Enrutamiento Web**: El enrutamiento web (web routing) es el proceso de dirigir las solicitudes de los usuarios a diferentes recursos o acciones en una aplicación web. El enrutamiento se utiliza para determinar qué código o controlador debe ejecutarse en respuesta a una URL específica.
+
+- **Material-UI**: Es una biblioteca de componentes de interfaz de usuario (UI) de código abierto para React. Proporciona una amplia gama de componentes reutilizables y preestilizados que facilitan la creación de interfaces de usuario atractivas y consistentes. Entre los componentes que incluyen se encuentran botones, barras de navegación, campos de entrada, tarjetas, tablas, diálogos y muchos otros.
+
+- **Vite**: Vite es un entorno de desarrollo rápido y liviano para aplicaciones web basadas en JavaScript y TypeScript. Emplea una arquitectura de compilación basada en módulos esenciales de JavaScript (ESM), esto le permite aprovechar la capacidad del navegador para cargar módulos ESM de forma rápida y eficiente, lo que resulta en tiempos de compilación y recarga instantáneos durante el desarrollo.
