@@ -18,8 +18,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSesion } from "../../hooks/useSesion";
 
 export const MenuCombo = (props) => {
+    const { user } = useSesion();
     
     const {title, id, name, desc, cost, disponible, edicion, addComp, productos} = props;
 
@@ -40,10 +42,10 @@ export const MenuCombo = (props) => {
         }
 
         const jsonData = {
-            "id": id,
-            "name": name_,
-            "description": desc_,
-            "cost": cost_,
+            "empresa": user.id,
+            "nombre": name_,
+            "descripcion": desc_,
+            "costo": cost_,
             "disponible": disponible_,
             "productos": listado
         }
