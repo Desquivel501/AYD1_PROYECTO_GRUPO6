@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import { registrar, userLogin } from "../api/auth";
+import { nuevaDireccion, registrar, userLogin } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -16,7 +16,7 @@ export function SesionProvider({ children }) {
         return acc;
       }, {});
 
-  const [user, setUser] = useState({ id: "admin@gmail.com", rol: "Administrador", activo:true });
+  const [user, setUser] = useState({ id: "admin@gmail.com", rol: "Repartidor", activo:true });
 
   const login = (data) => {
     userLogin({ data }).then((newSesion) => setUser(newSesion));
@@ -25,8 +25,13 @@ export function SesionProvider({ children }) {
     const mensaje = await registrar(usuario, data);
     return mensaje;
   };
+  const solicitarNuevaDireccion = async (data)=>{
+    console.log(data)
+    const mensaje = await nuevaDireccion({data})
+    return mensaje
+  }
   return (
-    <sesionContext.Provider value={{ user, login, registrarme }}>
+    <sesionContext.Provider value={{ user, login, registrarme, solicitarNuevaDireccion }}>
       {children}
     </sesionContext.Provider>
   );
