@@ -15,11 +15,13 @@ import Departamentos from "../../assets/departamentos.js";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 export default function RegistroEmpresa() {
   const { registrarme } = useContext(sesionContext);
   const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
+  const [categorias, setCategorias] = useState([]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,6 +37,20 @@ export default function RegistroEmpresa() {
       },
     },
   });
+
+  useEffect(() => {
+      fetch("http://localhost:3000/GetCategorias", {
+          method: "GET",
+          headers: {
+              'Content-Type':'application/json',
+              'Access-Control-Allow-Origin_Origin': '*'
+          }
+      })
+      .then(res => res.json())
+      .then(response =>{
+        setCategorias(response)
+      })
+  }, [])
 
   return (
     <ThemeProvider theme={customTheme}>
@@ -131,6 +147,29 @@ export default function RegistroEmpresa() {
                   id="password"
                 />
 
+                <FormControl fullWidth sx={{mt:2, mb:1}}>
+                  <InputLabel>Categoria</InputLabel>
+                  <Select
+                    id="categoria"
+                    label="Categoria"
+                    // onChange={handleChange}
+                  >
+                    {/* <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem> */}
+
+                    {categorias.map((item, i) => (
+                      <MenuItem
+                        value={item.categoria}
+                        key={i}
+                      >
+                        {item.categoria}
+                      </MenuItem>
+                    ))}
+
+                  </Select>
+                </FormControl>
+
                 <Grid
                   container
                 >
@@ -175,7 +214,7 @@ export default function RegistroEmpresa() {
                       {mensaje.mensaje}
                     </p>
                   )}
-                <Link href="/Login" style={{ color: "#F2890D" }}>
+                <Link to="/Login" style={{ color: "#F2890D" }}>
                   ¿Ya tienes una cuenta?
                 </Link>
               </Box>
