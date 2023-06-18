@@ -1,8 +1,17 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAttribute } from "../../Componentes/Persona";
 import "./Perfil.css";
+import { useSesion } from "../../hooks/useSesion";
 
 export function PerfilRepartidor() {
+  const { solicitarNuevaDireccion } = useSesion()
+  const handleSubmit = (e)=>{
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const respuesta = solicitarNuevaDireccion(data)
+    console.log(respuesta)
+    e.target.reset()
+  }
   return (
     <Box
       display="flex"
@@ -86,6 +95,7 @@ export function PerfilRepartidor() {
             <Box
               component="form"
               autoComplete="off"
+              onSubmit={handleSubmit}
             >
               <TextField
                 margin="normal"
@@ -93,7 +103,7 @@ export function PerfilRepartidor() {
                 fullWidth
                 id="address"
                 label="Nueva Dirección"
-                name="address"
+                name="newAddress"
                 autoFocus
               />
               <TextField

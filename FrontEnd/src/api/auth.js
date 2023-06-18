@@ -22,6 +22,19 @@ export function registrar(entidad, data) {
     body: data,
   })
     .then((res) => res.json())
-    .then((data) => data)
     .catch((err) => console.log(err));
+}
+/* 
+ * Petición a la API para actualizar dirección
+ * @param data Información a enviar
+ * @return Promesa
+ * */
+export function nuevaDireccion({data}){
+  return fetch(`${API}/nuevadireccion`,{
+    method:"POST",
+    credentials:"include",
+    body: data,
+  })
+  .then(res=> res.json())
+  .catch(er => console.log(er))
 }
