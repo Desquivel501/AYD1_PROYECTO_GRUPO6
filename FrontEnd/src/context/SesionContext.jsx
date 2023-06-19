@@ -13,7 +13,7 @@ export function SesionProvider({ children }) {
   };
   const [user, setUser] = useState({
     id: "admin@gmail.com",
-    rol: "Ninguno",
+    rol: "Administrador",
     activo: true,
   });
 
