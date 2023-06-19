@@ -55,7 +55,7 @@ function App() {
           <Route element={<ControlRuta usuario={"Administrador"} />}>
             <Route path="/Administrador">
               <Route path={"Solicitudes"} element={<Solicitudes />} />
-              <Route path={"Usuarios"} element={<Usuarios />} />
+              <Route path={"Reportes"} element={<Usuarios />} />
             </Route>
           </Route>
         </Routes>
