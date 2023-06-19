@@ -7,10 +7,12 @@ import { PersonAttribute } from "../../Componentes/Persona";
 import { useSesion } from "../../hooks/useSesion";
 import { aceptarSolicitud, getData } from "../../api/auth";
 import { useEffect } from "react";
+import Swal from 'sweetalert2'
 
 export function Solicitudes() {
   const { user } = useSesion();
   const [reporte, setReporte] = useState("Repartidores");
+  const [cont, setCont] = useState(0);
 
   const handleClick = (e) => {
     setReporte(e.target.innerText);
@@ -21,6 +23,7 @@ export function Solicitudes() {
     });
     e.target.classList.add("enable");
   };
+
   const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
       console.log(user)
@@ -30,6 +33,25 @@ export function Solicitudes() {
         aceptado,
       }, entidad);
       console.log(respuesta);
+
+      if (respuesta[0].TIPO == "EXITO") {
+        Swal.fire({
+          icon: 'success',
+          title: (aceptado ? "Aceptado!": "Rechazado"),
+          text: respuesta[0].MENSAJE,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCont(cont+1)
+          }
+        })
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: respuesta[0].MENSAJE,
+        })
+      }
+
     }
   };
 
