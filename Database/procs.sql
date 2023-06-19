@@ -577,15 +577,18 @@ agregar_producto_combo:BEGIN
 	'EXITO' AS 'TIPO';
 END $$
 
--- ########################### OBTENER LOS PRODUCTOS DE UN COMBO ESPECIFICO ###########################
+-- ########################### OBTENER TODOS LOS COMBOS CON TODOS SUS PRODUCTOS ###########################
 DELIMITER $$
-DROP PROCEDURE IF EXISTS ObtenerProductosCombo $$
-CREATE PROCEDURE ObtenerProductosCombo(
-	IN id_combo_in INTEGER
-)
-obtener_producto_combo:BEGIN
-	SELECT * FROM Detalle_combos dc
-    JOIN Productos p
-    ON dc.id_prod = p.id_prod
-    AND dc.id_combo = id_combo_in;
+DROP PROCEDURE IF EXISTS ObtenerCombosConProductos $$
+CREATE PROCEDURE ObtenerCombosConProductos(IN correo VARCHAR(200))
+BEGIN
+    SELECT c.id_combo AS id, c.nombre AS title, c.precio AS cost, c.descripcion AS descripcion, c.disponibilidad AS disponible,
+           JSON_ARRAYAGG(
+               JSON_OBJECT('id', p.id_prod, 'title', p.nombre, 'image', p.imagen)
+           ) AS productos
+    FROM Combos c
+    LEFT JOIN Detalle_combos dc ON c.id_combo = dc.id_combo
+    LEFT JOIN Productos p ON dc.id_prod = p.id_prod
+    WHERE c.correo = correo
+    GROUP BY c.id_combo;
 END $$
