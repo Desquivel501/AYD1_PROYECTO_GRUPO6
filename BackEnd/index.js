@@ -112,7 +112,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     const parametro8 = req.body.Municipio;
     const parametro9 = req.body.Departamento;
     const parametro10 = req.body.zona;
-    const parametro11 = req.file.location;
+    const parametro11 = (req.file === undefined) ? null : req.file.location;
 
   mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, 
     parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
@@ -174,7 +174,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
     const parametro6 = req.body.Departamento;
     const parametro7 = req.body.Municipio;
     const parametro8 = (parametro6 + ", "+ parametro7 + ", Zona " + req.body.zona );
-    const parametro9 = req.file.location;
+    const parametro9 = (req.file === undefined) ? null : req.file.location;
 
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
@@ -226,12 +226,12 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 //-- ########################### ALMACENAR PRODUCTOS ###########################
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
-    const parametro1 = req.file.location;
+    const parametro1 = (req.file === undefined) ? null : req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
     const parametro5 = req.body.costo;
-    const parametro6 = req.body.disponible;
+    const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
 
     console.log(parametro6)
@@ -259,14 +259,17 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
+    console.log(req.body.disponible)
     const parametro0 = req.body.id;
-    const parametro1 = req.file.location;
+    const parametro1 = (req.file === undefined) ? null : req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
     const parametro5 = req.body.costo;
-    const parametro6 = req.body.disponible;
+    const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
+
+    console.log(parametro6)
 
   mysql.query('CALL ActualizarProducto(?,?,?,?,?,?,?,?)', [parametro0, parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
@@ -320,7 +323,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
   const parametro3 = "";
   const parametro4 = req.body.costo;
   const parametro5 = req.body.descripcion;
-  const parametro6 = req.body.disponible;
+  const parametro6 = (req.body.disponible == "true"?1:0);
   const parametro7 = req.body.productos;
 
   let formattedResult2 = {"MENSAJE": null, "TIPO": null};

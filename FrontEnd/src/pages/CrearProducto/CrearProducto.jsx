@@ -5,8 +5,12 @@ import { MenuProducto } from '../../Componentes/MenuProducto/MenuProducto';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect } from "react";
+import { useState } from "react";
+import { useSesion } from "../../hooks/useSesion";
 
 export default function CrearProducto() {
+
+    const { user } = useSesion();
 
     const [datos, setDatos] = useState({
         title: "",

@@ -25,7 +25,7 @@ export const MenuProducto = (props) => {
     const [name_, setName] = useState("")
     const [desc_, setDesc] = useState("")
     const [cost_, setCost] = useState("")
-    const [categoria_, setCategoria] = useState("PlatosFuertes")
+    const [categoria_, setCategoria] = useState("Platos Fuertes")
     const [disponible_, setDisponible] = useState(false)
 
     const [count, setCount] = useState(0);
