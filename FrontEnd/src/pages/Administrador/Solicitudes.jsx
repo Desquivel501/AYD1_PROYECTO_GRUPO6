@@ -56,7 +56,7 @@ export function Solicitudes() {
             id={"correo"}
             fields={campos}
             title={"Solicitantes"}
-            documento="document"
+            documento="cv"
             handleSubmit={submitAceptar}
             usuario={"Repartidor"}
           />
@@ -67,7 +67,7 @@ export function Solicitudes() {
             id={"correo"}
             fields={camposEmpresas}
             title={"Solicitantes"}
-            documento="document"
+            documento="doc"
             handleSubmit={submitAceptar}
             usuario={"Empresa"}
           />
