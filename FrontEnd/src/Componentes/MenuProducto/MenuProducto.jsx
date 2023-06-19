@@ -77,10 +77,7 @@ export const MenuProducto = (props) => {
             data.append("id", id)
         }
 
-        var object = {};
-        data.forEach((value, key) => object[key] = value);
-        var json = JSON.stringify(object);
-        console.log(json)
+        console.log(data)
 
         fetch("http://localhost:3000/" + (edicion ? "EditarProducto":"CrearProducto"), {
             method: "POST",

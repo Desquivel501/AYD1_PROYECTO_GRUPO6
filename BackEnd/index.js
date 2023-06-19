@@ -4,6 +4,7 @@ const cors = require('cors');
 const os = require('os');
 // Importa tu archivo de conexión
 const mysql = require('./conexion');
+require('dotenv').config();
 
 /*Habilitar los cors para todos los accesos*/
 app.use(cors())
@@ -13,7 +14,41 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const multerS3 = require("multer-s3");
+const { S3Client } = require("@aws-sdk/client-s3");
+
+// const upload = multer({ dest: 'uploads/' });
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCES_KEY,
+  },
+  region: process.env.AWS_REGION
+})
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      const fileName = Date.now() + "_" + file.fieldname + "_" + file.originalname;
+      cb(null, fileName);
+      },
+  }),
+});
+
+// app.post('/upload', upload.single('image'), (req, res) => {
+//   console.log(req.file.location);
+// // Return the URL of the uploaded image to the client
+//   res.json({ imageUrl: req.file.location });
+// });
+
+
 
 // ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
 app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
@@ -66,7 +101,8 @@ app.post('/InicioSesion',upload.single('document'), cors(), (req, res) => {
 
 // -- ########################### INSERTAR UN REPARTIDOR NUEVO A TABLA USUARIOS ###########################
 app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) => {
-    const parametro1 = req.body.name;
+    
+  const parametro1 = req.body.name;
     const parametro2 = req.body.lastname;
     const parametro3 = req.body.email;
     const parametro4 = req.body.password;
@@ -76,7 +112,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     const parametro8 = req.body.Municipio;
     const parametro9 = req.body.Departamento;
     const parametro10 = req.body.zona;
-    const parametro11 = req.file;
+    const parametro11 = req.file.location;
 
   mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, 
     parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
@@ -138,7 +174,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
     const parametro6 = req.body.Departamento;
     const parametro7 = req.body.Municipio;
     const parametro8 = (parametro6 + ", "+ parametro7 + ", Zona " + req.body.zona );
-    const parametro9 = req.file;
+    const parametro9 = req.file.location;
 
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
@@ -190,13 +226,15 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 //-- ########################### ALMACENAR PRODUCTOS ###########################
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
-    const parametro1 = req.file;
+    const parametro1 = req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
     const parametro5 = req.body.costo;
     const parametro6 = req.body.disponible;
     const parametro7 = req.body.empresa;
+
+    console.log(parametro6)
 
   mysql.query('CALL AlmacenarProducto(?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
@@ -222,7 +260,7 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro0 = req.body.id;
-    const parametro1 = req.file;
+    const parametro1 = req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
@@ -409,7 +447,7 @@ app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
 
 //-- ##################################### Obtener los datos de una empresa #####################################
 app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
-  const parametro1 = req.body.email;
+  const parametro1 = req.body.correo;
   let query = `SELECT * 
   FROM Usuarios u 
   JOIN Empresas e 
@@ -517,4 +555,3 @@ app.get('/CategoriasEmpresa', cors(), (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor escuchando en el puerto 3000');
 });
-
