@@ -347,7 +347,7 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
         return resultado;
       });
       
-      res.json(resultadosParseados[0]);
+      res.json(resultadosParseados);
       console.log(resultadosParseados);
 
     });

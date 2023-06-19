@@ -583,9 +583,12 @@ DROP PROCEDURE IF EXISTS ObtenerCombosConProductos $$
 CREATE PROCEDURE ObtenerCombosConProductos(IN correo VARCHAR(200))
 BEGIN
     SELECT c.id_combo AS id, c.nombre AS title, c.precio AS cost, c.descripcion AS descripcion, c.disponibilidad AS disponible,
-           JSON_ARRAYAGG(
-               JSON_OBJECT('id', p.id_prod, 'title', p.nombre, 'image', p.imagen)
-           ) AS productos
+    (CASE WHEN (COUNT(p.id_prod) = 0) THEN JSON_ARRAY()
+	ELSE
+		JSON_ARRAYAGG(
+			JSON_OBJECT('id', p.id_prod, 'title', p.nombre, 'image', p.imagen)
+		) 
+	END) AS productos
     FROM Combos c
     LEFT JOIN Detalle_combos dc ON c.id_combo = dc.id_combo
     LEFT JOIN Productos p ON dc.id_prod = p.id_prod
