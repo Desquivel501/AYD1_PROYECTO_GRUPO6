@@ -129,8 +129,6 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
 //-- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
 app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
 
-  console.log("here")
-
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro1 = req.body.email;
     const parametro2 = req.body.password;

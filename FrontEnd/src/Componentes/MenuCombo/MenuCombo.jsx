@@ -53,8 +53,7 @@ export const MenuCombo = (props) => {
         fetch("http://localhost:3000/CrearCombo", {
             method: "POST",
             headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
+                'Content-Type':'application/json'
             },
             body: JSON.stringify(jsonData)
         })
