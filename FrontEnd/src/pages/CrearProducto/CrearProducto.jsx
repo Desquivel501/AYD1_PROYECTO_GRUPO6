@@ -4,8 +4,31 @@ import { TitleCard } from '../../Componentes/TitleCard/TitleCard';
 import { MenuProducto } from '../../Componentes/MenuProducto/MenuProducto';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { useEffect } from "react";
 
 export default function CrearProducto() {
+
+    const [datos, setDatos] = useState({
+        title: "",
+        image: ""
+    })
+
+    useEffect(() => {
+        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setDatos({
+                title: response[0].nombre_entidad,
+                image: response[0].imagen
+            })
+        })
+    }, [])
 
     const customTheme = createTheme({
         palette: {
@@ -44,8 +67,8 @@ export default function CrearProducto() {
                         xs={12}
                     >
                         <TitleCard 
-                            title={"Nombre Restaurante"}
-                            logo={"https://picsum.photos/200"}
+                            title={datos.title}
+                            logo={datos.image}
                         />
                     </Grid>
 
