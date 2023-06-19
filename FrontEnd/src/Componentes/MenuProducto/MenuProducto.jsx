@@ -15,6 +15,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSesion } from "../../hooks/useSesion";
+import Swal from 'sweetalert2'
 
 export const MenuProducto = (props) => {
     const { user } = useSesion();
@@ -34,18 +35,33 @@ export const MenuProducto = (props) => {
 
 
     const eliminar = (event) => {
-        fetch("http://localhost:3000/eliminar", {
+        fetch("http://localhost:3000/EliminarProducto", {
             method: "POST",
             headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
+                "Content-Type": "application/json",
             },
-            // credentials: "include",
-            body: JSON.stringify({ empresa: user.id, producto: id }),
+            body: JSON.stringify({ correo: user.id, producto: id }),
         })
             .then((res) => res.json())
             .then(response =>{
                 console.log(response)
+                if(response[0].TIPO == "EXITO"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Eliminado',
+                        text: response[0].MENSAJE,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(false);
+                        }
+                      })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response[0].MENSAJE,
+                      })
+                }
             })
             .catch((err) => console.log(err));
     }
@@ -66,16 +82,32 @@ export const MenuProducto = (props) => {
         var json = JSON.stringify(object);
         console.log(json)
 
-        fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {
+        fetch("http://localhost:3000/" + (edicion ? "EditarProducto":"CrearProducto"), {
             method: "POST",
-            headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
-            },
-            // credentials: "include",
             body: data,
         })
             .then((res) => res.json())
+            .then(response =>{
+                console.log(response)
+                
+                if(response[0].TIPO == "EXITO"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: (edicion ? "Editado!":"Creado!"),
+                        text: response[0].MENSAJE,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(false);
+                        }
+                      })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response[0].MENSAJE,
+                      })
+                }
+            })
             .catch((err) => console.log(err));
       };
 
@@ -258,7 +290,7 @@ export const MenuProducto = (props) => {
                                         hidden
                                         onChange={onSelectFile}
                                         accept=".png, .jpeg, .jpg, .gif"
-                                        name="image"
+                                        name="imagen"
                                     />
                                 </Button>
                             </Grid>

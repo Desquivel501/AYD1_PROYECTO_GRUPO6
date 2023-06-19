@@ -19,7 +19,7 @@ export const ComboDialog = (props) => {
 
   return (
     <Dialog onClose={handleClose} open={open} fullWidth maxWidth="md">
-      <DialogTitle>Producto</DialogTitle>
+      <DialogTitle>Combo</DialogTitle>
       
       <Grid
             container

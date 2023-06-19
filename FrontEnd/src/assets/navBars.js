@@ -6,7 +6,7 @@ export const links = {
     { text: "Nueva Empresa", path: "/RegistroEmpresa" },
   ],
 
-  Usuario: [
+  Cliente: [
     { text: "Iniciar Sesión", path: "/Login" },
     { text: "Nuevo Usuario", path: "/RegistroCliente" },
     { text: "Nuevo Repartidor", path: "/RegistroRepartidor" },

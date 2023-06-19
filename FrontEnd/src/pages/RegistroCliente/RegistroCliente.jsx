@@ -10,15 +10,51 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSesion } from "../../hooks/useSesion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function RegistroCliente() {
   const { registrarme } = useSesion();
+  const navigate = useNavigate();
   const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const mensaje = await registrarme("Usuario", data);
-    setMensaje(mensaje);
+    // setMensaje(mensaje);
+    console.log(mensaje)
+
+    if (mensaje.TIPO == "EXITO") {
+      Swal.fire({
+        icon: 'success',
+        title: 'Creado',
+        text: mensaje.MENSAJE,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const newUser = {
+            id: data.get("email"),
+            rol:"Cliente",
+          };
+          window.sessionStorage.setItem("user", JSON.stringify(newUser));
+          navigate("/");
+        }
+      })
+    } else {
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje.MENSAJE,
+      })
+    }
+
+    // const newUser = {
+    //   id: data.get("email"),
+    //   rol:"Cliente",
+    // };
+    // window.sessionStorage.setItem("user", JSON.stringify(newUser));
+    // navigate("/");
     //setMensaje({mensaje:"Hubo un error",tipo:"Error"});
     event.target.reset();
   };

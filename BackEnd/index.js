@@ -253,7 +253,7 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 app.post('/EliminarProducto', cors(), (req, res) => {
 
   const parametro1 = req.body.correo;
-  const parametro2 = re1.body.producto;;
+  const parametro2 = req.body.producto;;
 
   mysql.query('CALL EliminarProducto(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
@@ -278,7 +278,7 @@ app.post('/EliminarProducto', cors(), (req, res) => {
 app.post('/CrearCombo', cors(), (req, res) => {
 
   const parametro1 = req.body.empresa;
-  const parametro2 = req.body.name;
+  const parametro2 = req.body.nombre;
   const parametro3 = "";
   const parametro4 = req.body.costo;
   const parametro5 = req.body.descripcion;
