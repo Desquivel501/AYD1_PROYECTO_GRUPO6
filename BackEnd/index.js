@@ -378,11 +378,16 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
   const parametro1 = req.body.email;
+  let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv  
+  FROM Usuarios u 
+  JOIN Repartidores r 
+  ON u.correo = r.correo 
+  AND u.correo = ? 
+  JOIN Departamentos d 
+  ON r.id_dep = d.id_dep`
 
-  mysql.query('select u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv  from Usuarios u join Repartidores r on u.correo = r.correo and u.correo = ? join Departamentos d on r.id_dep = d.id_dep',[parametro1], (err, results) => {
+  mysql.query(query,[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
@@ -396,7 +401,34 @@ app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
     
 });
 
-//-- ##################################### Obtener datos de un repartidor #####################################
+//-- ##################################### Obtener los datos de una empresa #####################################
+app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
+  const parametro1 = req.body.email;
+  let query = `SELECT * 
+  FROM Usuarios u 
+  JOIN Empresas e 
+  ON u.correo = e.correo 
+  AND u.correo = ? 
+  JOIN Departamentos d 
+  ON e.id_dep = d.id_dep
+  JOIN Categorias_empresa ce
+  ON ce.id_cat = e.id_cat`
+
+  mysql.query(query,[parametro1], (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        return;
+      }
+
+      
+      res.json(results);
+      console.log(results);
+
+    });
+    
+});
+
+//-- ##################################### Obtener listado de usuarios#####################################
 app.get('/ObtenerUsuarios', cors(), (req, res) => {
 
   mysql.query('select correo as id, nombre, apellidos, rol, fecha_registro, estado from Usuarios ', (err, results) => {
