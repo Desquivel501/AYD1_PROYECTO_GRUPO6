@@ -16,7 +16,6 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 // ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
-
 app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
     const parametro1 = req.body.email;
     const parametro2 = req.body.name;
@@ -42,10 +41,7 @@ app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
       
 });
 
-
-
 // ########################### INICIAR SESIÓN ###########################
-
 app.post('/InicioSesion',upload.single('document'), cors(), (req, res) => {
   const parametro1 = req.body.email;
   const parametro2 = req.body.password;
@@ -68,11 +64,7 @@ app.post('/InicioSesion',upload.single('document'), cors(), (req, res) => {
     });
 });
 
-
-
 // -- ########################### INSERTAR UN REPARTIDOR NUEVO A TABLA USUARIOS ###########################
-
-
 app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) => {
     const parametro1 = req.body.name;
     const parametro2 = req.body.lastname;
@@ -106,9 +98,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
 
 });
 
-
 // -- ########################### ACEPTAR LA PETICIÓN DE UN REPARTIDOR ###########################
-
 app.post('/AceptarRepartidor', cors(), (req, res) => {
 
   const parametro1 = req.body.admin;
@@ -136,9 +126,7 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
     
 });
 
-
 // -- ########################### RECHAZAR LA PETICIÓN DE UN REPARTIDOR ###########################
-
 app.post('/RechazarRepartidor', cors(), (req, res) => {
 
   const parametro1 = req.body.correo_admin;
@@ -163,9 +151,7 @@ app.post('/RechazarRepartidor', cors(), (req, res) => {
     
 });
 
-
 //-- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
-
 app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
 
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
@@ -198,10 +184,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
     
 });
 
-
-
 //-- ########################### ACEPTAR LA PETICIÓN DE UNA EMPRESA ###########################
-
 app.post('/AceptarEmpresa', cors(), (req, res) => {
 
   const parametro1 = req.body.admin;
@@ -229,10 +212,7 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
     
 });
 
-
 //-- ########################### RECHAZAR LA PETICIÓN DE UNA EMPRESA ###########################
-
-
 app.post('/RechazarEmpresa', cors(), (req, res) => {
 
   const parametro1 = req.body.correo_admin;
@@ -257,10 +237,7 @@ app.post('/RechazarEmpresa', cors(), (req, res) => {
     
 });
 
-
 //-- ########################### ALMACENAR PRODUCTOS ###########################
-
-
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
     const parametro1 = req.file;
@@ -290,9 +267,7 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
     
 });
 
-
 //-- ########################### ACTUALIZAR UN PRODUCTO EN ESPECIFICO ###########################
-
 app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
@@ -324,9 +299,7 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
     
 });
 
-
 //-- ########################### ELIMINAR UN PRODUCTO EN ESPECIFICO ###########################
-
 app.post('/EliminarProducto', cors(), (req, res) => {
 
   const parametro1 = req.body.correo;
@@ -351,10 +324,7 @@ app.post('/EliminarProducto', cors(), (req, res) => {
     
 });
 
-
-
 // -- ########################### ALMACENAR COMBO ###########################
-
 app.post('/CrearCombo', cors(), (req, res) => {
 
   const parametro1 = req.body.empresa;
@@ -410,10 +380,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
 
 });
 
-
-
 //-- ##################################### Retornar todos los combos #####################################
-
 app.post('/ObtenerCombos', cors(), (req, res) => {
 
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
@@ -437,10 +404,7 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
     
 });
 
-
-
 //-- ##################################### Retornar todos los Productos #####################################
-
 app.post('/ObtenerProductos', cors(), (req, res) => {
 
 
@@ -462,11 +426,7 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
     
 });
 
-
-
-
 //-- ##################################### Obtener datos de un repartidor #####################################
-
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
 
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
@@ -486,10 +446,7 @@ app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
     
 });
 
-
-
 //-- ##################################### Obtener datos de un repartidor #####################################
-
 app.get('/ObtenerUsuarios', cors(), (req, res) => {
 
   mysql.query('select correo as id, nombre, apellidos, rol, fecha_registro, estado from Usuarios ', (err, results) => {
@@ -506,12 +463,15 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
     
 });
 
-
 //-- ##################################### Obtener las solicitudes de repartidores #####################################
-
 app.get('/SolicitudesRepartidores', cors(), (req, res) => {
 
-  mysql.query('select * from Usuarios where rol = 2 and estado = 0', (err, results) => {
+  let query = `SELECT * FROM Usuarios
+  JOIN Repartidores
+  ON Usuarios.correo = Repartidores.correo 
+  AND estado = 0`
+
+  mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
@@ -524,13 +484,16 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
     });
     
 });
-
 
 //-- ##################################### Obtener las solicitudes de empresas #####################################
-
 app.get('/SolicitudesEmpresas', cors(), (req, res) => {
 
-  mysql.query('select * from Usuarios where rol = 3 and estado = 0', (err, results) => {
+  let query = `SELECT * FROM Usuarios
+  JOIN Empresas
+  ON Usuarios.correo = Empresas.correo 
+  AND estado = 0`
+
+  mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
@@ -543,7 +506,6 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
     });
     
 });
-
 
 // Inicia el servidor
 app.listen(3000, () => {
