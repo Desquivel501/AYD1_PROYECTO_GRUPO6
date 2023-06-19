@@ -17,16 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 // ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
 
 app.post('/RegistrarCliente', cors(), (req, res) => {
-
-    const parametro1 = "carlosquixtan78@gmail.com";
-    const parametro2 = "carlos";
-    const parametro3 = "apellidos";
-    const parametro4 = "contraseñaaaaaa";
-
-    ///// estas se colocan en lugar de parametro1, parametro2; etc...
-    //const correo = req.body.correo;
-    //const nombre = req.body.correo;
-    //const apellido = req.body.correo;
+    const parametro1 = req.body.correo;
+    const parametro2 = req.body.nombre;
+    const parametro3 = req.body.apellidos;
+    const parametro4 = req.body.contrasenia;
 
     mysql.query('CALL RegistrarCliente(?,?,?,?)', [parametro1, parametro2, parametro3, parametro4], (err, results) => {
         if (err) {
@@ -78,33 +72,20 @@ app.post('/InicioSesion', cors(), (req, res) => {
 
 
 app.post('/RegistrarRepartidor', cors(), (req, res) => {
+    const parametro1 = req.body.nombre;
+    const parametro2 = req.body.apellido;
+    const parametro3 = req.body.correo;
+    const parametro4 = req.body.contrasenia;
+    const parametro5 = req.body.celular;
+    const parametro6 = req.body.tipo_licencia;
+    const parametro7 = req.body.existe_moto;
+    const parametro8 = req.body.municipio;
+    const parametro9 = req.body.departamento;
+    const parametro10 = req.body.direccion;
+    const parametro11 = req.body.cv;
 
-  const parametro1 = "carlos";
-  const parametro2 = "perez";
-  const parametro3 = "patitoQuixtan3@gmail.com";
-  const parametro4 = "contraseñaaaa";
-  const parametro5 = 54163447;
-  const parametro6 = "c";
-  const parametro7 = 1;
-  const parametro8 = "Xela";
-  const parametro9 = "Chimaltenango";
-  const parametro10 = "patito 123";
-  const parametro11 = "curriculumn";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-    // const parametro1 = req.body.nombre;
-    // const parametro2 = req.body.apellido;
-    // const parametro3 = req.body.correo;
-    // const parametro4 = req.body.contrasenia;
-    // const parametro5 = req.body.celular;
-    // const parametro6 = req.body.tipo_licencia;
-    // const parametro7 = req.body.existe_moto;
-    // const parametro8 = req.body.municipio;
-    // const parametro9 = req.body.departamento;
-    // const parametro10 = req.body.direccion;
-    // const parametro11 = req.body.cv;
-
-  mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9, parametro10, parametro11], (err, results) => {
+  mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, 
+    parametro5, parametro6, parametro7, parametro8, parametro9, parametro10, parametro11], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarRepartidor:', err);
         return;
@@ -120,7 +101,7 @@ app.post('/RegistrarRepartidor', cors(), (req, res) => {
       console.log(formattedResult);
 
     });
-    
+
 });
 
 
@@ -128,12 +109,8 @@ app.post('/RegistrarRepartidor', cors(), (req, res) => {
 
 app.post('/AceptarRepartidor', cors(), (req, res) => {
 
-  const parametro1 = "admin@gmail.com";
-  const parametro2 = "patitoQuixtan@gmail.com";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-  //const parametro1 = req.body.correo_admin;
-  //const parametro2 = req.body.correo;
+  const parametro1 = req.body.correo_admin;
+  const parametro2 = req.body.correo;
 
   mysql.query('CALL AceptarRepartidor(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
@@ -159,12 +136,8 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
 
 app.post('/RechazarRepartidor', cors(), (req, res) => {
 
-  const parametro1 = "admin@gmail.com";
-  const parametro2 = "patitoQuixtan3@gmail.com";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-  //const parametro1 = req.body.correo_admin;
-  //const parametro2 = req.body.correo;
+  const parametro1 = req.body.correo_admin;
+  const parametro2 = req.body.correo;
 
   mysql.query('CALL RechazarRepartidor(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
