@@ -126,31 +126,6 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
     
 });
 
-// -- ########################### RECHAZAR LA PETICIÓN DE UN REPARTIDOR ###########################
-app.post('/RechazarRepartidor', cors(), (req, res) => {
-
-  const parametro1 = req.body.correo_admin;
-  const parametro2 = req.body.correo;
-
-  mysql.query('CALL RechazarRepartidor(?,?)', [parametro1, parametro2,], (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado RechazarRepartidor:', err);
-        return;
-      }
-      console.log('Procedimiento almacenado ejecutado exitosamente RechazarRepartidor');
-      
-      const formattedResult = results[0].map(row => ({
-        MENSAJE: row.MENSAJE,
-        TIPO: row.TIPO
-      }));
-      
-      res.json(formattedResult);
-      console.log(formattedResult);
-
-    });
-    
-});
-
 //-- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
 app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
 
@@ -199,31 +174,6 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
         return;
       }
       console.log('Procedimiento almacenado ejecutado exitosamente AceptarEmpresa');
-      
-      const formattedResult = results[0].map(row => ({
-        MENSAJE: row.MENSAJE,
-        TIPO: row.TIPO
-      }));
-      
-      res.json(formattedResult);
-      console.log(formattedResult);
-
-    });
-    
-});
-
-//-- ########################### RECHAZAR LA PETICIÓN DE UNA EMPRESA ###########################
-app.post('/RechazarEmpresa', cors(), (req, res) => {
-
-  const parametro1 = req.body.correo_admin;
-  const parametro2 = req.body.correo;
-
-  mysql.query('CALL RechazarEmpresa(?,?)', [parametro1, parametro2,], (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado RechazarEmpresa:', err);
-        return;
-      }
-      console.log('Procedimiento almacenado ejecutado exitosamente RechazarEmpresa');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
@@ -505,6 +455,22 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
 
     });
     
+});
+
+//-- ##################################### Obtener las categorias de empresa #####################################
+app.get('/CategoriasEmpresa', cors(), (req, res) => {
+  let query = `SELECT id_cat AS id, nombre AS categoria, imagen FROM Categorias_empresa;`
+
+  mysql.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+      return;
+    }
+
+    res.json(results);
+    console.log(results);
+  });
+
 });
 
 // Inicia el servidor
