@@ -14,9 +14,9 @@ export function userLogin({ data }) {
 // Función para registrar usuario,empresa o repartidor
 export function registrar(entidad, data) {
   const endpoint = {
-    "Usuario": "registrarUsuario",
-    "Empresa": "registrarEmpresa",
-    "Repartidor": "registrarRepartidor",
+    "Usuario": "RegistrarCliente",
+    "Empresa": "RegistrarEmpresa",
+    "Repartidor": "RegistrarRepartidor",
   };
   return fetch(`${API}/${endpoint[entidad]}`, {
     method: "POST",

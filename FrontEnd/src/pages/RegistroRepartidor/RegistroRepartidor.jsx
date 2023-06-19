@@ -23,11 +23,11 @@ import { Link } from "react-router-dom";
 
 export default function RegistroRepartidor() {
   const { registrarme } = useContext(sesionContext);
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
-  const handleSubmit = (event) => {
+  const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = registrarme("Repartidor", data);
+    const mensaje = await registrarme("Repartidor", data);
     setMensaje(mensaje);
     event.target.reset();
   };
@@ -202,17 +202,17 @@ export default function RegistroRepartidor() {
                 >
                   Registrarme
                 </Button>
-                {mensaje.tipo != "" &&
+                {mensaje.TIPO != "" &&
                   (
                     <p
                       className="mensaje"
                       style={{
-                        backgroundColor: mensaje.tipo == "Error"
+                        backgroundColor: mensaje.TIPO == "Error"
                           ? "#c00"
                           : "#080",
                       }}
                     >
-                      {mensaje.mensaje}
+                      {mensaje.MENSAJE}
                     </p>
                   )}
 
