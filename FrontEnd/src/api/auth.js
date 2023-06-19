@@ -1,13 +1,16 @@
-const API = "http://localhost:3000";
+const API = "http://localhost:3000/";
 export function userLogin({ data }) {
-  return fetch(`${API}/login`, {
+  return fetch(`${API}InicioSesion`, {
     method: "POST",
-    credentials: "include",
+    headers: {
+      'Content-Type':'application/json',
+      'Access-Control-Allow-Origin_Origin': '*'
+    },
     body: data,
   })
     .then((res) => res.json())
     .then((data) => data)
-    .catch((err) => console.log(err));
+    // .catch((err) => console.log(err));
 }
 // Función para registrar usuario,empresa o repartidor
 export function registrar(entidad, data) {
@@ -18,7 +21,10 @@ export function registrar(entidad, data) {
   };
   return fetch(`${API}/${endpoint[entidad]}`, {
     method: "POST",
-    credentials: "include",
+    headers: {
+      'Content-Type':'application/json',
+      'Access-Control-Allow-Origin_Origin': '*'
+   },
     body: data,
   })
     .then((res) => res.json())
@@ -32,7 +38,10 @@ export function registrar(entidad, data) {
 export function nuevaDireccion({ data }) {
   return fetch(`${API}/nuevadireccion`, {
     method: "POST",
-    credentials: "include",
+    headers: {
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin_Origin': '*'
+    },
     body: data,
   })
     .then((res) => res.json())
