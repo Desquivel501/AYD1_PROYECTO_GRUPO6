@@ -60,14 +60,11 @@ export const MenuProducto = (props) => {
         if(edicion){
             data.append("id", id)
         }
-        
 
         var object = {};
         data.forEach((value, key) => object[key] = value);
         var json = JSON.stringify(object);
         console.log(json)
-
-        
 
         fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {
             method: "POST",
@@ -80,7 +77,6 @@ export const MenuProducto = (props) => {
         })
             .then((res) => res.json())
             .catch((err) => console.log(err));
-        
       };
 
     
@@ -105,9 +101,9 @@ export const MenuProducto = (props) => {
         const objectUrl = URL.createObjectURL(selectedFile)
         setPreview(objectUrl)
 
-        // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(objectUrl)
     }, [selectedFile])
+
 
     const onSelectFile = e => {
         if (!e.target.files || e.target.files.length === 0) {
@@ -317,16 +313,14 @@ export const MenuProducto = (props) => {
                                     <RadioGroup
                                         row
                                         name="categoria"
-                                        // defaultValue="Postres"
                                         value={categoria_}
                                         onChange={(event) => setCategoria(event.target.value)}
                                     >
                                         <FormControlLabel value="Entradas" control={<Radio  />} label="Entradas"/>
-                                        <FormControlLabel value="PlatosFuertes" control={<Radio  />} label="Platos Fuertes" />
+                                        <FormControlLabel value="Platos Fuertes" control={<Radio  />} label="Platos Fuertes" />
                                         <FormControlLabel value="Postres" control={<Radio  />} label="Postres" />
                                         <FormControlLabel value="Bebidas" control={<Radio  />} label="Bebidas" />
-                                        <FormControlLabel value="Ninos" control={<Radio  />} label="Niños"/>
-
+                                        <FormControlLabel value="Niños" control={<Radio  />} label="Niños"/>
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
