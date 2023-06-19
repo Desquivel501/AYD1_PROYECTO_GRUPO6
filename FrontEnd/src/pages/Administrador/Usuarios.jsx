@@ -7,12 +7,12 @@ import { getData } from "../../api/auth";
 const columns = [
   { field: "id", headerName: "Correo", width: 250 },
   {
-    field: "first_name",
+    field: "nombre",
     headerName: "Nombre",
     width: 150,
   },
   {
-    field: "last_name",
+    field: "apellidos",
     headerName: "Apellido",
     width: 150,
   },
@@ -38,28 +38,28 @@ const columns = [
 export function Usuarios() {
   const [usuarios, setUsuarios] = useState(mock);
   useEffect(() => {
-    const endpoint = "/ObtenerUsuarios";
+    const endpoint = "ObtenerUsuarios";
     getData({ endpoint })
-      .then((res) => res.json())
       .then((data) => setUsuarios(data))
       .catch((e) => console.log(e));
   }, []);
   const estados = {
-    "0": "Deshabilitado",
+    "0": "Pendiente",
     "1": "Habilitado",
-    "2": "Baneado",
+    "2": "Deshabilitado",
   };
   const roles = {
     "0": "Administrador",
-    "1": "Empresa",
+    "1": "Cliente",
     "2": "Repartidor",
-    "3": "Cliente",
+    "3": "Empresa",
   };
   const filtroUsuarios = (data) => {
     return data.map((value) => ({
       ...value,
       rol: roles[value.rol],
       estado: estados[value.estado],
+      fecha_registro: new Date(value.fecha_registro).toLocaleDateString("en-GB"),
     }));
   };
   return (

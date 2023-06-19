@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
 import { Link } from "react-router-dom";
+import { getData } from "../../api/auth.js";
 
 export default function RegistroEmpresa() {
   const { registrarme } = useContext(sesionContext);
@@ -39,15 +40,10 @@ export default function RegistroEmpresa() {
   });
 
   useEffect(() => {
-      fetch("http://localhost:3000/GetCategorias", {
-          method: "GET",
-          headers: {
-              'Content-Type':'application/json',
-              'Access-Control-Allow-Origin_Origin': '*'
-          }
-      })
-      .then(res => res.json())
+      const endpoint = "CategoriasEmpresa"
+      getData({endpoint})
       .then(response =>{
+        console.log(response)
         setCategorias(response)
       })
   }, [])
@@ -152,6 +148,7 @@ export default function RegistroEmpresa() {
                   <Select
                     id="categoria"
                     label="Categoria"
+                    name="categoria"
                     // onChange={handleChange}
                   >
                     {/* <MenuItem value={10}>Ten</MenuItem>

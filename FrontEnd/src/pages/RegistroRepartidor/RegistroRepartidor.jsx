@@ -147,7 +147,7 @@ export default function RegistroRepartidor() {
                   <DireccionEnRegistro />
                 </Grid>
 
-                <FormControl fullWidth margin="normal" required>
+                <FormControl fullWidth margin="normal" >
                   <InputLabel id="licencia">Tipo de Licencia</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
@@ -168,7 +168,6 @@ export default function RegistroRepartidor() {
 
                 <FormGroup>
                   <FormControlLabel
-                    required
                     control={<Checkbox />}
                     label="Tiene vehiculo propio"
                     name="Vehiculo"
