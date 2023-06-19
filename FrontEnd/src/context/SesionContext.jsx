@@ -26,7 +26,7 @@ export function SesionProvider({ children }) {
     if (!isNaN(newSesion[0].MENSAJE)) {
       // Es número, por lo tanto es rol
       // Actualizamos el usuario
-      const newUser = { id: data.email, rol: roles[newSesion[0].MENSAJE] };
+      const newUser = { id: data.get("email"), rol: roles[newSesion[0].MENSAJE] };
       setUser(newUser);
       if (newUser.rol=="Administrador") return "/Administrador/Solicitudes"
       if (newUser.rol=="Repartidor") return "/Repartidor"
