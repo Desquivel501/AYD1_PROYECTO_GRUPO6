@@ -44,15 +44,15 @@ export function Usuarios() {
       .catch((e) => console.log(e));
   }, []);
   const estados = {
-    "0": "Deshabilitado",
+    "0": "Pendiente",
     "1": "Habilitado",
-    "2": "Baneado",
+    "2": "Deshabilitado",
   };
   const roles = {
     "0": "Administrador",
-    "1": "Empresa",
+    "1": "Cliente",
     "2": "Repartidor",
-    "3": "Cliente",
+    "3": "Empresa",
   };
   const filtroUsuarios = (data) => {
     return data.map((value) => ({

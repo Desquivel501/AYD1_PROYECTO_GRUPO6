@@ -78,7 +78,7 @@ export function Solicitudes() {
 
 const camposEmpresas = [
   { id: "name", label: "Nombre", name: "nombre" },
-  { id: "description", label: "Descripción", name: "description" },
+  { id: "description", label: "Descripción", name: "descripcion" },
   { id: "email", label: "Correo", name: "correo" },
   { id: "password", label: "Contraseña", name: "contrasenia" },
   { id: "address", label: "Dirección", name: "direccion" },
