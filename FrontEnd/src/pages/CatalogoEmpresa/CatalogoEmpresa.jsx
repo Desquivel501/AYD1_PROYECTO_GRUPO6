@@ -20,6 +20,11 @@ export default function CatalogoEmpresa() {
     const [catalogo, setCatalogo] = useState([])
     const [combo, setCombo] = useState([])
 
+    const [datos, setDatos] = useState({
+        title: "",
+        image: ""
+    })
+
     const [actual, setActual] = useState(
         {
             id: 0,     
@@ -97,6 +102,22 @@ export default function CatalogoEmpresa() {
             setCatalogo(response)
             // console.log(response)
         })
+
+        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setDatos({
+                title: response[0].nombre_entidad,
+                image: response[0].imagen
+            })
+        })
+
     }, [])
 
     
@@ -207,8 +228,8 @@ export default function CatalogoEmpresa() {
                         
                     >
                         <TitleCard 
-                            title={"Nombre Restaurante"}
-                            logo={"https://picsum.photos/200"}
+                            title={datos.title}
+                            logo={datos.image}
                         />
                     </Grid>
 

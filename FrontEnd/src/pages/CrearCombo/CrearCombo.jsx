@@ -32,6 +32,12 @@ export default function CrearCombo() {
         }
     );
 
+    const [datos, setDatos] = useState({
+        title: "",
+        image: ""
+    })
+
+
     useEffect(() => {
         fetch("http://localhost:3000/ObtenerProductos", {
             method: "POST",
@@ -44,6 +50,21 @@ export default function CrearCombo() {
         .then(response =>{
             setCatalogo(response)
             console.log(response)
+        })
+
+        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setDatos({
+                title: response[0].nombre_entidad,
+                image: response[0].imagen
+            })
         })
     }, [])
     
@@ -118,8 +139,8 @@ export default function CrearCombo() {
                         
                     >
                         <TitleCard 
-                            title={"Nombre Restaurante"}
-                            logo={"https://picsum.photos/200"}
+                            title={datos.title}
+                            logo={datos.image}
                         />
                     </Grid>
 
