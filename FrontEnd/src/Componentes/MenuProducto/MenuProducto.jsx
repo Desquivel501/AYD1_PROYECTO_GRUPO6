@@ -14,9 +14,11 @@ import RadioGroup from '@mui/material/RadioGroup';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSesion } from "../../hooks/useSesion";
 
 export const MenuProducto = (props) => {
-    
+    const { user } = useSesion();
+
     const {title, id, name, desc, cost, image, categoria, disponible, addCategorias, edicion, addComp} = props;
 
     const [name_, setName] = useState("")
@@ -27,18 +29,42 @@ export const MenuProducto = (props) => {
 
     const [count, setCount] = useState(0);
 
+    const [selectedFile, setSelectedFile] = useState()
+    const [preview, setPreview] = useState()
 
-    function enviar() {
 
-        const jsonData = {
-            "id": id,
-            "name": name_,
-            "description": desc_,
-            "cost": cost_,
-            "image": "",
-            "categoria": categoria_,
-            "disponible": disponible_
+    const eliminar = (event) => {
+        fetch("http://localhost:3000/eliminar", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin_Origin': '*'
+            },
+            // credentials: "include",
+            body: JSON.stringify({ empresa: user.id, producto: id }),
+        })
+            .then((res) => res.json())
+            .then(response =>{
+                console.log(response)
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        
+        data.append("empresa", user.id)
+        data.append("disponible", disponible_)
+
+        if(edicion){
+            data.append("id", id)
         }
+
+        var object = {};
+        data.forEach((value, key) => object[key] = value);
+        var json = JSON.stringify(object);
+        console.log(json)
 
         fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {
             method: "POST",
@@ -46,13 +72,12 @@ export const MenuProducto = (props) => {
                 'Content-Type':'application/json',
                 'Access-Control-Allow-Origin_Origin': '*'
             },
-            body: JSON.stringify(jsonData)
+            // credentials: "include",
+            body: data,
         })
-        .then(res => res.json())
-        .then(response =>{
-          console.log(response)
-        })
-    }
+            .then((res) => res.json())
+            .catch((err) => console.log(err));
+      };
 
     
     useEffect(() => {
@@ -63,8 +88,30 @@ export const MenuProducto = (props) => {
             setCategoria(categoria)
             setDisponible(disponible)
             setCount(id)
+            setPreview(image)
         }
     })
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(image)
+            return
+        }
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreview(objectUrl)
+
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
+
+
+    const onSelectFile = e => {
+        if (!e.target.files || e.target.files.length === 0) {
+            setSelectedFile(image)
+            return
+        }
+        setSelectedFile(e.target.files[0])
+    }
 
     return (
 
@@ -93,6 +140,13 @@ export const MenuProducto = (props) => {
                 </Typography>
             </Grid>
 
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ mt: 1 }}
+            >
+
             <Grid
                 item
                 xs={12}
@@ -117,19 +171,15 @@ export const MenuProducto = (props) => {
                             alignItems="center"
                             sx={{border:0}}
                         >
-                            <Box
-                                component="form"
-                                noValidate
-                                sx={{ mt: 1 }}
-                            >
+                           
                                 <TextField
                                     margin="normal"
                                     required
                                     fullWidth
                                     // disabled
-                                    id="name"
+                                    id="nombre"
                                     label="Nombre"
-                                    name="name"
+                                    name="nombre"
                                     value={name_}
                                     onChange={(event) => setName(event.target.value)}
                                 />
@@ -137,10 +187,10 @@ export const MenuProducto = (props) => {
                                     margin="normal"
                                     required
                                     fullWidth
-                                    name="cost"
+                                    name="costo"
                                     label="Costo"
                                     type="number"
-                                    id="cost"
+                                    id="costo"
                                     autoComplete="costo"
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={cost_}
@@ -150,16 +200,16 @@ export const MenuProducto = (props) => {
                                     margin="normal"
                                     required
                                     fullWidth
-                                    id="description"
+                                    id="descripcion"
                                     label="Descripción"
                                     multiline
-                                    name="description"
+                                    name="descripcion"
                                     maxRows={3}
                                     rows={3}
                                     value={desc_}
                                     onChange={(event) => setDesc(event.target.value)}
                                 />
-                            </Box>
+                           
                         </Grid>
                     </Grid>
 
@@ -186,7 +236,7 @@ export const MenuProducto = (props) => {
                                     height: 'auto', maxWidth: '80%', mt:2, 
                                     }}
                                     alt="Image"
-                                    src={image}
+                                    src={preview}
                                 />
 
                             </Grid>
@@ -199,14 +249,24 @@ export const MenuProducto = (props) => {
                                 <Button
                                     variant="contained"
                                     sx={{ mt: 1, mb: 1, bgcolor: "#F2890D" }}
+                                    component="label"
                                 >
                                     Cambiar Imagen
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        hidden
+                                        onChange={onSelectFile}
+                                        accept=".png, .jpeg, .jpg, .gif"
+                                        name="image"
+                                    />
                                 </Button>
                             </Grid>
 
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox />} label="Disponible" checked={disponible_} onChange={(event) => setDisponible(!disponible_)}/>
-                            </FormGroup>
+                            </FormGroup> 
+                 
                         </Grid>
                     </Grid>
                 </Grid>
@@ -244,7 +304,6 @@ export const MenuProducto = (props) => {
 
                         </Grid>
 
-                    
                             <Grid
                                 item
                                 xs={12}
@@ -253,17 +312,15 @@ export const MenuProducto = (props) => {
                                 <FormControl>
                                     <RadioGroup
                                         row
-                                        name="button-group"
-                                        // defaultValue="Postres"
+                                        name="categoria"
                                         value={categoria_}
                                         onChange={(event) => setCategoria(event.target.value)}
                                     >
                                         <FormControlLabel value="Entradas" control={<Radio  />} label="Entradas"/>
-                                        <FormControlLabel value="PlatosFuertes" control={<Radio  />} label="Platos Fuertes" />
+                                        <FormControlLabel value="Platos Fuertes" control={<Radio  />} label="Platos Fuertes" />
                                         <FormControlLabel value="Postres" control={<Radio  />} label="Postres" />
                                         <FormControlLabel value="Bebidas" control={<Radio  />} label="Bebidas" />
-                                        <FormControlLabel value="Ninos" control={<Radio  />} label="Niños"/>
-
+                                        <FormControlLabel value="Niños" control={<Radio  />} label="Niños"/>
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
@@ -275,6 +332,24 @@ export const MenuProducto = (props) => {
                 </Grid>
             }
 
+            {edicion &&
+                <Grid
+                    item
+                    xs={12}
+                    sx={{border:0, mb:1}}
+                >
+                    <Button
+                        variant="contained"
+                     
+                        sx={{ mt: 2, bgcolor: "#dd2026" }}
+                        endIcon={<SaveIcon />}
+                        onClick={eliminar}
+                    >
+                        Eliminar Producto
+                    </Button>
+                </Grid> 
+            }
+
             <Grid
                 item
                 xs={12}
@@ -282,17 +357,16 @@ export const MenuProducto = (props) => {
             >
                 <Button
                     variant="contained"
-                    size="large"
+                    type="submit"
+                   
                     sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
                     endIcon={<SaveIcon />}
-                    onClick={() => enviar()}
                 >
                     Guardar Producto
                 </Button>
+            </Grid>  
 
-
-
-            </Grid>                  
+            </Box>                
 
 
         </Grid>
