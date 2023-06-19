@@ -10,6 +10,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSesion } from "../../hooks/useSesion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function Login() {
   const { login } = useSesion();
@@ -22,7 +23,12 @@ export default function Login() {
     const respuesta = await login(data);
     console.log(respuesta);
     if (respuesta.MENSAJE) {
-      setMensaje({ mensaje: respuesta.MENSAJE, tipo: "Error" });
+      // setMensaje({ mensaje: respuesta.MENSAJE, tipo: "Error" });
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: respuesta.MENSAJE,
+      })
     } else {
       navigate(respuesta);
     }

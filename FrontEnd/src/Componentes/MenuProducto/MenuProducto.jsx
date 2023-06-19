@@ -15,6 +15,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSesion } from "../../hooks/useSesion";
+import Swal from 'sweetalert2'
 
 export const MenuProducto = (props) => {
     const { user } = useSesion();
@@ -44,6 +45,23 @@ export const MenuProducto = (props) => {
             .then((res) => res.json())
             .then(response =>{
                 console.log(response)
+                if(response[0].TIPO == "EXITO"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Eliminado',
+                        text: response[0].MENSAJE,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(false);
+                        }
+                      })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response[0].MENSAJE,
+                      })
+                }
             })
             .catch((err) => console.log(err));
     }
@@ -69,6 +87,27 @@ export const MenuProducto = (props) => {
             body: data,
         })
             .then((res) => res.json())
+            .then(response =>{
+                console.log(response)
+                
+                if(response[0].TIPO == "EXITO"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: (edicion ? "Editado!":"Creado!"),
+                        text: response[0].MENSAJE,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(false);
+                        }
+                      })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response[0].MENSAJE,
+                      })
+                }
+            })
             .catch((err) => console.log(err));
       };
 
