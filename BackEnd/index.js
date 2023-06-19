@@ -6,7 +6,7 @@ const os = require('os');
 const mysql = require('./conexion');
 
 /*Habilitar los cors para todos los accesos*/
-app.options('*', cors())
+app.use(cors())
 
 /*Configuración de de express*/
 app.use(express.json());
@@ -52,8 +52,8 @@ app.post('/RegistrarCliente', cors(), (req, res) => {
 // ########################### INICIAR SESIÓN ###########################
 
 app.post('/InicioSesion', cors(), (req, res) => {
-  const parametro1 = req.body.correo;
-  const parametro2 = req.body.contrasenia;
+  const parametro1 = req.body.email;
+  const parametro2 = req.body.password;
 
   mysql.query('CALL InicioSesion(?,?)', [parametro1, parametro2], (err, results) => {
       if (err) {

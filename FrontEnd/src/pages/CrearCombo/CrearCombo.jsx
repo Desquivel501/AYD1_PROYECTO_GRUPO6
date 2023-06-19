@@ -148,16 +148,6 @@ export default function CrearCombo() {
                                     productos={combo}
                                 />
                             </Grid>
-                            {/* <Button
-                                variant="contained"
-                                size="large"
-                                sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
-                                endIcon={<SaveIcon />}
-                            >
-                                Guardar Combo
-                            </Button> */}
-
-
                             <Grid
                                 item
                                 xs={12} sm={7}
