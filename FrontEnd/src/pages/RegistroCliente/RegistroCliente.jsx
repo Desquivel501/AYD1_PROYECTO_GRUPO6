@@ -13,11 +13,11 @@ import { Link } from "react-router-dom";
 
 export default function RegistroCliente() {
   const { registrarme } = useSesion();
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
-  const handleSubmit = (event) => {
+  const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = registrarme("Usuario", data);
+    const mensaje = await registrarme("Usuario", data);
     setMensaje(mensaje);
     //setMensaje({mensaje:"Hubo un error",tipo:"Error"});
     event.target.reset();
@@ -131,17 +131,17 @@ export default function RegistroCliente() {
                 >
                   Registrarme
                 </Button>
-                {mensaje.tipo != "" &&
+                {mensaje.TIPO != "" &&
                   (
                     <p
                       className="mensaje"
                       style={{
-                        backgroundColor: mensaje.tipo == "Error"
+                        backgroundColor: mensaje.TIPO == "ERROR"
                           ? "#c00"
                           : "#080",
                       }}
                     >
-                      {mensaje.mensaje}
+                      {mensaje.MENSAJE}
                     </p>
                   )}
                 <Link to="/Login" style={{ color: "#F2890D" }}>

@@ -19,13 +19,13 @@ import { Link } from "react-router-dom";
 
 export default function RegistroEmpresa() {
   const { registrarme } = useContext(sesionContext);
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
+  const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
   const [categorias, setCategorias] = useState([]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = registrarme("Empresa", data);
+    const mensaje = await registrarme("Empresa", data);
     setMensaje(mensaje);
     event.target.reset();
   };
@@ -201,17 +201,17 @@ export default function RegistroEmpresa() {
                 >
                   Registrarme
                 </Button>
-                {mensaje.tipo != "" &&
+                {mensaje.TIPO != "" &&
                   (
                     <p
                       className="mensaje"
                       style={{
-                        backgroundColor: mensaje.tipo == "Error"
+                        backgroundColor: mensaje.TIPO == "ERROR"
                           ? "#c00"
                           : "#080",
                       }}
                     >
-                      {mensaje.mensaje}
+                      {mensaje.MENSAJE}
                     </p>
                   )}
                 <Link to="/Login" style={{ color: "#F2890D" }}>

@@ -2,6 +2,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import mock from "../../mocks/usuarios.json";
 import "./solicitudes.css";
 import { useState } from "react";
+import { useEffect } from "react";
+import { getData } from "../../api/auth";
 const columns = [
   { field: "id", headerName: "Correo", width: 250 },
   {
@@ -35,6 +37,13 @@ const columns = [
 ];
 export function Usuarios() {
   const [usuarios, setUsuarios] = useState(mock);
+  useEffect(() => {
+    const endpoint = "/ObtenerUsuarios";
+    getData({ endpoint })
+      .then((res) => res.json())
+      .then((data) => setUsuarios(data))
+      .catch((e) => console.log(e));
+  }, []);
   const estados = {
     "0": "Deshabilitado",
     "1": "Habilitado",
@@ -47,7 +56,11 @@ export function Usuarios() {
     "3": "Cliente",
   };
   const filtroUsuarios = (data) => {
-    return data.map((value) => ({ ...value, rol:roles[value.rol], estado: estados[value.estado] }));
+    return data.map((value) => ({
+      ...value,
+      rol: roles[value.rol],
+      estado: estados[value.estado],
+    }));
   };
   return (
     <section style={{ height: "400px", marginTop: "100px" }}>
