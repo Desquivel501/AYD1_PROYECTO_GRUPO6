@@ -54,7 +54,6 @@ export function Solicitudes() {
           <Solicitud
             id={"email"}
             fields={campos}
-            data={repartidores}
             title={"Solicitantes"}
             documento="document"
             handleSubmit={submitAceptar}
@@ -66,7 +65,6 @@ export function Solicitudes() {
           <Solicitud
             id={"email"}
             fields={camposEmpresas}
-            data={empresas}
             title={"Solicitantes"}
             documento="document"
             handleSubmit={submitAceptar}
@@ -94,7 +92,7 @@ const campos = [
   { id: "licencia", label: "Licencia", name: "licencia" },
 ];
 function Solicitud(
-  { id, fields, data, title, documento, handleSubmit, usuario },
+  { id, fields,  title, documento, handleSubmit, usuario },
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
