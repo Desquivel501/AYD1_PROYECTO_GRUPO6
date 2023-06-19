@@ -34,14 +34,12 @@ export const MenuProducto = (props) => {
 
 
     const eliminar = (event) => {
-        fetch("http://localhost:3000/eliminar", {
+        fetch("http://localhost:3000/EliminarProducto", {
             method: "POST",
             headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
+                "Content-Type": "application/json",
             },
-            // credentials: "include",
-            body: JSON.stringify({ empresa: user.id, producto: id }),
+            body: JSON.stringify({ correo: user.id, producto: id }),
         })
             .then((res) => res.json())
             .then(response =>{
@@ -66,13 +64,8 @@ export const MenuProducto = (props) => {
         var json = JSON.stringify(object);
         console.log(json)
 
-        fetch("http://localhost:3000/" + (edicion ? "editar":"crear"), {
+        fetch("http://localhost:3000/" + (edicion ? "EditarProducto":"CrearProducto"), {
             method: "POST",
-            headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
-            },
-            // credentials: "include",
             body: data,
         })
             .then((res) => res.json())
@@ -258,7 +251,7 @@ export const MenuProducto = (props) => {
                                         hidden
                                         onChange={onSelectFile}
                                         accept=".png, .jpeg, .jpg, .gif"
-                                        name="image"
+                                        name="imagen"
                                     />
                                 </Button>
                             </Grid>

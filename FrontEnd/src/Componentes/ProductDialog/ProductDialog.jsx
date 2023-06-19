@@ -140,7 +140,7 @@ export const ProductDialog = (props) => {
                             </Grid>
 
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={disponible}/>
+                                <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={(disponible)}/>
                             </FormGroup>
                         </Grid>
                     </Grid>
@@ -192,10 +192,10 @@ export const ProductDialog = (props) => {
                                     value={categoria}
                                 >
                                     <FormControlLabel value="Entradas" control={<Radio  />} label="Entradas"/>
-                                    <FormControlLabel value="PlatosFuertes" control={<Radio  />} label="Platos Fuertes" />
+                                    <FormControlLabel value="Platos Fuertes" control={<Radio  />} label="Platos Fuertes" />
                                     <FormControlLabel value="Postres" control={<Radio  />} label="Postres" />
                                     <FormControlLabel value="Bebidas" control={<Radio  />} label="Bebidas" />
-                                    <FormControlLabel value="Ninos" control={<Radio  />} label="Niños"/>
+                                    <FormControlLabel value="Niños" control={<Radio  />} label="Niños"/>
 
                                 </RadioGroup>
                             </FormControl>

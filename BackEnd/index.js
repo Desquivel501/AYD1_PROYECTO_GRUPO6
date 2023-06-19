@@ -129,6 +129,8 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
 //-- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
 app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
 
+  console.log("here")
+
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro1 = req.body.email;
     const parametro2 = req.body.password;
@@ -253,7 +255,7 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 app.post('/EliminarProducto', cors(), (req, res) => {
 
   const parametro1 = req.body.correo;
-  const parametro2 = re1.body.producto;;
+  const parametro2 = req.body.producto;;
 
   mysql.query('CALL EliminarProducto(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
@@ -278,7 +280,7 @@ app.post('/EliminarProducto', cors(), (req, res) => {
 app.post('/CrearCombo', cors(), (req, res) => {
 
   const parametro1 = req.body.empresa;
-  const parametro2 = req.body.name;
+  const parametro2 = req.body.nombre;
   const parametro3 = "";
   const parametro4 = req.body.costo;
   const parametro5 = req.body.descripcion;
@@ -347,7 +349,7 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
         return resultado;
       });
       
-      res.json(resultadosParseados[0]);
+      res.json(resultadosParseados);
       console.log(resultadosParseados);
 
     });

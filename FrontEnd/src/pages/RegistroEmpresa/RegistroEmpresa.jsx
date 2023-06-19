@@ -151,9 +151,6 @@ export default function RegistroEmpresa() {
                     name="categoria"
                     // onChange={handleChange}
                   >
-                    {/* <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem> */}
 
                     {categorias.map((item, i) => (
                       <MenuItem

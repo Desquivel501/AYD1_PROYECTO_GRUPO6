@@ -9,8 +9,11 @@ import { useEffect } from "react";
 import { FilterTab } from '../../Componentes/FilterTab/FilterTab';
 import { ProductDialog } from '../../Componentes/ProductDialog/ProductDialog';
 import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
+import { useSesion } from "../../hooks/useSesion";
 
 export default function CatalogoEmpresa() {
+
+    const { user } = useSesion();
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -45,7 +48,7 @@ export default function CatalogoEmpresa() {
     const [search, setSearch] = useState(
         {
             keyword: "",     
-            categorias: ["Entradas", "PlatosFuertes", "Bebidas", "Postres", "Ninos", "Combos"]
+            categorias: ["Entradas", "Platos Fuertes", "Bebidas", "Postres", "Niños", "Combos"]
         }
     );
 
@@ -69,17 +72,31 @@ export default function CatalogoEmpresa() {
     }
 
     useEffect(() => {
-        fetch("http://localhost:3000/GetAll", {
-            method: "GET",
+        fetch("http://localhost:3000/ObtenerCombos", {
+            method: "POST",
             headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
-            }
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
         })
         .then(res => res.json())
         .then(response =>{
-            setCatalogo(response.productos)
-            setCombo(response.combos)
+            console.log(response)
+            setCombo(response)
+            
+        })
+
+        fetch("http://localhost:3000/ObtenerProductos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setCatalogo(response)
+            // console.log(response)
         })
     }, [])
 
@@ -230,7 +247,7 @@ export default function CatalogoEmpresa() {
                             </Grid>
 
                             
-                            {(catalogo.length == 0) && (
+                            {(combo.length == 0) && (
                                 <Grid
                                     item
                                     xs={12} sm={12}
