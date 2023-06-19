@@ -356,10 +356,16 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
 
 //-- ##################################### Retornar todos los Productos #####################################
 app.post('/ObtenerProductos', cors(), (req, res) => {
+  const parametro1 = req.body.correo;
 
+  let query = `SELECT p.id_prod as id, p.nombre as title, p.precio as cost, p.imagen as image, p.descripcion as descripcion, 
+  cp.nombre as categoria, p.disponibilidad as disponible 
+  FROM Categorias_productos cp 
+  JOIN Productos p 
+  ON p.id_catp = cp.id_catp
+  AND p.correo = ?`
 
-
-  mysql.query('select p.id_prod as id, p.nombre as title, p.precio as cost, p.imagen as image, p.descripcion as descripcion, cp.nombre as categoria, p.disponibilidad as disponible from Categorias_productos cp join Productos p on p.id_catp = cp.id_catp', (err, results) => {
+  mysql.query(query, [parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerTodosLosProductos:', err);
         return;
@@ -491,7 +497,7 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
 
 //-- ##################################### Obtener las categorias de empresa #####################################
 app.get('/CategoriasEmpresa', cors(), (req, res) => {
-  let query = `SELECT id_cat AS id, nombre AS categoria, imagen FROM Categorias_empresa;`
+  let query = `SELECT id_cat AS id, nombre AS categoria, imagen FROM Categorias_empresa`
 
   mysql.query(query, (err, results) => {
     if (err) {
