@@ -163,26 +163,16 @@ app.post('/RechazarRepartidor', cors(), (req, res) => {
 
 app.post('/RegistrarEmpresa', cors(), (req, res) => {
 
-  const parametro1 = "Quixtan4@gmail.com";
-  const parametro2 = "contraseñaaa";
-  const parametro3 = "venta de nike";
-  const parametro4 = "nike";
-  const parametro5 = "Postres";
-  const parametro6 = "Alta Verapaz";
-  const parametro7 = "Xela";
-  const parametro8 = "patito 123";
-  const parametro9 = "curriculumn";
-
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
-    // const parametro1 = req.body.correo_in;
-    // const parametro2 = req.body.contrasenia_in;
-    // const parametro3 = req.body.descripcion_in;
-    // const parametro4 = req.body.nombre_entidad_in;
-    // const parametro5 = req.body.categoria_in;
-    // const parametro6 = req.body.departamento_in;
-    // const parametro7 = req.body.ciudad_in;
-    // const parametro8 = req.body.direccion_in;
-    // const parametro9 = req.body.doc_in;
+    const parametro1 = req.body.correo;
+    const parametro2 = req.body.contrasenia;
+    const parametro3 = req.body.descripcion;
+    const parametro4 = req.body.nombre_entidad;
+    const parametro5 = req.body.categoria;
+    const parametro6 = req.body.departamento;
+    const parametro7 = req.body.ciudad;
+    const parametro8 = req.body.direccion;
+    const parametro9 = req.body.doc;
 
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
@@ -209,12 +199,8 @@ app.post('/RegistrarEmpresa', cors(), (req, res) => {
 
 app.post('/AceptarEmpresa', cors(), (req, res) => {
 
-  const parametro1 = "admin@gmail.com";
-  const parametro2 = "Quixtan4@gmail.com";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-  //const parametro1 = req.body.correo_admin;
-  //const parametro2 = req.body.correo_in;
+  const parametro1 = req.body.correo_admin;
+  const parametro2 = req.body.correo;
 
   mysql.query('CALL AceptarEmpresa(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
@@ -241,12 +227,8 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 
 app.post('/RechazarEmpresa', cors(), (req, res) => {
 
-  const parametro1 = "admin@gmail.com";
-  const parametro2 = "Quixtan4@gmail.com";
-
-  ///// estas se colocan en lugar de parametro1, parametro2; etc...
-  //const parametro1 = req.body.correo_admin;
-  //const parametro2 = req.body.correo_in;
+  const parametro1 = req.body.correo_admin;
+  const parametro2 = req.body.correo;
 
   mysql.query('CALL RechazarEmpresa(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
