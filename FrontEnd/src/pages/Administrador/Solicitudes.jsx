@@ -5,6 +5,8 @@ import repartidores from "../../mocks/repartidores.json";
 import empresas from "../../mocks/empresas.json";
 import { PersonAttribute } from "../../Componentes/Persona";
 import { useSesion } from "../../hooks/useSesion";
+import { aceptarSolicitud, getData } from "../../api/auth";
+import { useEffect } from "react";
 
 export function Solicitudes() {
   const { user } = useSesion();
@@ -19,12 +21,14 @@ export function Solicitudes() {
     });
     e.target.classList.add("enable");
   };
-  const submitAceptar = (email, aceptado) => {
+  const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
-      fetch("http://localhost/aceptar-solicitud", {
-        method: "POST",
-        body: JSON.stringify({ admin: user.id, email, aceptado }),
-      });
+      const respuesta = await aceptarSolicitud({
+        admin: user.id,
+        email,
+        aceptado,
+      }, entidad);
+      console.log(respuesta);
     }
   };
 
@@ -54,6 +58,7 @@ export function Solicitudes() {
             title={"Solicitantes"}
             documento="document"
             handleSubmit={submitAceptar}
+            usuario={"Repartidor"}
           />
         )}
       {reporte === "Empresas" &&
@@ -65,6 +70,7 @@ export function Solicitudes() {
             title={"Solicitantes"}
             documento="document"
             handleSubmit={submitAceptar}
+            usuario={"Empresa"}
           />
         )}
     </Box>
@@ -87,8 +93,19 @@ const campos = [
   { id: "address", label: "Dirección", name: "address" },
   { id: "licencia", label: "Licencia", name: "licencia" },
 ];
-function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
+function Solicitud(
+  { id, fields, data, title, documento, handleSubmit, usuario },
+) {
   const [entidad, setEntidad] = useState({});
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const endpoint = usuario == "Empresa"
+      ? "/SolicitudEmpresas"
+      : "/SolicitudRepartidores";
+    getData({endpoint}).then((res) => res.json())
+      .then((data) => setData(data))
+      .catch((e) => console.log(e));
+  }, []);
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>
       value[id] == e.target.innerText
@@ -147,7 +164,7 @@ function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
           fullWidth
           variant="contained"
           sx={{ margin: "10px 0", bgcolor: "#F2890D" }}
-          onClick={() => handleSubmit(entidad[id], true)}
+          onClick={() => handleSubmit(entidad[id], true, usuario)}
         >
           Aprobar
         </Button>
@@ -156,7 +173,7 @@ function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
           fullWidth
           variant="contained"
           sx={{ bgcolor: "#999" }}
-          onClick={() => handleSubmit(entidad[id], false)}
+          onClick={() => handleSubmit(entidad[id], false, usuario)}
         >
           Rechazar
         </Button>
