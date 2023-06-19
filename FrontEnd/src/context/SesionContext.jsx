@@ -5,33 +5,50 @@ import { nuevaDireccion, registrar, userLogin } from "../api/auth";
 export const sesionContext = createContext();
 
 export function SesionProvider({ children }) {
-  const parseCookie = (str) =>
-    str
-      .split(";")
-      .map((v) => v.split("="))
-      .reduce((acc, v) => {
-        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(
-          v[1].trim(),
-        );
-        return acc;
-      }, {});
+  const roles = {
+    "0": "Administrador",
+    "1": "Cliente",
+    "2": "Repartidor",
+    "3": "Empresa",
+  };
+  const [user, setUser] = useState({
+    id: "admin@gmail.com",
+    rol: "Ninguno",
+    activo: true,
+  });
 
-  const [user, setUser] = useState({ id: "admin@gmail.com", rol: "Repartidor", activo:true });
-
-  const login = (data) => {
-    userLogin({ data }).then((newSesion) => setUser(newSesion));
+  const login = async (data) => {
+    //const newSesion = await userLogin({ data });
+    const newSesion = {
+      MENSAJE:"asdsf",
+      TIPO:"ERROR"
+    }
+    if (!isNaN(newSesion.MENSAJE)) {
+      // Es número, por lo tanto es rol
+      // Actualizamos el usuario
+      const newUser = { id: data.email, rol: roles[newSesion.MENSAJE] };
+      setUser(newUser);
+      if (newUser.rol=="Administrador") return "/Administrador/Solicitudes"
+      if (newUser.rol=="Repartidor") return "/Repartidor"
+      if (newUser.rol=="Empresa") return "/Empresa/CatalogoEmpresa"
+      if (newUser.rol=="Cliente") return "/"
+    }
+    // Si es un mensaje string entonces es error
+    return newSesion;
   };
   const registrarme = async (usuario = "Usuario", data) => {
     const mensaje = await registrar(usuario, data);
     return mensaje;
   };
-  const solicitarNuevaDireccion = async (data)=>{
-    console.log(data)
-    const mensaje = await nuevaDireccion({data})
-    return mensaje
-  }
+  const solicitarNuevaDireccion = async (data) => {
+    console.log(data);
+    const mensaje = await nuevaDireccion({ data });
+    return mensaje;
+  };
   return (
-    <sesionContext.Provider value={{ user, login, registrarme, solicitarNuevaDireccion }}>
+    <sesionContext.Provider
+      value={{ user, login, registrarme, solicitarNuevaDireccion }}
+    >
       {children}
     </sesionContext.Provider>
   );

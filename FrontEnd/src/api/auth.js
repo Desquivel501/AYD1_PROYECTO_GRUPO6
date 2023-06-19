@@ -9,8 +9,7 @@ export function userLogin({ data }) {
     body: data,
   })
     .then((res) => res.json())
-    .then((data) => data)
-    // .catch((err) => console.log(err));
+    .catch((err) => console.log(err));
 }
 // Función para registrar usuario,empresa o repartidor
 export function registrar(entidad, data) {
