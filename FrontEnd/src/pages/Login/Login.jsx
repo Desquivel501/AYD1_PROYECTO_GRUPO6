@@ -7,16 +7,25 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useContext } from "react";
-import { sesionContext } from "../../context/SesionContext";
+import { useSesion } from "../../hooks/useSesion";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { login } = useContext(sesionContext);
+  const { login } = useSesion();
+  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    login(data);
+    const respuesta = await login(data);
+    console.log(respuesta);
+    if (respuesta.MENSAJE) {
+      setMensaje({ mensaje: respuesta.MENSAJE, tipo: "Error" });
+    } else {
+      navigate(respuesta);
+    }
     event.target.reset();
   };
 
@@ -128,6 +137,19 @@ export default function Login() {
                 >
                   Sign In
                 </Button>
+                {mensaje.tipo != "" &&
+                  (
+                    <p
+                      className="mensaje"
+                      style={{
+                        backgroundColor: mensaje.tipo == "Error"
+                          ? "#c00"
+                          : "#080",
+                      }}
+                    >
+                      {mensaje.mensaje}
+                    </p>
+                  )}
                 <Grid container>
                   <Grid item>
                     <Link

@@ -57,28 +57,29 @@ CREATE TABLE Departamentos (
     PRIMARY KEY(id_dep)
 );
 
-INSERT INTO Departamentos VALUES (1, 'Alta Verapaz');
-INSERT INTO Departamentos VALUES (2, 'Baja Verapaz');
-INSERT INTO Departamentos VALUES (3, 'Chimaltenango');
-INSERT INTO Departamentos VALUES (4, 'Chiquimula');
-INSERT INTO Departamentos VALUES (5, 'El Progreso');
-INSERT INTO Departamentos VALUES (6, 'Escuintla');
-INSERT INTO Departamentos VALUES (7, 'Guatemala');
-INSERT INTO Departamentos VALUES (8, 'Huehuetenango');
-INSERT INTO Departamentos VALUES (9, 'Izabal');
-INSERT INTO Departamentos VALUES (10, 'Jalapa');
-INSERT INTO Departamentos VALUES (11, 'Jutiapa');
-INSERT INTO Departamentos VALUES (12, 'Petén');
-INSERT INTO Departamentos VALUES (13, 'Quetzaltenango');
-INSERT INTO Departamentos VALUES (14, 'Quiché');
-INSERT INTO Departamentos VALUES (15, 'Retalhuleu');
-INSERT INTO Departamentos VALUES (16, 'Sacatepéquez');
-INSERT INTO Departamentos VALUES (17, 'San Marcos');
-INSERT INTO Departamentos VALUES (18, 'Santa Rosa');
-INSERT INTO Departamentos VALUES (19, 'Solola');
-INSERT INTO Departamentos VALUES (20, 'Suchitepéquez');
-INSERT INTO Departamentos VALUES (21, 'Totonicapán');
-INSERT INTO Departamentos VALUES (22, 'Zacapa');
+INSERT INTO Departamentos VALUES 
+(1, 'Alta Verapaz'),
+(2, 'Baja Verapaz'),
+(3, 'Chimaltenango'),
+(4, 'Chiquimula'),
+(5, 'El Progreso'),
+(6, 'Escuintla'),
+(7, 'Guatemala'),
+(8, 'Huehuetenango'),
+(9, 'Izabal'),
+(10, 'Jalapa'),
+(11, 'Jutiapa'),
+(12, 'Petén'),
+(13, 'Quetzaltenango'),
+(14, 'Quiché'),
+(15, 'Retalhuleu'),
+(16, 'Sacatepéquez'),
+(17, 'San Marcos'),
+(18, 'Santa Rosa'),
+(19, 'Sololá'),
+(20, 'Suchitepéquez'),
+(21, 'Totonicapán'),
+(22, 'Zacapa');
 
 -- ########################### CREACIÓN DE LA TABLA DE USUARIOS ###########################
 
