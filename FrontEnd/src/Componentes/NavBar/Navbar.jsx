@@ -9,9 +9,11 @@ import { Link } from "react-router-dom";
 import { useSesion } from "../../hooks/useSesion";
 import { links } from "../../assets/navBars";
 
-
 function Navbar() {
-  const { user } = useSesion();
+  const { user, logout } = useSesion();
+  const handleClick = ()=>{
+    logout()
+  }
   return (
     <AppBar position="fixed" sx={{ bgcolor: "#f2890d" }}>
       <Container maxWidth="xl">
@@ -63,6 +65,9 @@ function Navbar() {
                 {text}
               </Link>
             ))}
+            {user.rol != "Ninguno" && (
+              <Link to={"/"} onClick={handleClick}>Cerrar sesión</Link>
+            )}
           </Box>
 
           {
