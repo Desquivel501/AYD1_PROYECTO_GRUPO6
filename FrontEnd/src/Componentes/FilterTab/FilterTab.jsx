@@ -12,7 +12,7 @@ export const FilterTab = (props) => {
 
     const {onChange} = props;
     
-    const [categoria, setCategoria] = useState(["Entradas", "PlatosFuertes", "Bebidas", "Postres", "Ninos", "Combos"])
+    const [categoria, setCategoria] = useState(["Entradas", "Platos Fuertes", "Bebidas", "Postres", "Niños", "Combos"])
     const [search, setSearch] = useState("")
 
 
@@ -105,10 +105,10 @@ export const FilterTab = (props) => {
 
                     <FormGroup>
                         <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Entradas" sx={checkColor}/>} label="Entradas" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="PlatosFuertes" sx={checkColor}/>} label="Platos Fuertes" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Platos Fuertes" sx={checkColor}/>} label="Platos Fuertes" />
                         <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Bebidas" sx={checkColor}/>} label="Bebidas" />
                         <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Postres" sx={checkColor}/>} label="Postres" />
-                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Ninos" sx={checkColor}/>} label="Niños" />
+                        <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Niños" sx={checkColor}/>} label="Niños" />
                         <FormControlLabel control={<Checkbox defaultChecked onChange={changeCategory} id="Combos" sx={checkColor}/>} label="Combos" />
                     </FormGroup>
 

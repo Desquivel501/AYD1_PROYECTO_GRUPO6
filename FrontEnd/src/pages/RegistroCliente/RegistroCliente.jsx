@@ -10,15 +10,51 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSesion } from "../../hooks/useSesion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function RegistroCliente() {
   const { registrarme } = useSesion();
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = registrarme("Usuario", data);
-    setMensaje(mensaje);
+    const mensaje = await registrarme("Usuario", data);
+    // setMensaje(mensaje);
+    console.log(mensaje)
+
+    if (mensaje.TIPO == "EXITO") {
+      Swal.fire({
+        icon: 'success',
+        title: 'Creado',
+        text: mensaje.MENSAJE,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const newUser = {
+            id: data.get("email"),
+            rol:"Cliente",
+          };
+          window.sessionStorage.setItem("user", JSON.stringify(newUser));
+          navigate("/");
+        }
+      })
+    } else {
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje.MENSAJE,
+      })
+    }
+
+    // const newUser = {
+    //   id: data.get("email"),
+    //   rol:"Cliente",
+    // };
+    // window.sessionStorage.setItem("user", JSON.stringify(newUser));
+    // navigate("/");
     //setMensaje({mensaje:"Hubo un error",tipo:"Error"});
     event.target.reset();
   };
@@ -131,17 +167,17 @@ export default function RegistroCliente() {
                 >
                   Registrarme
                 </Button>
-                {mensaje.tipo != "" &&
+                {mensaje.TIPO != "" &&
                   (
                     <p
                       className="mensaje"
                       style={{
-                        backgroundColor: mensaje.tipo == "Error"
+                        backgroundColor: mensaje.TIPO == "ERROR"
                           ? "#c00"
                           : "#080",
                       }}
                     >
-                      {mensaje.mensaje}
+                      {mensaje.MENSAJE}
                     </p>
                   )}
                 <Link to="/Login" style={{ color: "#F2890D" }}>

@@ -276,3 +276,31 @@ BEGIN
     INTO en_uso;
 	RETURN(en_uso);
 END $$
+
+-- ########################### FUNCION PARA VERIFICAR SI UNA CUENTA PUEDE INICIAR SESION ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS NoIngresar $$
+CREATE FUNCTION NoIngresar(
+	correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE ingresar BOOLEAN;
+    SELECT ((Usuarios.estado = 0) OR (Usuarios.estado = 2)) INTO ingresar
+    FROM Usuarios
+	WHERE Usuarios.correo = correo;
+    RETURN(ingresar);
+END $$
+
+/***********************************Función para obtener la fecha actual *************************************/
+DELIMITER $$
+CREATE FUNCTION FechaActual(
+)
+RETURNS DATETIME
+DETERMINISTIC
+BEGIN
+	DECLARE fecha DATETIME;
+    SELECT CONVERT_TZ(NOW(), 'SYSTEM', 'America/Guatemala') INTO fecha;
+    RETURN (fecha);
+END $$

@@ -6,15 +6,14 @@ import Typography from "@mui/material/Typography";
 
 import "./navbar.css";
 import { Link } from "react-router-dom";
-
-const links = [
-  { text: "Iniciar Sesión", path: "/Login" },
-  { text: "Nuevo Usuario", path: "/RegistroCliente" },
-  { text: "Nuevo Repartidor", path: "/RegistroRepartidor" },
-  { text: "Nueva Empresa", path: "/RegistroEmpresa" },
-];
+import { useSesion } from "../../hooks/useSesion";
+import { links } from "../../assets/navBars";
 
 function Navbar() {
+  const { user, logout } = useSesion();
+  const handleClick = ()=>{
+    logout()
+  }
   return (
     <AppBar position="fixed" sx={{ bgcolor: "#f2890d" }}>
       <Container maxWidth="xl">
@@ -58,7 +57,7 @@ function Navbar() {
               </Link>
             </Typography>
 
-            {links.map(({ text, path }) => (
+            {links[user.rol].map(({ text, path }) => (
               <Link
                 to={path}
                 key={path}
@@ -66,6 +65,9 @@ function Navbar() {
                 {text}
               </Link>
             ))}
+            {user.rol != "Ninguno" && (
+              <Link to={"/"} onClick={handleClick}>Cerrar sesión</Link>
+            )}
           </Box>
 
           {

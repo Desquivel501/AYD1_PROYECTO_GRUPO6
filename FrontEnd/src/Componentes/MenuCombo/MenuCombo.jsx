@@ -18,8 +18,11 @@ import RadioGroup from '@mui/material/RadioGroup';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSesion } from "../../hooks/useSesion";
+import Swal from 'sweetalert2'
 
 export const MenuCombo = (props) => {
+    const { user } = useSesion();
     
     const {title, id, name, desc, cost, disponible, edicion, addComp, productos} = props;
 
@@ -40,10 +43,10 @@ export const MenuCombo = (props) => {
         }
 
         const jsonData = {
-            "id": id,
-            "name": name_,
-            "description": desc_,
-            "cost": cost_,
+            "empresa": user.id,
+            "nombre": name_,
+            "descripcion": desc_,
+            "costo": cost_,
             "disponible": disponible_,
             "productos": listado
         }
@@ -51,14 +54,31 @@ export const MenuCombo = (props) => {
         fetch("http://localhost:3000/CrearCombo", {
             method: "POST",
             headers: {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin_Origin': '*'
+                'Content-Type':'application/json'
             },
             body: JSON.stringify(jsonData)
         })
         .then(res => res.json())
         .then(response =>{
-          console.log(response)
+            console.log(response)
+                
+            if(response[0].TIPO == "EXITO"){
+                Swal.fire({
+                    icon: 'success',
+                    title: (edicion ? "Editado!":"Creado!"),
+                    text: response[0].MENSAJE,
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload(false);
+                    }
+                  })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response[0].MENSAJE,
+                  })
+            }
         })
     }
 

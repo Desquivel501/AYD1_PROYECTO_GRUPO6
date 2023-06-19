@@ -7,11 +7,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ProductCard } from '../../Componentes/ProductCard/ProductCard';
 import { amber, grey, brown } from '@mui/material/colors';
 import Paper from "@mui/material/Paper";
-import Productos from '../../assets/productos.js'
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSesion } from "../../hooks/useSesion";
 
 export default function EditarProductos() {
+
+    const { user } = useSesion();
 
     // const [productos, setProductos] = useState([]);
     const [count, setCount] = useState(0);
@@ -30,31 +32,48 @@ export default function EditarProductos() {
         }
     );
 
-    useEffect(() => {
-        if(count == 0){
-            
-            fetch("http://localhost:3000/GetProductos", {
-                method: "GET",
-                headers: {
-                    'Content-Type':'application/json',
-                    'Access-Control-Allow-Origin_Origin': '*'
-                }
-            })
-            .then(res => res.json())
-            .then(response =>{
-                setCatalogo(response)
-            })
-            
-            setCount(1)
-        }
+    const [datos, setDatos] = useState({
+        title: "",
+        image: ""
     })
+
+    useEffect(() => {
+        fetch("http://localhost:3000/ObtenerProductos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setCatalogo(response)
+            console.log(response)
+        })
+
+        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setDatos({
+                title: response[0].nombre_entidad,
+                image: response[0].imagen
+            })
+        })
+
+    },[])
 
     const handlePress = (id) => {
         console.log(id)
-        for (var i = 0; i < Productos.length; i++){
-            if(Productos[i].id == id){
-                console.log(Productos[i])
-                setActual(Productos[i]);
+        for (var i = 0; i < catalogo.length; i++){
+            if(catalogo[i].id == id){
+                console.log(catalogo[i])
+                setActual(catalogo[i]);
                 break
             }
         }
@@ -98,8 +117,8 @@ export default function EditarProductos() {
                         
                     >
                         <TitleCard 
-                            title={"Nombre Restaurante"}
-                            logo={"https://picsum.photos/200"}
+                            title={datos.title}
+                            logo={datos.image}
                         />
                     </Grid>
 

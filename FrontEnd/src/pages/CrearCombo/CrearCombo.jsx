@@ -7,13 +7,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ProductCard } from '../../Componentes/ProductCard/ProductCard';
 import { amber, grey, brown } from '@mui/material/colors';
 import Paper from "@mui/material/Paper";
-import Productos from '../../assets/productos.js'
 import { useState } from "react";
 import { useEffect } from "react";
 import { MenuCombo } from '../../Componentes/MenuCombo/MenuCombo';
 import SaveIcon from '@mui/icons-material/Save';
+import { useSesion } from "../../hooks/useSesion";
 
 export default function CrearCombo() {
+    
+    const { user } = useSesion();
 
     const [count, setCount] = useState(0);
 
@@ -30,12 +32,41 @@ export default function CrearCombo() {
         }
     );
 
-    useEffect(() => {
-        if(count == 0){
-            setCatalogo(Productos)
-            setCount(1)
-        }
+    const [datos, setDatos] = useState({
+        title: "",
+        image: ""
     })
+
+
+    useEffect(() => {
+        fetch("http://localhost:3000/ObtenerProductos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setCatalogo(response)
+            console.log(response)
+        })
+
+        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            setDatos({
+                title: response[0].nombre_entidad,
+                image: response[0].imagen
+            })
+        })
+    }, [])
     
     const [catalogo, setCatalogo] = useState([])
     const [combo, setCombo] = useState([])
@@ -108,8 +139,8 @@ export default function CrearCombo() {
                         
                     >
                         <TitleCard 
-                            title={"Nombre Restaurante"}
-                            logo={"https://picsum.photos/200"}
+                            title={datos.title}
+                            logo={datos.image}
                         />
                     </Grid>
 
@@ -148,16 +179,6 @@ export default function CrearCombo() {
                                     productos={combo}
                                 />
                             </Grid>
-                            {/* <Button
-                                variant="contained"
-                                size="large"
-                                sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
-                                endIcon={<SaveIcon />}
-                            >
-                                Guardar Combo
-                            </Button> */}
-
-
                             <Grid
                                 item
                                 xs={12} sm={7}

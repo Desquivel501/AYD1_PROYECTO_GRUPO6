@@ -1,24 +1,21 @@
-const API = "http://localhost:3000";
+const API = "http://localhost:3000/";
 export function userLogin({ data }) {
-  return fetch(`${API}/login`, {
+  return fetch(`${API}InicioSesion`, {
     method: "POST",
-    credentials: "include",
     body: data,
   })
     .then((res) => res.json())
-    .then((data) => data)
     .catch((err) => console.log(err));
 }
 // Función para registrar usuario,empresa o repartidor
 export function registrar(entidad, data) {
   const endpoint = {
-    "Usuario": "registrarUsuario",
-    "Empresa": "registrarEmpresa",
-    "Repartidor": "registrarRepartidor",
+    "Usuario": "RegistrarCliente",
+    "Empresa": "RegistrarEmpresa",
+    "Repartidor": "RegistrarRepartidor",
   };
-  return fetch(`${API}/${endpoint[entidad]}`, {
+  return fetch(`${API}${endpoint[entidad]}`, {
     method: "POST",
-    credentials: "include",
     body: data,
   })
     .then((res) => res.json())
@@ -32,7 +29,10 @@ export function registrar(entidad, data) {
 export function nuevaDireccion({ data }) {
   return fetch(`${API}/nuevadireccion`, {
     method: "POST",
-    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin_Origin": "*",
+    },
     body: data,
   })
     .then((res) => res.json())
@@ -42,9 +42,20 @@ export function nuevaDireccion({ data }) {
  * Función general para obtener información por método GET
  * @params enpoint Indica de dónde queremos obtener la información
  * @returns Json con la respuesta
- * */
+ */
 export function getData({ endpoint }) {
-  return fetch(`${API}/${endpoint}`)
+  return fetch(`${API}${endpoint}`)
     .then((res) => res.json())
+    .catch((er) => console.log(er));
+}
+export function aceptarSolicitud(data, rol) {
+  const endpoint = rol == "Empresa" ? "AceptarEmpresa" : "AceptarRepartidor";
+  return fetch(`${API}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  }).then((res) => res.json())
     .catch((er) => console.log(er));
 }

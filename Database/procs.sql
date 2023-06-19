@@ -10,6 +10,12 @@ CREATE PROCEDURE InicioSesion(
 inicio_sesion:BEGIN
 	DECLARE rol INTEGER;
 	IF(CredencialesValidas(correo, contrasenia)) THEN
+		
+        IF(NoIngresar(correo)) THEN
+			SELECT 'Su usuario se encuentra deshabilitado o pendiente de aprobación por un administrador' AS 'MENSAJE',
+			'ERROR' AS 'TIPO';
+        END IF;
+    
 		SELECT u.rol INTO rol 
         FROM Usuarios u
         WHERE u.correo = correo;
@@ -571,15 +577,21 @@ agregar_producto_combo:BEGIN
 	'EXITO' AS 'TIPO';
 END $$
 
--- ########################### OBTENER LOS PRODUCTOS DE UN COMBO ESPECIFICO ###########################
+-- ########################### OBTENER TODOS LOS COMBOS CON TODOS SUS PRODUCTOS ###########################
 DELIMITER $$
-DROP PROCEDURE IF EXISTS ObtenerProductosCombo $$
-CREATE PROCEDURE ObtenerProductosCombo(
-	IN id_combo_in INTEGER
-)
-obtener_producto_combo:BEGIN
-	SELECT * FROM Detalle_combos dc
-    JOIN Productos p
-    ON dc.id_prod = p.id_prod
-    AND dc.id_combo = id_combo_in;
+DROP PROCEDURE IF EXISTS ObtenerCombosConProductos $$
+CREATE PROCEDURE ObtenerCombosConProductos(IN correo VARCHAR(200))
+BEGIN
+    SELECT c.id_combo AS id, c.nombre AS title, c.precio AS cost, c.descripcion AS descripcion, c.disponibilidad AS disponible,
+    (CASE WHEN (COUNT(p.id_prod) = 0) THEN JSON_ARRAY()
+	ELSE
+		JSON_ARRAYAGG(
+			JSON_OBJECT('id', p.id_prod, 'title', p.nombre, 'image', p.imagen)
+		) 
+	END) AS productos
+    FROM Combos c
+    LEFT JOIN Detalle_combos dc ON c.id_combo = dc.id_combo
+    LEFT JOIN Productos p ON dc.id_prod = p.id_prod
+    WHERE c.correo = correo
+    GROUP BY c.id_combo;
 END $$

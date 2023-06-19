@@ -20,15 +20,36 @@ import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function RegistroRepartidor() {
   const { registrarme } = useContext(sesionContext);
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const [mensaje, setMensaje] = useState({ MENSAJE: "", TIPO: "" });
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = registrarme("Repartidor", data);
-    setMensaje(mensaje);
+    const mensaje = await registrarme("Repartidor", data);
+    
+    if (mensaje.TIPO == "EXITO") {
+      Swal.fire({
+        icon: 'success',
+        title: 'Creado',
+        text: mensaje.MENSAJE,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+        }
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje.MENSAJE,
+      })
+    }
+
     event.target.reset();
   };
 
@@ -147,7 +168,7 @@ export default function RegistroRepartidor() {
                   <DireccionEnRegistro />
                 </Grid>
 
-                <FormControl fullWidth margin="normal" required>
+                <FormControl fullWidth margin="normal" >
                   <InputLabel id="licencia">Tipo de Licencia</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
@@ -168,7 +189,6 @@ export default function RegistroRepartidor() {
 
                 <FormGroup>
                   <FormControlLabel
-                    required
                     control={<Checkbox />}
                     label="Tiene vehiculo propio"
                     name="Vehiculo"
@@ -202,17 +222,17 @@ export default function RegistroRepartidor() {
                 >
                   Registrarme
                 </Button>
-                {mensaje.tipo != "" &&
+                {mensaje.TIPO != "" &&
                   (
                     <p
                       className="mensaje"
                       style={{
-                        backgroundColor: mensaje.tipo == "Error"
+                        backgroundColor: mensaje.TIPO == "Error"
                           ? "#c00"
                           : "#080",
                       }}
                     >
-                      {mensaje.mensaje}
+                      {mensaje.MENSAJE}
                     </p>
                   )}
 

@@ -5,10 +5,14 @@ import repartidores from "../../mocks/repartidores.json";
 import empresas from "../../mocks/empresas.json";
 import { PersonAttribute } from "../../Componentes/Persona";
 import { useSesion } from "../../hooks/useSesion";
+import { aceptarSolicitud, getData } from "../../api/auth";
+import { useEffect } from "react";
+import Swal from 'sweetalert2'
 
 export function Solicitudes() {
   const { user } = useSesion();
-  const [reporte, setReporte] = useState("Usuarios");
+  const [reporte, setReporte] = useState("Repartidores");
+  const [cont, setCont] = useState(0);
 
   const handleClick = (e) => {
     setReporte(e.target.innerText);
@@ -19,12 +23,35 @@ export function Solicitudes() {
     });
     e.target.classList.add("enable");
   };
-  const submitAceptar = (email, aceptado) => {
+
+  const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
-      fetch("http://localhost/aceptar-solicitud", {
-        method: "POST",
-        body: JSON.stringify({ admin: user.id, email, aceptado }),
-      });
+      console.log(user)
+      const respuesta = await aceptarSolicitud({
+        admin: user.id,
+        email,
+        aceptado,
+      }, entidad);
+      console.log(respuesta);
+
+      if (respuesta[0].TIPO == "EXITO") {
+        Swal.fire({
+          icon: 'success',
+          title: (aceptado ? "Aceptado!": "Rechazado"),
+          text: respuesta[0].MENSAJE,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCont(cont+1)
+          }
+        })
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: respuesta[0].MENSAJE,
+        })
+      }
+
     }
   };
 
@@ -48,23 +75,23 @@ export function Solicitudes() {
       {reporte === "Repartidores" &&
         (
           <Solicitud
-            id={"email"}
+            id={"correo"}
             fields={campos}
-            data={repartidores}
             title={"Solicitantes"}
-            documento="document"
+            documento="cv"
             handleSubmit={submitAceptar}
+            usuario={"Repartidor"}
           />
         )}
       {reporte === "Empresas" &&
         (
           <Solicitud
-            id={"email"}
+            id={"correo"}
             fields={camposEmpresas}
-            data={empresas}
             title={"Solicitantes"}
-            documento="document"
+            documento="doc"
             handleSubmit={submitAceptar}
+            usuario={"Empresa"}
           />
         )}
     </Box>
@@ -72,23 +99,35 @@ export function Solicitudes() {
 }
 
 const camposEmpresas = [
-  { id: "name", label: "Nombre", name: "name" },
-  { id: "description", label: "Descripción", name: "description" },
-  { id: "email", label: "Correo", name: "email" },
-  { id: "password", label: "Contraseña", name: "password" },
-  { id: "address", label: "Dirección", name: "address" },
+  { id: "name", label: "Nombre", name: "nombre" },
+  { id: "description", label: "Descripción", name: "descripcion" },
+  { id: "email", label: "Correo", name: "correo" },
+  { id: "password", label: "Contraseña", name: "contrasenia" },
+  { id: "address", label: "Dirección", name: "direccion" },
 ];
 const campos = [
-  { id: "name", label: "Nombre", name: "name" },
-  { id: "last_name", label: "Apellido", name: "last_name" },
-  { id: "email", label: "Correo", name: "email" },
-  { id: "password", label: "Contraseña", name: "password" },
+  { id: "name", label: "Nombre", name: "nombre" },
+  { id: "last_name", label: "Apellido", name: "apellidos" },
+  { id: "email", label: "Correo", name: "correo" },
+  { id: "password", label: "Contraseña", name: "contrasenia" },
   { id: "phone", label: "Celular", name: "phone" },
-  { id: "address", label: "Dirección", name: "address" },
-  { id: "licencia", label: "Licencia", name: "licencia" },
+  { id: "address", label: "Dirección", name: "direccion" },
+  { id: "licencia", label: "Licencia", name: "tipo_licencia" },
 ];
-function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
+function Solicitud(
+  { id, fields, title, documento, handleSubmit, usuario },
+) {
   const [entidad, setEntidad] = useState({});
+  const [data, setData] = useState([]);
+ 
+  useEffect(() => {
+    const endpoint = usuario == "Empresa"
+      ? "SolicitudesEmpresas"
+      : "SolicitudesRepartidores";
+    getData({ endpoint }).then((data) => setData(data))
+      .catch((e) => console.log(e));
+  }, []);
+  
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>
       value[id] == e.target.innerText
@@ -130,6 +169,7 @@ function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
             value={entidad[name] ?? ""}
           />
         ))}
+
         {documento &&
           (
             <PersonAttribute attribute={"Documento"}>
@@ -147,7 +187,7 @@ function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
           fullWidth
           variant="contained"
           sx={{ margin: "10px 0", bgcolor: "#F2890D" }}
-          onClick={() => handleSubmit(entidad[id], true)}
+          onClick={() => handleSubmit(entidad[id], true, usuario)}
         >
           Aprobar
         </Button>
@@ -156,7 +196,7 @@ function Solicitud({ id, fields, data, title, documento, handleSubmit }) {
           fullWidth
           variant="contained"
           sx={{ bgcolor: "#999" }}
-          onClick={() => handleSubmit(entidad[id], false)}
+          onClick={() => handleSubmit(entidad[id], false, usuario)}
         >
           Rechazar
         </Button>
