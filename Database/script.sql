@@ -90,7 +90,7 @@ CREATE TABLE Usuarios (
     apellidos VARCHAR(150),
     contrasenia VARCHAR(100) NOT NULL,
     rol INTEGER NOT NULL,
-    fecha_registro DATETIME DEFAULT current_timestamp,
+    fecha_registro DATETIME,
     estado INTEGER NOT NULL,
     PRIMARY KEY(correo)
 );
