@@ -38,6 +38,10 @@ export function SesionProvider({ children }) {
   };
   const registrarme = async (usuario = "Usuario", data) => {
     const mensaje = await registrar(usuario, data);
+    /*const mensaje = {
+      MENSAJE:"OK",
+      TIPO:"Exitoso"
+    }*/
     return mensaje;
   };
   const solicitarNuevaDireccion = async (data) => {
