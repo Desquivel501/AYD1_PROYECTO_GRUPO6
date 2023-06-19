@@ -292,3 +292,15 @@ BEGIN
 	WHERE Usuarios.correo = correo;
     RETURN(ingresar);
 END $$
+
+/***********************************Función para obtener la fecha actual *************************************/
+DELIMITER $$
+CREATE FUNCTION FechaActual(
+)
+RETURNS DATETIME
+DETERMINISTIC
+BEGIN
+	DECLARE fecha DATETIME;
+    SELECT CONVERT_TZ(NOW(), 'SYSTEM', 'America/Guatemala') INTO fecha;
+    RETURN (fecha);
+END $$
