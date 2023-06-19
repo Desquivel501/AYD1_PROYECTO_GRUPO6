@@ -81,7 +81,6 @@ export default function CatalogoEmpresa() {
         })
         .then(res => res.json())
         .then(response =>{
-            console.log(response)
             setCombo(response)
             
         })
