@@ -1,0 +1,50 @@
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100vh;
+  padding: 0 50px;
+}
+main img {
+  height: 450px;
+  margin: auto;
+}
+.welcome-text {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.welcome-text h1 {
+  font-size: 3rem;
+  color: #BD4F23;
+}
+.welcome-text p {
+  text-align: left;
+  font-size: large;
+  margin-bottom: 10px;
+}
+.cualidades {
+  background-color: #f2890d;
+  display: flex;
+  flex-direction: row;
+  gap: 10%;
+  padding: 0 50px;
+  padding-bottom: 20px;
+}
+footer {
+  background-color: #BD4F23;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+footer ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.hola {
+  width: 40%;
+}
