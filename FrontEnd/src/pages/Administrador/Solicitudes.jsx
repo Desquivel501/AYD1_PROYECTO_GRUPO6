@@ -7,6 +7,7 @@ import { PersonAttribute } from "../../Componentes/Persona";
 import { useSesion } from "../../hooks/useSesion";
 import { aceptarSolicitud, getData } from "../../api/auth";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 export function Solicitudes() {
   const { user } = useSesion();
@@ -23,13 +24,26 @@ export function Solicitudes() {
   };
   const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
-      console.log(user)
+      console.log(user);
       const respuesta = await aceptarSolicitud({
         admin: user.id,
         email,
         aceptado,
       }, entidad);
       console.log(respuesta);
+      if (respuesta.TIPO == "EXITO") {
+        Swal.fire({
+          icon: "success",
+          title: "Aceptado",
+          text: respuesta.MENSAJE,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: respuesta.MENSAJE,
+        });
+      }
     }
   };
 
@@ -97,7 +111,7 @@ function Solicitud(
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
- 
+
   useEffect(() => {
     const endpoint = usuario == "Empresa"
       ? "SolicitudesEmpresas"
@@ -105,7 +119,7 @@ function Solicitud(
     getData({ endpoint }).then((data) => setData(data))
       .catch((e) => console.log(e));
   }, []);
-  
+
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>
       value[id] == e.target.innerText
