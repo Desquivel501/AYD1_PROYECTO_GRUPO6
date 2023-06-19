@@ -22,6 +22,7 @@ export default function Login() {
     const data = new FormData(event.currentTarget);
     const respuesta = await login(data);
     console.log(respuesta);
+    
     if (respuesta.MENSAJE) {
       // setMensaje({ mensaje: respuesta.MENSAJE, tipo: "Error" });
       Swal.fire({
@@ -30,8 +31,17 @@ export default function Login() {
         text: respuesta.MENSAJE,
       })
     } else {
-      navigate(respuesta);
+      Swal.fire({
+        icon: 'success',
+        title: 'Bienvenido',
+        text: mensaje.MENSAJE,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate(respuesta);
+        }
+      })
     }
+
     event.target.reset();
   };
 
