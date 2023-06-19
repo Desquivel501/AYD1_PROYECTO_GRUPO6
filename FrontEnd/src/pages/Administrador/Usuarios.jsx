@@ -63,7 +63,7 @@ export function Usuarios() {
     }));
   };
   return (
-    <section style={{ height: "400px", marginTop: "100px" }}>
+    <section style={{ height: "100%", marginTop: "100px" }}>
       <h1>Reporte de usuarios</h1>
       <p>Usuarios: {usuarios.length}</p>
       <DataGrid

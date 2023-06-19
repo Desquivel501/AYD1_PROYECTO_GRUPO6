@@ -79,7 +79,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     const parametro11 = req.file;
 
   mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, 
-    parametro5, parametro6, parametro7, parametro8, parametro9, parametro10 + parametro9 + parametro8, parametro11], (err, results) => {
+    parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarRepartidor:', err);
         return;
@@ -137,7 +137,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
     const parametro5 = req.body.categoria;
     const parametro6 = req.body.Departamento;
     const parametro7 = req.body.Municipio;
-    const parametro8 = req.body.zona +" " + parametro6+ " " + parametro7;
+    const parametro8 = (parametro6 + ", "+ parametro7 + ", Zona " + req.body.zona );
     const parametro9 = req.file;
 
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
@@ -436,8 +436,11 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
 
 //-- ##################################### Obtener listado de usuarios#####################################
 app.get('/ObtenerUsuarios', cors(), (req, res) => {
+  query = `SELECT correo AS id, nombre, apellidos, rol, fecha_registro, estado 
+  FROM Usuarios 
+  WHERE Usuarios.rol != 0`
 
-  mysql.query('select correo as id, nombre, apellidos, rol, fecha_registro, estado from Usuarios ', (err, results) => {
+  mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
@@ -448,7 +451,6 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
       console.log(results);
 
     });
-    
 });
 
 //-- ##################################### Obtener las solicitudes de repartidores #####################################

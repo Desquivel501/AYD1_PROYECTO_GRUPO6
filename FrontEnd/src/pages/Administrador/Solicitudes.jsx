@@ -10,7 +10,7 @@ import { useEffect } from "react";
 
 export function Solicitudes() {
   const { user } = useSesion();
-  const [reporte, setReporte] = useState("Usuarios");
+  const [reporte, setReporte] = useState("Repartidores");
 
   const handleClick = (e) => {
     setReporte(e.target.innerText);
@@ -90,13 +90,14 @@ const campos = [
   { id: "password", label: "Contraseña", name: "contrasenia" },
   { id: "phone", label: "Celular", name: "phone" },
   { id: "address", label: "Dirección", name: "direccion" },
-  { id: "licencia", label: "Licencia", name: "licencia" },
+  { id: "licencia", label: "Licencia", name: "tipo_licencia" },
 ];
 function Solicitud(
   { id, fields, title, documento, handleSubmit, usuario },
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
+ 
   useEffect(() => {
     const endpoint = usuario == "Empresa"
       ? "SolicitudesEmpresas"
@@ -104,6 +105,7 @@ function Solicitud(
     getData({ endpoint }).then((data) => setData(data))
       .catch((e) => console.log(e));
   }, []);
+  
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>
       value[id] == e.target.innerText
@@ -145,6 +147,7 @@ function Solicitud(
             value={entidad[name] ?? ""}
           />
         ))}
+
         {documento &&
           (
             <PersonAttribute attribute={"Documento"}>
