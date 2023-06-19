@@ -7,12 +7,12 @@ import { getData } from "../../api/auth";
 const columns = [
   { field: "id", headerName: "Correo", width: 250 },
   {
-    field: "first_name",
+    field: "nombre",
     headerName: "Nombre",
     width: 150,
   },
   {
-    field: "last_name",
+    field: "apellidos",
     headerName: "Apellido",
     width: 150,
   },
@@ -38,9 +38,8 @@ const columns = [
 export function Usuarios() {
   const [usuarios, setUsuarios] = useState(mock);
   useEffect(() => {
-    const endpoint = "/ObtenerUsuarios";
+    const endpoint = "ObtenerUsuarios";
     getData({ endpoint })
-      .then((res) => res.json())
       .then((data) => setUsuarios(data))
       .catch((e) => console.log(e));
   }, []);
@@ -60,6 +59,7 @@ export function Usuarios() {
       ...value,
       rol: roles[value.rol],
       estado: estados[value.estado],
+      fecha_registro: new Date(value.fecha_registro).toLocaleDateString("en-GB"),
     }));
   };
   return (

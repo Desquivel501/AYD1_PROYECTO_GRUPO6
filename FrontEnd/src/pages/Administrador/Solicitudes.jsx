@@ -23,6 +23,7 @@ export function Solicitudes() {
   };
   const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
+      console.log(user)
       const respuesta = await aceptarSolicitud({
         admin: user.id,
         email,
@@ -52,7 +53,7 @@ export function Solicitudes() {
       {reporte === "Repartidores" &&
         (
           <Solicitud
-            id={"email"}
+            id={"correo"}
             fields={campos}
             title={"Solicitantes"}
             documento="document"
@@ -63,7 +64,7 @@ export function Solicitudes() {
       {reporte === "Empresas" &&
         (
           <Solicitud
-            id={"email"}
+            id={"correo"}
             fields={camposEmpresas}
             title={"Solicitantes"}
             documento="document"
@@ -76,32 +77,31 @@ export function Solicitudes() {
 }
 
 const camposEmpresas = [
-  { id: "name", label: "Nombre", name: "name" },
+  { id: "name", label: "Nombre", name: "nombre" },
   { id: "description", label: "Descripción", name: "description" },
-  { id: "email", label: "Correo", name: "email" },
-  { id: "password", label: "Contraseña", name: "password" },
-  { id: "address", label: "Dirección", name: "address" },
+  { id: "email", label: "Correo", name: "correo" },
+  { id: "password", label: "Contraseña", name: "contrasenia" },
+  { id: "address", label: "Dirección", name: "direccion" },
 ];
 const campos = [
-  { id: "name", label: "Nombre", name: "name" },
-  { id: "last_name", label: "Apellido", name: "last_name" },
-  { id: "email", label: "Correo", name: "email" },
-  { id: "password", label: "Contraseña", name: "password" },
+  { id: "name", label: "Nombre", name: "nombre" },
+  { id: "last_name", label: "Apellido", name: "apellidos" },
+  { id: "email", label: "Correo", name: "correo" },
+  { id: "password", label: "Contraseña", name: "contrasenia" },
   { id: "phone", label: "Celular", name: "phone" },
-  { id: "address", label: "Dirección", name: "address" },
+  { id: "address", label: "Dirección", name: "direccion" },
   { id: "licencia", label: "Licencia", name: "licencia" },
 ];
 function Solicitud(
-  { id, fields,  title, documento, handleSubmit, usuario },
+  { id, fields, title, documento, handleSubmit, usuario },
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
   useEffect(() => {
     const endpoint = usuario == "Empresa"
-      ? "/SolicitudEmpresas"
-      : "/SolicitudRepartidores";
-    getData({endpoint}).then((res) => res.json())
-      .then((data) => setData(data))
+      ? "SolicitudesEmpresas"
+      : "SolicitudesRepartidores";
+    getData({ endpoint }).then((data) => setData(data))
       .catch((e) => console.log(e));
   }, []);
   const handleClick = (e) => {
