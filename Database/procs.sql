@@ -86,12 +86,11 @@ registrar_repartidor:BEGIN
     VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 2, 0);
     
     INSERT INTO Repartidores (correo, municipio, tipo_licencia, motocicleta, id_dep, direccion, celular, cv)
-    VALUES(correo_in, municipio_in, tipo_licencia_in, existe_moto, id_dep_in, celular_in, direccion_in, cv_in);
+    VALUES(correo_in, municipio_in, tipo_licencia_in, existe_moto, id_dep_in, direccion_in, celular_in, cv_in);
 
 	SELECT 'La solicitud fue ingresada correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
-
 
 -- ########################### ACEPTAR LA PETICIÓN DE UN REPARTIDOR ###########################
 DELIMITER $$
