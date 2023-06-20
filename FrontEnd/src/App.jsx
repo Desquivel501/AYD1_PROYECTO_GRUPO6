@@ -17,6 +17,7 @@ import CatalogoEmpresa from "./pages/CatalogoEmpresa/CatalogoEmpresa";
 import EditarProductos from "./pages/EditarProductos/EditarProductos";
 import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
+import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
           <Route path={"/Login"} element={<Login />} />
           <Route path={"/RegistroCliente"} element={<RegistroCliente />} />
           <Route path={"/RegistroEmpresa"} element={<RegistroEmpresa />} />
+
+          <Route path={"/ListadoRestaurantes"} element={<ListadoRestaurantes />} />
+
           <Route
             path={"/RegistroRepartidor"}
             element={<RegistroRepartidor />}

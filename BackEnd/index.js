@@ -417,10 +417,7 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 
       res.json(results);
       console.log(results);
-      
-
-    });
-    
+    }); 
 });
 
 //-- ##################################### Obtener datos de un repartidor #####################################
@@ -462,6 +459,32 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
   ON ce.id_cat = e.id_cat`
 
   mysql.query(query,[parametro1], (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        return;
+      }
+
+      
+      res.json(results);
+      console.log(results);
+
+    });
+    
+});
+
+
+//-- ##################################### Obtener los datos de todas las empresas #####################################
+app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
+  let query = `SELECT * 
+  FROM Usuarios u 
+  JOIN Empresas e 
+  ON u.correo = e.correo 
+  JOIN Departamentos d 
+  ON e.id_dep = d.id_dep
+  JOIN Categorias_empresa ce
+  ON ce.id_cat = e.id_cat`
+
+  mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
