@@ -422,7 +422,7 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
-  const parametro1 = req.body.email;
+  const parametro1 = req.body.correo;
   let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv  
   FROM Usuarios u 
   JOIN Repartidores r 
@@ -522,8 +522,9 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
 
   let query = `SELECT * FROM Usuarios
   JOIN Repartidores
-  ON Usuarios.correo = Repartidores.correo 
-  AND estado = 0`
+  ON Usuarios.correo = Repartidores.correo AND estado = 0
+  JOIN Departamentos
+  ON Repartidores.id_dep = Departamentos.id_dep`
 
   mysql.query(query, (err, results) => {
       if (err) {

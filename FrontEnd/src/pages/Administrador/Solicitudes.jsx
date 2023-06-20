@@ -110,7 +110,7 @@ const campos = [
   { id: "last_name", label: "Apellido", name: "apellidos" },
   { id: "email", label: "Correo", name: "correo" },
   { id: "password", label: "Contraseña", name: "contrasenia" },
-  { id: "phone", label: "Celular", name: "phone" },
+  { id: "celular", label: "Celular", name: "celular" },
   { id: "address", label: "Dirección", name: "direccion" },
   { id: "licencia", label: "Licencia", name: "tipo_licencia" },
 ];
