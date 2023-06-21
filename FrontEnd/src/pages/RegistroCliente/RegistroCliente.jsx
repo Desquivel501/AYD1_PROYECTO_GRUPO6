@@ -23,7 +23,7 @@ export default function RegistroCliente() {
     const data = new FormData(event.currentTarget);
 
     const correo = data.get("email")
-    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g()
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
     if(!email_pattern.test(correo)){
       Swal.fire({
         icon: 'error',
