@@ -30,6 +30,30 @@ export default function RegistroRepartidor() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    }
+
+    const phone = data.get("phone")
+    const phone_pattern = /^\d{8}$/g
+    if(!phone_pattern.test(phone)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Este no es un numero de telefono valido en Guatemala.",
+      })
+      return
+    }
+    
+    
     const mensaje = await registrarme("Repartidor", data);
     
     if (mensaje.TIPO == "EXITO") {
