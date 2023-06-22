@@ -322,7 +322,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
   const parametro3 = "";
   const parametro4 = req.body.costo;
   const parametro5 = req.body.descripcion;
-  const parametro6 = (req.body.disponible == "true"?1:0);
+  const parametro6 = req.body.disponible;
   const parametro7 = req.body.productos;
 
   let formattedResult2 = {"MENSAJE": null, "TIPO": null};
