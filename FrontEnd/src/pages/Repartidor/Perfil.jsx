@@ -2,9 +2,23 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAttribute } from "../../Componentes/Persona";
 import "./Perfil.css";
 import { useSesion } from "../../hooks/useSesion";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export function PerfilRepartidor() {
   const { solicitarNuevaDireccion, user } = useSesion();
+
+  const [actual, setActual] = useState({
+    nombre: "",
+    apellidos: "",
+    id: "",
+    contrasenia: "****",
+    celular: 0,
+    direccion: "",
+    tipo_licencia: "",
+    cv:""
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -12,6 +26,23 @@ export function PerfilRepartidor() {
     console.log(respuesta);
     e.target.reset();
   };
+
+  useEffect(() => {
+      fetch("http://localhost:3000/ObtenerDatosRepartidor", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+        body: JSON.stringify({ correo: user.id }),
+      })
+      .then(res => res.json())
+      .then(response =>{
+          console.log(response)
+          setActual(response[0])
+      })
+      
+  }, [])
+
   return (
     <Box
       display="flex"
@@ -45,16 +76,16 @@ export function PerfilRepartidor() {
             autoComplete="off"
             sx={{ mt: 1 }}
           >
-            <PersonAttribute attribute={"Nombre"} value={user.nombre} />
-            <PersonAttribute attribute={"Apellido"} value={user.apellido} />
-            <PersonAttribute attribute={"Correo"} value={user.email} />
-            <PersonAttribute attribute={"Contraseña"} value={"******"} />
-            <PersonAttribute attribute={"Celular"} value={user.phone} />
-            <PersonAttribute attribute={"Dirección"} value={user.address} />
-            <PersonAttribute attribute={"Licencia"} value={user.licencia} />
+            <PersonAttribute attribute={"Nombre"} value={actual.nombre} />
+            <PersonAttribute attribute={"Apellido"} value={actual.apellidos} />
+            <PersonAttribute attribute={"Correo"} value={actual.id} />
+            <PersonAttribute attribute={"Contraseña"} value={actual.contrasenia} />
+            <PersonAttribute attribute={"Celular"} value={actual.celular} />
+            <PersonAttribute attribute={"Dirección"} value={actual.direccion} />
+            <PersonAttribute attribute={"Licencia"} value={actual.tipo_licencia} />
             <PersonAttribute attribute={"Hoja de vida"}>
               <a
-                href={user.documento}
+                href={actual.cv}
                 target="_blank"
                 className="enlace"
               >

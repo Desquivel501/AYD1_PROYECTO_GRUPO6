@@ -29,8 +29,20 @@ export default function RegistroEmpresa() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = await registrarme("Empresa", data);
+
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    }
     
+    const mensaje = await registrarme("Empresa", data);
+
     if (mensaje.TIPO == "EXITO") {
       Swal.fire({
         icon: 'success',

@@ -41,7 +41,7 @@ export function Solicitudes() {
           text: respuesta[0].MENSAJE,
         }).then((result) => {
           if (result.isConfirmed) {
-            setCont(cont+1)
+            
           }
         })
       } else {
@@ -51,7 +51,7 @@ export function Solicitudes() {
           text: respuesta[0].MENSAJE,
         })
       }
-
+      setCont(cont+1)
     }
   };
 
@@ -81,6 +81,7 @@ export function Solicitudes() {
             documento="cv"
             handleSubmit={submitAceptar}
             usuario={"Repartidor"}
+            cont={cont}
           />
         )}
       {reporte === "Empresas" &&
@@ -92,6 +93,7 @@ export function Solicitudes() {
             documento="doc"
             handleSubmit={submitAceptar}
             usuario={"Empresa"}
+            cont={cont}
           />
         )}
     </Box>
@@ -110,12 +112,12 @@ const campos = [
   { id: "last_name", label: "Apellido", name: "apellidos" },
   { id: "email", label: "Correo", name: "correo" },
   { id: "password", label: "Contraseña", name: "contrasenia" },
-  { id: "phone", label: "Celular", name: "phone" },
+  { id: "celular", label: "Celular", name: "celular" },
   { id: "address", label: "Dirección", name: "direccion" },
   { id: "licencia", label: "Licencia", name: "tipo_licencia" },
 ];
 function Solicitud(
-  { id, fields, title, documento, handleSubmit, usuario },
+  { id, fields, title, documento, handleSubmit, usuario, cont },
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
@@ -126,7 +128,8 @@ function Solicitud(
       : "SolicitudesRepartidores";
     getData({ endpoint }).then((data) => setData(data))
       .catch((e) => console.log(e));
-  }, []);
+    setEntidad([])
+  }, [cont]);
   
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>

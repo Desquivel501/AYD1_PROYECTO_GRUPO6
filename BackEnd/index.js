@@ -112,7 +112,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     const parametro8 = req.body.Municipio;
     const parametro9 = req.body.Departamento;
     const parametro10 = req.body.zona;
-    const parametro11 = req.file.location;
+    const parametro11 = (req.file === undefined) ? null : req.file.location;
 
   mysql.query('CALL RegistrarRepartidor(?,?,?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, 
     parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
@@ -174,7 +174,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
     const parametro6 = req.body.Departamento;
     const parametro7 = req.body.Municipio;
     const parametro8 = (parametro6 + ", "+ parametro7 + ", Zona " + req.body.zona );
-    const parametro9 = req.file.location;
+    const parametro9 = (req.file === undefined) ? null : req.file.location;
 
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
@@ -226,12 +226,12 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 //-- ########################### ALMACENAR PRODUCTOS ###########################
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
-    const parametro1 = req.file.location;
+    const parametro1 = (req.file === undefined) ? null : req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
     const parametro5 = req.body.costo;
-    const parametro6 = req.body.disponible;
+    const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
 
     console.log(parametro6)
@@ -260,13 +260,15 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro0 = req.body.id;
-    const parametro1 = req.file.location;
+    const parametro1 = (req.file === undefined) ? null : req.file.location;
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
     const parametro5 = req.body.costo;
-    const parametro6 = req.body.disponible;
+    const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
+
+    console.log(parametro6)
 
   mysql.query('CALL ActualizarProducto(?,?,?,?,?,?,?,?)', [parametro0, parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
@@ -414,15 +416,12 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 
       res.json(results);
       console.log(results);
-      
-
-    });
-    
+    }); 
 });
 
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
-  const parametro1 = req.body.email;
+  const parametro1 = req.body.correo;
   let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv  
   FROM Usuarios u 
   JOIN Repartidores r 
@@ -472,6 +471,32 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
     
 });
 
+
+//-- ##################################### Obtener los datos de todas las empresas #####################################
+app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
+  let query = `SELECT * 
+  FROM Usuarios u 
+  JOIN Empresas e 
+  ON u.correo = e.correo 
+  JOIN Departamentos d 
+  ON e.id_dep = d.id_dep
+  JOIN Categorias_empresa ce
+  ON ce.id_cat = e.id_cat`
+
+  mysql.query(query, (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        return;
+      }
+
+      
+      res.json(results);
+      console.log(results);
+
+    });
+    
+});
+
 //-- ##################################### Obtener listado de usuarios#####################################
 app.get('/ObtenerUsuarios', cors(), (req, res) => {
   query = `SELECT correo AS id, nombre, apellidos, rol, fecha_registro, estado 
@@ -496,8 +521,9 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
 
   let query = `SELECT * FROM Usuarios
   JOIN Repartidores
-  ON Usuarios.correo = Repartidores.correo 
-  AND estado = 0`
+  ON Usuarios.correo = Repartidores.correo AND estado = 0
+  JOIN Departamentos
+  ON Repartidores.id_dep = Departamentos.id_dep`
 
   mysql.query(query, (err, results) => {
       if (err) {
