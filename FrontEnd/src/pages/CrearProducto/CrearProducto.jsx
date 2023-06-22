@@ -82,7 +82,7 @@ export default function CrearProducto() {
                     >
                         <MenuProducto 
                             title={"Crear Producto"}
-                            image={"https://picsum.photos/200"}
+                            image={"https://placehold.co/200"}
                             edicion={false}
                             addCategorias={true}
                         />

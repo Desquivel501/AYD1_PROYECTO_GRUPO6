@@ -259,7 +259,6 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
-    console.log(req.body.disponible)
     const parametro0 = req.body.id;
     const parametro1 = (req.file === undefined) ? null : req.file.location;
     const parametro2 = req.body.nombre;
