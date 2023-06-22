@@ -42,7 +42,7 @@ export function SesionProvider({ children }) {
       if (newUser.rol == "Administrador") return "/Administrador/Solicitudes";
       if (newUser.rol == "Repartidor") return "/Repartidor";
       if (newUser.rol == "Empresa") return "/Empresa/CatalogoEmpresa";
-      if (newUser.rol == "Cliente") return "/";
+      if (newUser.rol == "Cliente") return "/Empresas";
     }
     // Si es un mensaje string entonces es error
     return newSesion[0];

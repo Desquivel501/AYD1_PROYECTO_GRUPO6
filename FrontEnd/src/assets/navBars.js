@@ -7,10 +7,7 @@ export const links = {
   ],
 
   Cliente: [
-    { text: "Iniciar Sesión", path: "/Login" },
-    { text: "Nuevo Usuario", path: "/RegistroCliente" },
-    { text: "Nuevo Repartidor", path: "/RegistroRepartidor" },
-    { text: "Nueva Empresa", path: "/RegistroEmpresa" },
+    { text: "Empresas", path: "/Empresas" }
   ],
 
   Repartidor: [

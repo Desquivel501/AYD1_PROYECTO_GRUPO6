@@ -10,10 +10,13 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControl from '@mui/material/FormControl';
+import Button from "@mui/material/Button";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import Divider from '@mui/material/Divider';
 
 export const ProductDialog = (props) => {
 
-  const { onClose, selectedValue, open, title, id, name, descripcion, cost, image, categoria, disponible } = props;
+  const { onClose, selectedValue, open, title, id, name, descripcion, cost, image, categoria, disponible, venta } = props;
 
   const handleClose = () => {
     // onClose(selectedValue);
@@ -86,7 +89,6 @@ export const ProductDialog = (props) => {
     
                                 <TextField
                                     margin="normal"
-                                    required
                                     fullWidth
                                     name="cost"
                                     label="Costo"
@@ -97,7 +99,6 @@ export const ProductDialog = (props) => {
                                 />
                                 <TextField
                                     margin="normal"
-                                    required
                                     fullWidth
                                     id="description"
                                     label="Descripción"
@@ -138,10 +139,13 @@ export const ProductDialog = (props) => {
                                 />
 
                             </Grid>
-
-                            <FormGroup>
-                                <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={(disponible)}/>
-                            </FormGroup>
+                            
+                            {!venta && 
+                                <FormGroup>
+                                    <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={(disponible)}/>
+                                </FormGroup>
+                            }
+                            
                         </Grid>
                     </Grid>
                 </Grid>
@@ -206,6 +210,59 @@ export const ProductDialog = (props) => {
                 </Grid>
 
             </Grid>
+
+            {venta && 
+                
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="right"
+                    alignItems="center"
+                    sx={{border:0}}
+                >
+                    <Divider variant="middle" sx={{my:2, width:'90%'}}/>
+                    <Grid
+                        item
+                        xs={4}
+                        sx={{border:0, p:1}}
+                    >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="cantidad"
+                            label="Cantidad"
+                            type="number"
+                            id="cantidad"
+                            autoComplete="cantidad"
+                            defaultValue={1}
+                            InputProps={{ inputProps: { min: 0 } }}
+                        />
+                    </Grid> 
+
+                    <Grid
+                        xs={4}
+                        sx={{border:0}}
+                    >
+                        <Box textAlign='center' sx={{border:0}}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
+                                endIcon={<AddShoppingCartIcon />}
+                                // onClick={() => enviar()}
+                            >
+                                Comprar
+                            </Button>
+
+                        </Box>
+                        
+                    </Grid> 
+
+                    
+
+                </Grid>              
+            }
         </Grid>
     </Dialog>
   );
