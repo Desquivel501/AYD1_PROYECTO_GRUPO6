@@ -226,7 +226,16 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 //-- ########################### ALMACENAR PRODUCTOS ###########################
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
-    const parametro1 = (req.file === undefined) ? null : req.file.location;
+    const parametro1 = (req.file === undefined) ? "" : req.file.location;
+
+    if(parametro1 == ""){
+      res.json([{
+        MENSAJE: "No se ha seleccionado una imagen",
+        TIPO: "ERROR"
+      }]);
+      return
+    }
+
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
@@ -260,7 +269,8 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
 
   /// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro0 = req.body.id;
-    const parametro1 = (req.file === undefined) ? null : req.file.location;
+    const parametro1 = (req.file === undefined) ? "" : req.file.location;
+    console.log(parametro1)
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
@@ -458,6 +468,37 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
   ON ce.id_cat = e.id_cat`
 
   mysql.query(query,[parametro1], (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        return;
+      }
+
+      
+      res.json(results);
+      console.log(results);
+
+    });
+    
+});
+
+
+//-- ##################################### Obtener los datos de una empresa en base a su departamento y nombre #####################################
+app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
+  const nombre = req.body.nombre;
+  const departamento = req.body.departamento;
+
+  let query = `SELECT * 
+  FROM Usuarios u 
+  JOIN Empresas e 
+  ON u.correo = e.correo 
+  AND u.nombre = ? 
+  JOIN Departamentos d 
+  ON e.id_dep = d.id_dep
+  AND e.id_dep = ? 
+  JOIN Categorias_empresa ce
+  ON ce.id_cat = e.id_cat`
+
+  mysql.query(query,[nombre, departamento], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;

@@ -1,5 +1,4 @@
 import { Typography, Box, Container, Grid } from '@mui/material';
-import { TitleCard } from '../../Componentes/TitleCard/TitleCard';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ProductCard } from '../../Componentes/ProductCard/ProductCard';
@@ -7,11 +6,11 @@ import Paper from "@mui/material/Paper";
 import { useState } from "react";
 import { useEffect } from "react";
 import { FilterTab } from '../../Componentes/FilterTab2/FilterTab2';
-import { ProductDialog } from '../../Componentes/ProductDialog/ProductDialog';
-import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
-import { useSesion } from "../../hooks/useSesion";
+import { useNavigate } from "react-router-dom";
 
 export default function ListadoRestaurantes() {
+
+    const navigate = useNavigate();
 
     const [empresas, setEmpresas] = useState([])
 
@@ -54,6 +53,26 @@ export default function ListadoRestaurantes() {
         })
         
     }, [])
+
+    const handleClickOpen = (id) => {
+        
+        const seleccionado = empresas.find((value) =>
+            value["correo"] == id
+        );
+        // console.log(seleccionado)
+
+        let ruta = `${seleccionado.id_dep}/${encodeURI(seleccionado.nombre_entidad)}`
+        navigate(ruta)
+
+        // for (var i = 0; i < catalogo.length; i++){
+        //     if(catalogo[i].id == id){
+        //         console.log(catalogo[i])
+        //         setActual(catalogo[i]);
+        //         break
+        //     }
+        // }
+        // setOpen(true);
+    }
 
 
     const customTheme = createTheme({
@@ -159,7 +178,7 @@ export default function ListadoRestaurantes() {
                                             title={item.nombre_entidad}
                                             image={item.imagen}
                                             descripcion={item.descripcion}
-                                            // onSelect={handleClickOpen2}
+                                            onSelect={handleClickOpen}
                                             addCost={false}
                                             addDesc={true}
                                             size={10}

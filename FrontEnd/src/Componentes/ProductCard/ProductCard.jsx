@@ -18,7 +18,7 @@ export const ProductCard = (props) => {
     <Grid
         item
         xs={size}
-        sx={{border:0, my:1, mx:1, 
+        sx={{border:0, my:1, mx:1,
             '&:hover': {
                 backgroundColor: '#f1dbd3'
               },
@@ -64,7 +64,7 @@ export const ProductCard = (props) => {
                     container
                     direction="row"
                     justifyContent="center"
-                    alignItems="flex-start"
+                    alignItems="center"
                     sx={{ border:0, pr:3}}
                 >
                     <Grid

@@ -49,7 +49,7 @@ export default function page_404() {
                             height: 'auto', maxWidth: '100%', border:0
                             }}
                             alt="Logo"
-                            src={"./src/assets/404.png"}
+                            src={"https://ayd1-proyecto-g6.s3.us-east-2.amazonaws.com/1687450762912_image_404.png"}
                         />
 
                     </Grid>
