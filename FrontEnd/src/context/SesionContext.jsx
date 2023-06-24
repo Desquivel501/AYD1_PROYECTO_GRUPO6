@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import { nuevaDireccion, registrar, userLogin } from "../api/auth";
+import {  registrar, userLogin } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -57,8 +57,9 @@ export function SesionProvider({ children }) {
   };
   const solicitarNuevaDireccion = async (data) => {
     console.log(data);
-    const mensaje = await nuevaDireccion({ data });
-    return mensaje;
+    //const mensaje = await nuevaDireccion({ data });
+    //return mensaje;
+    return ""
   };
   const logout = () => {
     setUser(userDefault);
