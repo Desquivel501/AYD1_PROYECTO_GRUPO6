@@ -1,0 +1,25 @@
+.lista-deshabilitar li {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+  padding: 5px;
+}
+.lista-deshabilitar span {
+  width: 40%;
+  text-align: left;
+  padding: 5px;
+}
+.btn-disable {
+  background-color: #dc3545;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 2px;
+}
+.btn-disable:hover {
+  background-color: #af3545;
+}
+.lista-deshabilitar li:hover{
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+}
