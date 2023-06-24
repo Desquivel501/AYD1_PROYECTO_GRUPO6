@@ -4,9 +4,11 @@ import "./Perfil.css";
 import { useSesion } from "../../hooks/useSesion";
 import { useEffect } from "react";
 import { useState } from "react";
+import { DireccionEnRegistro } from "../../Componentes/Direccion";
+import { postData, sendFormData } from "../../api/auth";
 
 export function PerfilRepartidor() {
-  const { solicitarNuevaDireccion, user } = useSesion();
+  const { user } = useSesion();
 
   const [actual, setActual] = useState({
     nombre: "",
@@ -16,32 +18,26 @@ export function PerfilRepartidor() {
     celular: 0,
     direccion: "",
     tipo_licencia: "",
-    cv:""
+    cv: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const respuesta = solicitarNuevaDireccion(data);
+    data.append("Correo",user.id)
+    const endpoint = "nuevaDireccion";
+    const respuesta = sendFormData({ endpoint, data });
     console.log(respuesta);
     e.target.reset();
   };
 
   useEffect(() => {
-      fetch("http://localhost:3000/ObtenerDatosRepartidor", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-        body: JSON.stringify({ correo: user.id }),
-      })
-      .then(res => res.json())
-      .then(response =>{
-          console.log(response)
-          setActual(response[0])
-      })
-      
-  }, [])
+    const endpoint = "ObtenerDatosRepartidor";
+    const data = {correo:user.id}
+    postData({ endpoint, data })
+      .then((data) => setActual(data[0]))
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <Box
@@ -49,6 +45,7 @@ export function PerfilRepartidor() {
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
+      width={"120vh"}
     >
       <Grid
         container
@@ -79,10 +76,16 @@ export function PerfilRepartidor() {
             <PersonAttribute attribute={"Nombre"} value={actual.nombre} />
             <PersonAttribute attribute={"Apellido"} value={actual.apellidos} />
             <PersonAttribute attribute={"Correo"} value={actual.id} />
-            <PersonAttribute attribute={"Contraseña"} value={actual.contrasenia} />
+            <PersonAttribute
+              attribute={"Contraseña"}
+              value={actual.contrasenia}
+            />
             <PersonAttribute attribute={"Celular"} value={actual.celular} />
             <PersonAttribute attribute={"Dirección"} value={actual.direccion} />
-            <PersonAttribute attribute={"Licencia"} value={actual.tipo_licencia} />
+            <PersonAttribute
+              attribute={"Licencia"}
+              value={actual.tipo_licencia}
+            />
             <PersonAttribute attribute={"Hoja de vida"}>
               <a
                 href={actual.cv}
@@ -136,15 +139,9 @@ export function PerfilRepartidor() {
               autoComplete="off"
               onSubmit={handleSubmit}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="address"
-                label="Nueva Dirección"
-                name="newAddress"
-                autoFocus
-              />
+              <Grid container>
+                <DireccionEnRegistro />
+              </Grid>
               <TextField
                 margin="normal"
                 required
@@ -152,7 +149,7 @@ export function PerfilRepartidor() {
                 id="description"
                 label="Motivo del Cambio"
                 multiline
-                name="description"
+                name="Motivo"
                 maxRows={3}
               />
               <Button

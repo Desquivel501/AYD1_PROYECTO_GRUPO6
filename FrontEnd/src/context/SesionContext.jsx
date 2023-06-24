@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import {  registrar, userLogin } from "../api/auth";
+import {  registrar, sendFormData } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -25,7 +25,7 @@ export function SesionProvider({ children }) {
   });
 
   const login = async (data) => {
-    const newSesion = await userLogin({ data });
+    const newSesion = await sendFormData({endpoint:"IniciarSesion", data });
     /* const newSesion = {
       MENSAJE:"asdsf",
       TIPO:"ERROR"
