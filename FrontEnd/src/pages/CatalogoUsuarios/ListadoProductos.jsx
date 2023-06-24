@@ -91,7 +91,6 @@ export default function ListadoProductos() {
         })
         .then(res => res.json())
         .then(response =>{
-            console.log(response[0])
             setDatos(response[0])   
         })
     }, [])
@@ -108,7 +107,6 @@ export default function ListadoProductos() {
         .then(res => res.json())
         .then(response =>{
             setCombo(response)
-            console.log(response)
         })
 
         fetch("http://localhost:3000/ObtenerProductos", {
@@ -121,7 +119,6 @@ export default function ListadoProductos() {
         .then(res => res.json())
         .then(response =>{
             setCatalogo(response)
-            console.log(response)
         })
 
     }, [datos])
@@ -152,16 +149,15 @@ export default function ListadoProductos() {
         setOpen2(true);
     }
 
-    const addCarrito = (p_id,tipo,cant,costo) => {
-        console.log(tipo + " " + p_id + " - " + cant)
+    const addCarrito = (p_id,name,tipo,cant,costo,img) => {
         var carrito = window.sessionStorage.getItem("carrito");
-        console.log(carrito)
-
+        
         if(carrito == null || carrito == undefined){
             carrito = {
                 restaurante: id,
                 departamento: departamento,
-                productos: []
+                productos: [],
+                usuario: user.id
             }
         } else {
             carrito = JSON.parse(carrito)
@@ -169,7 +165,8 @@ export default function ListadoProductos() {
                 carrito = {
                     restaurante: id,
                     departamento: departamento,
-                    productos: []
+                    productos: [],
+                    usuario: user.id
                 }
             }
         }
@@ -185,9 +182,11 @@ export default function ListadoProductos() {
         if(!found){
             carrito.productos.push({
                 id: p_id,
+                name: name,
                 tipo: tipo,
                 cantidad: parseInt(cant),
-                costo: parseInt(costo)
+                costo: parseInt(costo),
+                image: img
             })
         }
         window.sessionStorage.setItem("carrito", JSON.stringify(carrito));

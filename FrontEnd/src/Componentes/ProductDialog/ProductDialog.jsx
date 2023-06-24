@@ -28,7 +28,7 @@ export const ProductDialog = (props) => {
   };
 
   const handleSelect = () => {
-    onOrder(id, "producto", cantidad, cost);   
+    onOrder(id, title, "producto", cantidad, cost, image);   
     onClose(true);
     Swal.fire({
         icon: 'success',

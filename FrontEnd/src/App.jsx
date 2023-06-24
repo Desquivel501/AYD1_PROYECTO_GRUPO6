@@ -19,7 +19,8 @@ import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
-import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
+// import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
+import Carrito from "./pages/Carrito/Carrito";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/">
               <Route path={"Empresas"} element={<ListadoRestaurantes />} />
               <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
+              <Route path={"Carrito"} element={<Carrito />} />
             </Route>
           </Route>
 
@@ -65,7 +67,7 @@ function App() {
             <Route path="/Administrador">
               <Route path={"Solicitudes"} element={<Solicitudes />} />
               <Route path={"Reportes"} element={<Usuarios />} />
-              <Route path={"Deshabilitar"} element={<Deshabilitar />} />
+              {/* <Route path={"Deshabilitar"} element={<Deshabilitar />} /> */}
             </Route>
           </Route>
         </Routes>
