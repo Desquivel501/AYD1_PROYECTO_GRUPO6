@@ -233,7 +233,6 @@ export const MenuProducto = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="descripcion"
-                                    maxRows={3}
                                     rows={3}
                                     value={desc_}
                                     onChange={(event) => setDesc(event.target.value)}

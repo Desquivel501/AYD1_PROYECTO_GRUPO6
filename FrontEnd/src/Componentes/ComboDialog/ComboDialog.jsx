@@ -11,14 +11,28 @@ import { ProductCard } from '../ProductCard/ProductCard';
 import Button from "@mui/material/Button";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Divider from '@mui/material/Divider';
+import Swal from 'sweetalert2'
+import { useState } from "react";
 
 export const ComboDialog = (props) => {
 
-  const { onClose, open, title, descripcion, cost, disponible, productos, venta } = props;
+  const { onClose, open, title, descripcion, cost, disponible, productos, venta, onOrder, id } = props;
+
+  const [cantidad, setCantidad] = useState(1);
 
   const handleClose = () => {
     onClose(true);
   };
+
+  const handleSelect = () => {
+    onOrder(id, "combo", cantidad, cost);  
+    onClose(true);  
+    Swal.fire({
+        icon: 'success',
+        title: 'Agregado',
+        text: `"${title}" agregado al carrito`,
+      })        
+  }
 
   return (
     <Dialog onClose={handleClose} open={open} fullWidth maxWidth="md">
@@ -98,7 +112,6 @@ export const ComboDialog = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="description"
-                                    maxRows={3}
                                     rows={3}
                                     value={descripcion}
                                 />
@@ -201,8 +214,9 @@ export const ComboDialog = (props) => {
                             type="number"
                             id="cantidad"
                             autoComplete="cantidad"
-                            defaultValue={1}
                             InputProps={{ inputProps: { min: 0 } }}
+                            value={cantidad}
+                            onChange={(event) => setCantidad(event.target.value)}
                         />
                     </Grid> 
 
@@ -216,7 +230,7 @@ export const ComboDialog = (props) => {
                                 size="large"
                                 sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
                                 endIcon={<AddShoppingCartIcon />}
-                                // onClick={() => enviar()}
+                                onClick={handleSelect}
                             >
                                 Comprar
                             </Button>

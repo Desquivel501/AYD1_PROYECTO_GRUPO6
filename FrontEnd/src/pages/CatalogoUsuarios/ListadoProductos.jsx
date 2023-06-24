@@ -10,7 +10,7 @@ import { FilterTab } from '../../Componentes/FilterTab/FilterTab';
 import { ProductDialog } from '../../Componentes/ProductDialog/ProductDialog';
 import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
 import { useSesion } from "../../hooks/useSesion";
-import { useParams } from 'react-router-dom';
+import { json, useParams } from 'react-router-dom';
 
 export default function ListadoProductos() {
 
@@ -152,6 +152,50 @@ export default function ListadoProductos() {
         setOpen2(true);
     }
 
+    const addCarrito = (p_id,tipo,cant,costo) => {
+        console.log(tipo + " " + p_id + " - " + cant)
+        var carrito = window.sessionStorage.getItem("carrito");
+        console.log(carrito)
+
+        if(carrito == null || carrito == undefined){
+            carrito = {
+                restaurante: id,
+                departamento: departamento,
+                productos: []
+            }
+        } else {
+            carrito = JSON.parse(carrito)
+            if(carrito.restaurante != id){
+                carrito = {
+                    restaurante: id,
+                    departamento: departamento,
+                    productos: []
+                }
+            }
+        }
+
+        var found = false
+        for(var i = 0; i < carrito.productos.length; i++){
+            if(carrito.productos[i].id == p_id && carrito.productos[i].tipo == tipo){
+                carrito.productos[i].cantidad += parseInt(cant)
+                found = true
+                break
+            }
+        }
+        if(!found){
+            carrito.productos.push({
+                id: p_id,
+                tipo: tipo,
+                cantidad: parseInt(cant),
+                costo: parseInt(costo)
+            })
+        }
+        window.sessionStorage.setItem("carrito", JSON.stringify(carrito));
+
+        // window.sessionStorage.setItem("carrito", "");
+        // const sesion = window.sessionStorage.getItem("carrito");
+    }
+
     
     const handleClose = (value) => {
         setOpen(false);
@@ -185,6 +229,7 @@ export default function ListadoProductos() {
             <ProductDialog 
                 open={open}
                 onClose={handleClose}
+                id={actual.id}
                 title={actual.title}
                 cost={actual.cost}
                 image={actual.image}
@@ -192,11 +237,13 @@ export default function ListadoProductos() {
                 categoria={actual.categoria}
                 disponible={actual.disponible}
                 venta={true}
+                onOrder={addCarrito}
             />
 
             <ComboDialog 
                 open={open2}
                 onClose={handleClose}
+                id={actual2.id}
                 title={actual2.title}
                 cost={actual2.cost}
                 image={actual2.image}
@@ -205,6 +252,7 @@ export default function ListadoProductos() {
                 disponible={actual2.disponible}
                 productos={actual2.productos}
                 venta={true}
+                onOrder={addCarrito}
             />
 
 
