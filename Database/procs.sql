@@ -426,10 +426,17 @@ actualizar_producto:BEGIN
         LEAVE actualizar_producto;
     END IF;
     
-    UPDATE Productos
-    SET imagen = imagen_in, id_catp = id_catp_in, nombre = nombre_in, descripcion = descripcion_in,
-    precio = precio_in, disponibilidad = disponibilidad_in, correo = correo_in
-    WHERE Productos.id_prod = id_prod_in;
+    IF(imagen_in = null OR imagen_in = '') THEN
+        UPDATE Productos
+        SET id_catp = id_catp_in, nombre = nombre_in, descripcion = descripcion_in,
+        precio = precio_in, disponibilidad = disponibilidad_in, correo = correo_in
+        WHERE Productos.id_prod = id_prod_in;
+    ELSE
+        UPDATE Productos
+        SET imagen = imagen_in, id_catp = id_catp_in, nombre = nombre_in, descripcion = descripcion_in,
+        precio = precio_in, disponibilidad = disponibilidad_in, correo = correo_in
+        WHERE Productos.id_prod = id_prod_in;
+    END IF;
 
 	SELECT 'El producto se ha actualizado exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
