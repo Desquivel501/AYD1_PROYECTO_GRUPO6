@@ -1,6 +1,6 @@
 const API = "http://localhost:3000/";
-export function userLogin({ data }) {
-  return fetch(`${API}InicioSesion`, {
+export function sendFormData({endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
     method: "POST",
     body: data,
   })
@@ -27,7 +27,7 @@ export function registrar(entidad, data) {
  * @return Promesa
  */
 export function postData({endpoint, data }) {
-  return fetch(`${API}/${endpoint}`, {
+  return fetch(`${API}${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
