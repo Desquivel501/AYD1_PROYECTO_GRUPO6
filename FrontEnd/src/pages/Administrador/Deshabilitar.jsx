@@ -1,11 +1,12 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Dialog, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import users from "../../mocks/usuarios.json";
 import "./Deshabilitar.css";
-import "./Modal.css";
 import { useState } from "react";
 import { getData, postData } from "../../api/auth";
 import { useEffect } from "react";
+import { Modal } from "../../Componentes/Modal/Modal";
+import Swal from "sweetalert2";
 
 export function Deshabilitar() {
   const [correo, setCorreo] = useState("");
@@ -42,7 +43,7 @@ export function Deshabilitar() {
   };
   return (
     <ThemeProvider theme={customTheme}>
-      {correo != "" && <ModalDisable email={correo} close={quitarCorreo} />}
+      <ModalDisable email={correo} close={quitarCorreo} />
       <Box
         component="main"
         display="flex"
@@ -110,27 +111,39 @@ export function Deshabilitar() {
     </ThemeProvider>
   );
 }
-function Modal({ children }) {
-  return (
-    <div className="modal-overlay">
-      {children}
-    </div>
-  );
-}
 function ModalDisable({ email, close }) {
   const [motivo, setMotivo] = useState("");
   const handleClick = () => {
     const endpoint = "deshabilitar";
     const data = { correo: email, motivo };
     postData({ endpoint, data })
-      .then((res) => console.log(res))
+      .then((mensaje) => {
+        if (mensaje.TIPO == "EXITO") {
+          Swal.fire({
+            icon: "success",
+            title: "Creado",
+            text: mensaje.MENSAJE,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: mensaje.MENSAJE,
+          });
+        }
+        // Cerramos el modal
+        close();
+      })
       .catch((e) => console.log(e));
   };
   const handleChange = (e) => {
     setMotivo(e.target.value);
   };
   return (
-    <Modal>
+    <Dialog
+      onClose={close}
+      open={email != ""}
+    >
       <div className="modal-disable">
         <h1>¿Por qué deshabilitará este usuario ?</h1>
         <h2>{email}</h2>
@@ -149,14 +162,7 @@ function ModalDisable({ email, close }) {
         >
           Deshabilitar
         </Button>
-        <Button
-          onClick={close}
-          type="button"
-          sx={{ mb: 2, bgcolor: "#F2890D", color: "black" }}
-        >
-          Cerrar
-        </Button>
       </div>
-    </Modal>
+    </Dialog>
   );
 }
