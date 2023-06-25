@@ -81,10 +81,10 @@ function Navbar() {
               </Link>
             </Typography>
 
-            {links[user.rol].map(({ text, path }) => (
+            {links[user.rol].map(({ text, path },index) => (
               <Link
                 to={path}
-                key={path}
+                key={index}
               >
                 {text}
               </Link>

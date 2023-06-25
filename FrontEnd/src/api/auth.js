@@ -1,6 +1,6 @@
 const API = "http://localhost:3000/";
-export function userLogin({ data }) {
-  return fetch(`${API}InicioSesion`, {
+export function sendFormData({endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
     method: "POST",
     body: data,
   })
@@ -26,14 +26,14 @@ export function registrar(entidad, data) {
  * @param data Información a enviar
  * @return Promesa
  */
-export function nuevaDireccion({ data }) {
-  return fetch(`${API}/nuevadireccion`, {
+export function postData({endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin_Origin": "*",
     },
-    body: data,
+    body: JSON.stringify(data),
   })
     .then((res) => res.json())
     .catch((er) => console.log(er));

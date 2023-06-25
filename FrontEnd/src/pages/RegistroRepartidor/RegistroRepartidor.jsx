@@ -15,7 +15,7 @@ import Select from "@mui/material/Select";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
-import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
+import { DireccionEnRegistro } from "../../Componentes/Direccion.jsx";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
 import { useState } from "react";
