@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import { nuevaDireccion, registrar, userLogin } from "../api/auth";
+import {  registrar, sendFormData } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -25,7 +25,7 @@ export function SesionProvider({ children }) {
   });
 
   const login = async (data) => {
-    const newSesion = await userLogin({ data });
+    const newSesion = await sendFormData({endpoint:"IniciarSesion", data });
     /* const newSesion = {
       MENSAJE:"asdsf",
       TIPO:"ERROR"
@@ -57,8 +57,9 @@ export function SesionProvider({ children }) {
   };
   const solicitarNuevaDireccion = async (data) => {
     console.log(data);
-    const mensaje = await nuevaDireccion({ data });
-    return mensaje;
+    //const mensaje = await nuevaDireccion({ data });
+    //return mensaje;
+    return ""
   };
   const logout = () => {
     setUser(userDefault);
