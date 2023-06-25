@@ -20,6 +20,7 @@ import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
 import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
+import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
               <Route path={"EditarProductos"} element={<EditarProductos />} />
               <Route path={"CrearCombo"} element={<CrearCombo />} />
               <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
+              <Route path={"Pedidos"} element={<PedidosEmpresa />} />
             </Route>
           </Route>
           <Route element={<ControlRuta usuario={"Administrador"} />}>
