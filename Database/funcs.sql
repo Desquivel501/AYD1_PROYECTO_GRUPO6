@@ -1,3 +1,5 @@
+USE PROY1;
+
 -- ########################### VALIDAR QUE UN USUARIO YA EXISTA ###########################
 DELIMITER $$
 DROP FUNCTION IF EXISTS ExisteUsuario $$
@@ -92,6 +94,21 @@ BEGIN
     RETURN(existe);
 END $$
 
+-- ########################### COMPROBAR SI EXISTE UN CLIENTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteCliente $$
+CREATE FUNCTION ExisteCliente(
+	correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Clientes c
+    WHERE c.correo = correo) INTO existe;
+    RETURN(existe);
+END $$
+
 -- ########################### FUNCION PARA SABER SI UN USUARIO TIENE ESTADO PENDIENTE ###########################
 DELIMITER $$
 DROP FUNCTION IF EXISTS UsuarioPendiente $$
@@ -169,6 +186,21 @@ BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Productos p
     WHERE p.id_prod = id_prod_in) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UN COMBO EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteComboId $$
+CREATE FUNCTION ExisteComboId(
+	id_combo INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Combos c
+    WHERE c.id_combo = id_combo) INTO existe;
     RETURN(existe);
 END $$
 
@@ -293,14 +325,84 @@ BEGIN
     RETURN(ingresar);
 END $$
 
-/***********************************Función para obtener la fecha actual *************************************/
+-- ########################### VERIFICAR SI UNA FORMA DE PAGO YA EXISTE ###########################
 DELIMITER $$
-CREATE FUNCTION FechaActual(
+DROP FUNCTION IF EXISTS FormaPagoExistente $$
+CREATE FUNCTION FormaPagoExistente(
+	correo VARCHAR(200),
+    numero_tarjeta BIGINT
 )
-RETURNS DATETIME
+RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
-	DECLARE fecha DATETIME;
-    SELECT CONVERT_TZ(NOW(), 'SYSTEM', 'America/Guatemala') INTO fecha;
-    RETURN (fecha);
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Formas_pago fp
+    WHERE ((fp.numero_tarjeta = numero_tarjeta)
+    OR (fp.numero_tarjeta IS NULL))
+    AND fp.correo = correo) INTO existe;
+	RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UNA DIRECCION YA EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS DireccionExistente $$
+CREATE FUNCTION DireccionExistente(
+    nombre VARCHAR(150),
+	correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Direcciones d
+	WHERE d.correo = correo
+    AND d.nombre = nombre) INTO existe;
+	RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UNA DIRECCION YA EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS DireccionExistente $$
+CREATE FUNCTION DireccionExistente(
+    nombre VARCHAR(150),
+	correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Direcciones d
+	WHERE d.correo = correo
+    AND d.nombre = nombre) INTO existe;
+	RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UNA DIRECCION YA EXISTE (POR ID)###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteDireccion $$
+CREATE FUNCTION ExisteDireccion(
+	id_dir INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Direcciones d
+	WHERE d.id_direccion = id_dir) INTO existe;
+	RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UNA FORMA DE PAGO EXISTE###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS ExisteFormaPago $$
+CREATE FUNCTION ExisteFormaPago(
+	id_formap INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Formas_pago fp
+	WHERE fp.id_formap = id_formap) INTO existe;
+	RETURN(existe);
 END $$
