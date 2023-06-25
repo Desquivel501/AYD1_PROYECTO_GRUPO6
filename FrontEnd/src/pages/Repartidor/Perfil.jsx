@@ -116,11 +116,11 @@ export function PerfilRepartidor() {
             <h2 className="calificacion">
               Calificación:
               <div className="stars">
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/halfStar.png" />
+                <img src="/src/assets/icons/star.png" />
+                <img src="/src/assets/icons/star.png" />
+                <img src="/src/assets/icons/star.png" />
+                <img src="/src/assets/icons/star.png" />
+                <img src="/src/assets/icons/halfStar.png" />
               </div>
             </h2>
             <h3 style={{ margin: 0 }}>

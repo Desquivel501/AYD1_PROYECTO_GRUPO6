@@ -21,6 +21,7 @@ import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
 import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
+import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 
 function App() {
   return (
@@ -32,7 +33,10 @@ function App() {
           <Route path={"/Login"} element={<Login />} />
           <Route path={"/RegistroCliente"} element={<RegistroCliente />} />
           <Route path={"/RegistroEmpresa"} element={<RegistroEmpresa />} />
-          <Route path={"/RegistroRepartidor"} element={<RegistroRepartidor />} />
+          <Route
+            path={"/RegistroRepartidor"}
+            element={<RegistroRepartidor />}
+          />
 
           <Route path={"/About"} element={<About />} />
           <Route path={"/404"} element={<Page_404 />} />
@@ -40,17 +44,19 @@ function App() {
 
           <Route
             path={"/Repartidor"}
-            element={
-              <ControlRuta usuario={"Repartidor"}>
-                <PerfilRepartidor />
-              </ControlRuta>
-            }
-          />
+            element={<ControlRuta usuario={"Repartidor"} />}
+          >
+            <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
+            <Route path={"MisPedidos"} element={<MisPedidos />} />
+          </Route>
 
           <Route element={<ControlRuta usuario={"Cliente"} />}>
             <Route path="/">
               <Route path={"Empresas"} element={<ListadoRestaurantes />} />
-              <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
+              <Route
+                path={"Empresas/:departamento/:id"}
+                element={<ListadoProductos />}
+              />
             </Route>
           </Route>
 

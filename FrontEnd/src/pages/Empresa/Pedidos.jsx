@@ -8,15 +8,15 @@ import pedidos from "../../mocks/pedidos.json";
 import detalles from "../../assets/productos.json";
 import { ListadoProductos } from "../../Componentes/ListadoProductos/ListadoProductos";
 import Swal from "sweetalert2";
+import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
 
 export function PedidosEmpresa() {
   const { user } = useSesion();
   const [usuarios, setUsuarios] = useState([]);
-  const [find, setFind] = useState("");
-  const [filtroFecha, setFecha] = useState("");
+  const [find, setFind] = useState({ cliente: "", fecha: "" });
   const [pedido, setPedido] = useState("");
   useEffect(() => {
-    const endpoint = "ObtenerPedidos";
+    const endpoint = "ObtenerPedidosEmpresa";
     const data = { correo: user.id };
     //const id = setInterval(() => {
     postData({ endpoint, data })
@@ -26,23 +26,18 @@ export function PedidosEmpresa() {
     //return () => clearInterval(id);
   }, []);
   const filterUsers = () => {
-    if (filtroFecha == "" && find == "") return usuarios;
+    console.log(find);
+    if (find.fecha == "" && find.cliente == "") return usuarios;
     let temp = usuarios;
-    if (find != "") {
-      const regex = "^" + find;
+    if (find.cliente != "") {
+      const regex = "^" + find.cliente;
       const r = new RegExp(regex);
       temp = usuarios.filter(({ cliente }) => r.test(cliente));
     }
-    if (filtroFecha != "") {
-      temp = temp.filter(({ fecha }) => fecha == filtroFecha);
+    if (find.fecha != "") {
+      temp = temp.filter(({ fecha }) => fecha == find.fecha);
     }
     return temp;
-  };
-  const handlechange = (e) => {
-    if (e.target.value == "") return setFecha("");
-    const x = e.target.value.split("-");
-    const nuevaFecha = parseInt(x[1]) + "/" + x[2] + "/" + x[0];
-    setFecha(nuevaFecha);
   };
   const customTheme = createTheme({
     palette: {
@@ -98,21 +93,11 @@ export function PedidosEmpresa() {
           alignItems={"center"}
         >
           <h1>Historial de Pedidos</h1>
-          <div className="filter-pedidos">
-            <label>Buscar por cliente:</label>
-            <input
-              className="txt-find"
-              value={find}
-              onChange={(e) => setFind(e.target.value)}
-              placeholder="ejemplo@email.com"
-            />
-            <label>Buscar por fecha:</label>
-            <input
-              className="txt-find"
-              type="date"
-              onChange={handlechange}
-            />
-          </div>
+          <FilterPedidos
+            find={find}
+            onChange={setFind}
+            estado={false}
+          />
           <p className="header-pedido sombra">
             <span>Cliente</span>
             <span>Fecha</span>
@@ -169,6 +154,7 @@ export function PedidosEmpresa() {
     </ThemeProvider>
   );
 }
+
 function ModalDetallePedido({ id, onClose }) {
   const [productos, setProductos] = useState([]);
   useEffect(() => {
