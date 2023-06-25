@@ -3,15 +3,24 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-
+import { IconButton } from "@mui/material";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import "./navbar.css";
 import { Link } from "react-router-dom";
 import { useSesion } from "../../hooks/useSesion";
 import { links } from "../../assets/navBars";
 import { useState } from "react";
 import { useEffect } from "react";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from "react-router-dom";
+import Tooltip from '@mui/material/Tooltip';
+
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
+
+  const navigate = useNavigate();
+
   const { user, logout } = useSesion();
   const [data, setdata] = useState([])
 
@@ -20,9 +29,15 @@ function Navbar() {
   }, []);
 
   const handleClick = ()=>{
+    navigate("/")
     logout()
     console.log(user.rol)
   }
+
+  // const handleClickCarrito = ()=>{
+  //   navigate("/")
+  // }
+
   return (
     <AppBar position="fixed" sx={{ bgcolor: "#f2890d" }}>
       <Container maxWidth="xl">
@@ -74,18 +89,32 @@ function Navbar() {
                 {text}
               </Link>
             ))}
-            {user.rol != "Ninguno" && (
+            {/* {user.rol != "Ninguno" && (
               <Link to={"/"} onClick={handleClick}>Cerrar sesión</Link>
-            )}
+            )} */}
           </Box>
 
-          {
-            /* <Box sx={{ flexGrow: 0 }}>
-            <IconButton sx={{ p: 0 }}>
-              <ExitToAppIcon sx={{ color: '#FFF' }} />
-            </IconButton>
-          </Box> */
-          }
+          {user.rol == "Cliente" && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Carrito de Compras">
+                <IconButton sx={{ p: 0 }} component={Link} to="Carrito">
+                  <ShoppingCartIcon sx={{ color: '#FFF' }} />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}  
+
+          {user.rol != "Ninguno" && (
+          <Box sx={{ flexGrow: 0, mx:2 }}>
+            <Tooltip title="Cerrar Sesion">
+              <IconButton sx={{ p: 0 }} onClick={handleClick}>
+                <LogoutIcon sx={{ color: '#FFF' }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          )}
+          
+          
         </Toolbar>
       </Container>
     </AppBar>

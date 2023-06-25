@@ -25,7 +25,7 @@ export function SesionProvider({ children }) {
   });
 
   const login = async (data) => {
-    const newSesion = await sendFormData({endpoint:"IniciarSesion", data });
+    const newSesion = await sendFormData({endpoint:"InicioSesion", data });
     /* const newSesion = {
       MENSAJE:"asdsf",
       TIPO:"ERROR"

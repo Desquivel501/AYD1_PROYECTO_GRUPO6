@@ -19,9 +19,10 @@ import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
-import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
 import { MisPedidos } from "./pages/Repartidor/MisPedidos";
+import Carrito from "./pages/Carrito/Carrito";
+import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 
 function App() {
   return (
@@ -53,10 +54,9 @@ function App() {
           <Route element={<ControlRuta usuario={"Cliente"} />}>
             <Route path="/">
               <Route path={"Empresas"} element={<ListadoRestaurantes />} />
-              <Route
-                path={"Empresas/:departamento/:id"}
-                element={<ListadoProductos />}
-              />
+              <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
+              <Route path={"Carrito"} element={<Carrito />} />
+              <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
             </Route>
           </Route>
 
@@ -73,7 +73,7 @@ function App() {
             <Route path="/Administrador">
               <Route path={"Solicitudes"} element={<Solicitudes />} />
               <Route path={"Reportes"} element={<Usuarios />} />
-              <Route path={"Deshabilitar"} element={<Deshabilitar />} />
+              {/* <Route path={"Deshabilitar"} element={<Deshabilitar />} /> */}
             </Route>
           </Route>
         </Routes>

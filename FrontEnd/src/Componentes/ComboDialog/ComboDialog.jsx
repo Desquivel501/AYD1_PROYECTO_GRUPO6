@@ -25,7 +25,7 @@ export const ComboDialog = (props) => {
   };
 
   const handleSelect = () => {
-    onOrder(id, "combo", cantidad, cost);  
+    onOrder(id, title, "combo", cantidad, cost, "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png");  
     onClose(true);  
     Swal.fire({
         icon: 'success',
