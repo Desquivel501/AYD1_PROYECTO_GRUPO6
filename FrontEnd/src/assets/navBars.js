@@ -22,6 +22,7 @@ export const links = {
     { text: "Editar Productos", path: "/Empresa/EditarProductos" },
     { text: "Crear Combo", path: "/Empresa/CrearCombo" },
     { text: "Catalogo", path: "/Empresa/CatalogoEmpresa" },
+    { text: "Pedidos", path: "/Empresa/Pedidos" },
   ],
 
   Administrador: [
