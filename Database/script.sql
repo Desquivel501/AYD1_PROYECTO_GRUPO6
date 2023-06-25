@@ -203,3 +203,65 @@ CREATE TABLE Detalle_combos(
     FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
     FOREIGN KEY(id_prod) REFERENCES Productos(id_prod)
 );
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR DIRECCIONES ###########################
+DROP TABLE IF EXISTS Direcciones;
+CREATE TABLE Direcciones(
+	id_direccion INTEGER AUTO_INCREMENT NOT NULL,
+	nombre VARCHAR(150),
+    direccion VARCHAR(200),
+    correo VARCHAR(200),
+    PRIMARY KEY(id_direccion),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo),
+    UNIQUE(nombre, direccion, correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR FORMAS DE PAGO ###########################
+DROP TABLE IF EXISTS Formas_pago;
+CREATE TABLE Formas_pago(
+	id_formap INTEGER AUTO_INCREMENT NOT NULL,
+	numero_tarjeta BIGINT,
+    vencimiento VARCHAR(10),
+    cvv INTEGER,
+    tipo VARCHAR(200),
+    correo VARCHAR(200),
+    PRIMARY KEY(id_formap),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR PEDIDOS ###########################
+DROP TABLE IF EXISTS Pedidos;
+CREATE TABLE Pedidos(
+	id_pedido INTEGER AUTO_INCREMENT NOT NULL,
+    correo_c VARCHAR(200),
+    correo_r VARCHAR(200),
+    correo_e VARCHAR(200),
+    estado VARCHAR(50),
+    comision DECIMAL(12,2),
+    id_direccion INTEGER,
+	id_formap INTEGER,
+    calificacion INTEGER,
+    confirmado BOOLEAN,
+    
+    PRIMARY KEY(id_pedido),
+    FOREIGN KEY(id_formap) REFERENCES Formas_pago(id_formap),
+    FOREIGN KEY(id_direccion) REFERENCES Direcciones(id_direccion),
+    FOREIGN KEY(correo_c) REFERENCES Clientes(correo),
+    FOREIGN KEY(correo_r) REFERENCES Repartidores(correo),
+    FOREIGN KEY(correo_e) REFERENCES Empresas(correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR EL DETALLE DE LOS PEDIDOS ###########################
+DROP TABLE IF EXISTS Detalle_pedidos;
+CREATE TABLE Detalle_pedidos(
+	id_pedido INTEGER,
+    id_prod INTEGER,
+    id_combo INTEGER,
+    cantidad INTEGER,
+    total DECIMAL(12,2),
+    PRIMARY KEY(id_pedido, id_prod, id_combo),
+    FOREIGN KEY(id_pedido) REFERENCES Pedidos(id_pedido),
+    FOREIGN KEY(id_prod) REFERENCES Productos(id_prod),
+    FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
+    CHECK (((id_prod IS NOT NULL) AND (id_combo IS NULL)) OR ((id_prod IS NULL) AND (id_combo IS NOT NULL)))
+);
