@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useSesion } from "../../hooks/useSesion";
 import Divider from '@mui/material/Divider';
+import SaveIcon from '@mui/icons-material/Save';
 
 export default function Carrito() {
 
@@ -34,10 +35,7 @@ export default function Carrito() {
         }
     );
 
-    const [datos, setDatos] = useState({
-        title: "",
-        image: ""
-    })
+    const [cont, setCont] = useState(1)
 
 
     function subTotal() {
@@ -49,26 +47,44 @@ export default function Carrito() {
     }
 
     useEffect(() => {
-
         var carrito = window.sessionStorage.getItem("carrito");
-
         if(carrito != null || carrito != undefined){
             carrito = JSON.parse(carrito)
-        }
-
-        setPedido(carrito)
+            setPedido(carrito)
+        } 
     },[])
 
-    // const handlePress = (id) => {
-    //     console.log(id)
-    //     for (var i = 0; i < catalogo.length; i++){
-    //         if(catalogo[i].id == id){
-    //             console.log(catalogo[i])
-    //             setActual(catalogo[i]);
-    //             break
-    //         }
-    //     }
-    // }
+    const handleUpdate = (id, cantidad) => {
+        var aux = pedido
+        console.log("Update: " + id + " - " + cantidad)
+        for(var i = 0; i < aux.productos.length; i++){
+            if(aux.productos[i].id == id){
+                if(parseInt(cantidad) <= 0){
+                    aux.productos.splice(i, 1)
+                } else {
+                    aux.productos[i].cantidad = parseInt(cantidad)
+                }
+                window.sessionStorage.setItem("carrito", JSON.stringify(aux));
+                setPedido(aux)
+                break
+            }
+        }
+        setCont(cont + 1)
+    }
+
+    const handleRemove = (id) => {
+        console.log("Remove: " + id)
+        var aux = pedido
+        for(var i = 0; i < aux.productos.length; i++){
+            if(aux.productos[i].id == id){
+                aux.productos.splice(i, 1)
+                window.sessionStorage.setItem("carrito", JSON.stringify(aux));
+                setPedido(aux)
+                break
+            }
+        }
+        setCont(cont + 1)
+    }
 
     const customTheme = createTheme({
         palette: {
@@ -101,31 +117,11 @@ export default function Carrito() {
                     alignItems="center"
                     justifyContent="center"
                 > 
-                    
+
 
                     <Grid
                         item
-                        xs={12} sm={4}
-                        
-                        sx={{border:0}}
-                    >
-                        <MenuDatos 
-                            title={"Tus Datos"}
-                            id={actual.id}
-                            name={actual.title}
-                            cost={actual.cost}
-                            image={actual.image}
-                            desc={actual.descripcion}
-                            categoria={actual.categoria}
-                            disponible={actual.disponible}
-                            edicion={true}
-                            addCategorias={true}
-                        />
-                    </Grid>
-
-                    <Grid
-                        item
-                        xs={12} sm={8}
+                        xs={12} sm={12}
                         sx={{border:0}}
                     >
                         <Grid
@@ -242,27 +238,36 @@ export default function Carrito() {
 
                             <Grid
                                 container
-                                sx={{border:0, pt:2, maxHeight: '60vh', overflow: 'auto'}}
+                                sx={{border:0, pt:2}}
                                 alignItems="left"
                                 justifyContent="center"
                             > 
 
-                                {/* <ProductCard 
-                                    title={"Producto"}
-                                    logo={"https://picsum.photos/200"}
-                                /> */}
-
                                 {pedido.productos.map((item, i) => (
                                     <ProductCard2 
-                                        key={i}
+                                        key={item.id + item.name}
                                         id={item.id}
                                         title={item.name}
                                         cost={item.costo}
                                         image={item.image}
                                         cantidad={item.cantidad}
                                         // onSelect={handlePress}
+                                        onRemove={handleRemove}
+                                        onUpdate={handleUpdate}
                                     />
                                 ))}
+
+                                {pedido.productos.length == 0 &&
+                                    <Typography variant="h5" component="h5" align='center' 
+                                        sx={{
+                                            fontFamily: 'monospace',
+                                            fontWeight: 700,
+                                            letterSpacing: '.3rem',
+                                            color: '#999999',
+                                        }}>
+                                        No se han agregado productos
+                                    </Typography>
+                                }
 
                             </Grid>
 
@@ -317,12 +322,36 @@ export default function Carrito() {
                             </Grid>
                             
                         </Grid>
-
-                        
-                       
-
                     </Grid>
-        
+
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{border:0}}
+                    >
+                        <Button
+                            variant="contained"
+                            type="submit"
+                        
+                            sx={{ 
+                                mt: 2, mb: 1,
+                                bgcolor: "#2f9d76",
+                                fontSize: '1.5rem',
+                                color: '#fff',
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                '&:hover': {
+                                    backgroundColor: '#206d52',
+                                } 
+                            }}
+                            endIcon={<SaveIcon />}
+                            onClick={(event) => window.location.href = "/FinalizarCompra"}
+                        >
+                            Confirmar Orden
+                        </Button>
+                    </Grid>  
+
+                    
 
                 </Grid>
             </Container>

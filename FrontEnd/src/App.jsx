@@ -21,6 +21,7 @@ import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
 // import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 import Carrito from "./pages/Carrito/Carrito";
+import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
               <Route path={"Empresas"} element={<ListadoRestaurantes />} />
               <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
               <Route path={"Carrito"} element={<Carrito />} />
+              <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
             </Route>
           </Route>
 

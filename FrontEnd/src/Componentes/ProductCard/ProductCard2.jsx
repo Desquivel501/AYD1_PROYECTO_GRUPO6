@@ -52,7 +52,7 @@ export const ProductCard2 = (props) => {
         >
             <Grid
                 item
-                xs={1.5}
+                xs={0.75}
                 sx={{border:0}}
             >
                 <Box
@@ -68,7 +68,7 @@ export const ProductCard2 = (props) => {
             <Divider orientation="vertical" flexItem sx={{mx:1, my:1}}/>
             <Grid
                 item
-                xs={3.75}
+                xs={4.5}
                 sx={{border:0}}
             >
                 <Typography variant="h6" component="h6" align='left' 
@@ -118,7 +118,10 @@ export const ProductCard2 = (props) => {
                     <Grid
                         item
                         xs={3}
-                        sx={{border:0, mr:1, py:1, mt:1}}
+                        sx={{border:0, mr:1, py:1, mt:1,
+                            '&:hover': {
+                                backgroundColor: '#206d52',
+                            }}}
                         bgcolor={'#2f9d76'}
                     >
                         <Tooltip title="Actualizar">
@@ -130,7 +133,10 @@ export const ProductCard2 = (props) => {
                     <Grid
                         item
                         xs={3}
-                        sx={{border:0, py:1, mt:1}}
+                        sx={{border:0, py:1, mt:1,
+                            '&:hover': {
+                                backgroundColor: '#990000',
+                            }}}
                         bgcolor={'#FF0000'}
                     >
                         <Tooltip title="Remover">
