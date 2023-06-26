@@ -220,6 +220,7 @@ CREATE TABLE Direcciones(
 DROP TABLE IF EXISTS Formas_pago;
 CREATE TABLE Formas_pago(
 	id_formap INTEGER AUTO_INCREMENT NOT NULL,
+	nombre VARCHAR(150),
 	numero_tarjeta BIGINT,
     vencimiento VARCHAR(10),
     cvv INTEGER,
@@ -236,7 +237,7 @@ CREATE TABLE Pedidos(
     correo_c VARCHAR(200),
     correo_r VARCHAR(200),
     correo_e VARCHAR(200),
-    nota VARCHAR(250),
+    descripcion VARCHAR(250),
     estado VARCHAR(50),
     id_direccion INTEGER,
     fecha_pedido DATETIME,
@@ -277,4 +278,15 @@ CREATE TABLE Solicitudes_reasignacion(
     motivo VARCHAR(250),
     PRIMARY KEY(correo),
     FOREIGN KEY(correo) REFERENCES Repartidores(correo)
-)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR CUPONES ###########################
+DROP TABLE IF EXISTS Cupones;
+CREATE TABLE Cupones(
+	id_cupon INTEGER AUTO_INCREMENT NOT NULL,
+	correo VARCHAR(200),
+    nombre VARCHAR(200),
+    descuento DECIMAL(12,2),
+    PRIMARY KEY(id_cupon),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo)
+);
