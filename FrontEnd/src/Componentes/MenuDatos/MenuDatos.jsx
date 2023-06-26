@@ -25,6 +25,8 @@ import Divider from '@mui/material/Divider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { json } from "react-router-dom";
+import { gridColumnGroupsLookupSelector } from "@mui/x-data-grid";
 
 export const MenuDatos = (props) => {
 
@@ -38,30 +40,25 @@ export const MenuDatos = (props) => {
 
     const [direcciones, setDirecciones] = useState([
         {
+            id: 1,
             name: "Casa",
             direccion: "4ta calle 3-56, Residenciales El Jaguar",
-            departamento: "Guatemala",
-            municipio: "Guatemala City",
-            zona:1
         },
         {
+            id: 2,
             name: "Trabajo",
             direccion: "2da avenida 6-17, Colonia El Amanecer",
-            departamento: "Guatemala",
-            municipio: "Mixco",
-            zona:3
         },
         {
+            id: 3,
             name: "Suegrita",
             direccion: "10ma calle 2-12",
-            departamento: "Alta Verapaz",
-            municipio: "Cobán",
-            zona:6
         }
     ])
 
     const [tarjetas, setTarjetas] = useState([
         {
+            id: 2,
             alias: "Tarjeta Banrural",
             name: "Joao Madukwe",
             cc: 4057912954290102,
@@ -69,6 +66,7 @@ export const MenuDatos = (props) => {
             cvv: 362
         },
         {
+            id: 3,
             alias: "Tarjeta Ficohsa",
             name: "Robin Aliyev",
             cc: 4057935092851592,
@@ -76,6 +74,7 @@ export const MenuDatos = (props) => {
             cvv: 562
         },
         {
+            id: 4,
             alias: "Tarjeta BI",
             name: "Paladin Torath",
             cc: 4057921903144336,
@@ -86,14 +85,17 @@ export const MenuDatos = (props) => {
 
     const [cupones, setCupones] = useState([
         {
+            id:1,
             alias: "Cupon 1",
             descuento: 0.2
         },
         {
+            id:2,
             alias: "Cupon 2",
             descuento: 0.17
         },
         {
+            id:3,
             alias: "Cupon 3",
             descuento: 0.50
         }
@@ -122,11 +124,26 @@ export const MenuDatos = (props) => {
     const [saveCC, setSaveCC] = useState(false)
     const [aliasCC, setAliasCC] = useState("")
 
+
     const [total, setTotal] = useState(0)
 
-    const llenarDireccion = (event) => {
-        event.preventDefault();
-    };
+
+    const [vencimiento, setVencimiento] = useState({})
+
+    function handleDateChange(e, date){
+        // setVencimiento(date)
+        // console.log((prev) => ({ ...prev, [name]: value }))
+        // console.log(value)
+        // console.log(JSON.stringify(date));
+        // console.log(JSON.stringify(e));
+        var date = new Date(e);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const withSlashes = [month, year].join('/');
+        
+        console.log(withSlashes);
+
+    }
 
     useEffect(() => {
         for(var i = 0; i < direcciones.length; i++){
@@ -144,6 +161,10 @@ export const MenuDatos = (props) => {
             }
         }
     },[actualCC])
+
+    // useEffect(() => {
+    //     console.log(vencimiento)
+    // },[vencimiento])
 
     useEffect(() => {
         var carrito = window.sessionStorage.getItem("carrito");
@@ -178,6 +199,62 @@ export const MenuDatos = (props) => {
             }
         }
     },[cupon])
+
+
+
+    const handleSubmit = (event) => {
+        var json = {
+            "departamento": pedido.departamento,
+            "restaurante": pedido.restaurante,
+            "usuario": pedido.usuario,
+            "productos": []
+        }
+
+        var total = 0
+        for(var i = 0; i < pedido.productos.length; i++){
+            json.productos.push({
+                "id": pedido.productos[i].id,
+                "cantidad": pedido.productos[i].cantidad,
+                "combo": pedido.productos[i].tipo == "producto" ? false : true,
+                "costo": pedido.productos[i].costo,
+                "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
+            })
+            total += pedido.productos[i].costo*pedido.productos[i].cantidad
+        }
+
+        for(var i = 0; i < direcciones.length; i++){
+            if(direcciones[i].name == actual){
+                json["direccion"] = direcciones[i].id
+                break
+            }
+        }
+
+        if( metodo != "tarjeta"){
+            json["forma_pago"] = 0
+        } else {
+            for(var i = 0; i < tarjetas.length; i++){
+                if(tarjetas[i].alias == actualCC){
+                    json["forma_pago"] = tarjetas[i].id
+                    break
+                }
+            }
+        }
+
+        json["descripcion"] = comentario
+
+
+        if(cupon == ""){
+            json["cupon"] = 0
+        } else {
+            for(var i = 0; i<cupones.length; i++){
+                if(cupon == cupones[i].alias){
+                    json["cupon"] = cupones[i].id
+                    break
+                }
+            }
+        }
+
+    }
 
 
     return (
@@ -428,8 +505,13 @@ export const MenuDatos = (props) => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker 
                                                 label={'Vencimiento'} 
+                                                name="test"
                                                 views={['month', 'year']}
                                                 format={"MM/YY"}
+                                                // value={vencimiento}
+                                                defaultDate={new Date()}
+                                                // onChange={handleDateChange}
+                                                onChange={(e, event) => handleDateChange(e,event)}
                                             />
                                         </LocalizationProvider>
                                         
@@ -607,7 +689,7 @@ export const MenuDatos = (props) => {
                 <Button
                     variant="contained"
                     type="submit"
-                
+                    // onClick={handleSubmit}
                     sx={{ 
                         mt: 2, mb: 1,
                         bgcolor: "#2f9d76",
