@@ -615,7 +615,7 @@ app.post('/deshabilitar', cors(), (req, res)=>{
 
   mysql.query('CALL DeshabilitarCliente(?)', [correo], (err, results) =>{
     if (err) {
-      console.log(err)
+      console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
@@ -643,11 +643,12 @@ app.post('/nuevaDireccion',upload.single('document'), cors(), (req,res)=>{
 
 //-- ##################################### Retornar solicitudes de reasignación #####################################
 app.get('/obtenerReasignaciones', cors(), (req, res)=>{
-  mysql.query(`SELECT correo, d.nombre as departamento, municipio, direccion, motivo 
+  const query = `SELECT correo, d.nombre as departamento, municipio, direccion, motivo 
   FROM Solicitudes_reasignacion sr
   JOIN Departamentos d
   ON d.id_dep = sr.id_dep
-  `, (err, results)=>{
+  `;
+  mysql.query(query, (err, results)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
@@ -666,7 +667,7 @@ app.post('/aceptarReasignacion', cors(), (req, res)=>{
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
-  })
+  });
 });
 
 //-- ##################################### Guardar una nueva dirección #####################################
@@ -675,19 +676,19 @@ app.post('/guardarDireccion', cors(), (req, res)=>{
   let alias = req.body.alias;
   const direccion = req.body.direccion;
   
-  if (correo == null) alias = `${Date.now()}`
+  if (correo == null) alias = `${Date.now()}`;
 
   mysql.query('CALL CrearDireccion(?,?,?)',[alias, direccion, correo], (err,results)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
-    res.status(200).json(results)
+    res.status(200).json(results);
   });
 });
 
 //-- ##################################### Guardar una nueva dirección #####################################
-app.post('/guardarTarjeta', cors(), (req,res)=>{
+app.post('/guardarTarjeta', cors(), (req, res)=>{
   const correo = req.body.correo;
   let alias = req.body.alias;
   const name = req.body.name;
@@ -702,7 +703,53 @@ app.post('/guardarTarjeta', cors(), (req,res)=>{
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
-    res.status(200).json(results)
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Obtener listado de las tarjetas registradas #####################################
+app.post('/obtenerTarjetas', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT id_formap AS id, alias, nombre AS name, numero_tarjeta AS cc
+  FROM Formas_pago
+  WHERE correo = ?`;
+
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Obtener listado de las direcciones registradas #####################################
+app.post('/obtenerDirecciones', cors(), (req,res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT id_direccion AS id, alias AS name, direccion
+  FROM Direcciones 
+  WHERE correo = ?`;
+
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Obtener listado de los cupones registrados #####################################
+app.post('/obtenerCupones', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado FROM Cupones;`;
+
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
   });
 });
 
