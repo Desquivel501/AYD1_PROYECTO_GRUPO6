@@ -236,8 +236,10 @@ CREATE TABLE Pedidos(
     correo_c VARCHAR(200),
     correo_r VARCHAR(200),
     correo_e VARCHAR(200),
+    nota VARCHAR(250),
     estado VARCHAR(50),
     id_direccion INTEGER,
+    fecha_pedido DATETIME,
 	id_formap INTEGER,
     calificacion INTEGER,
     confirmado BOOLEAN,
@@ -264,3 +266,15 @@ CREATE TABLE Detalle_pedidos(
     FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
     CHECK (((id_prod IS NOT NULL) AND (id_combo IS NULL)) OR ((id_prod IS NULL) AND (id_combo IS NOT NULL)))
 );
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR SOLICITUDES DE REASIGNACION ###########################
+DROP TABLE IF EXISTS Solicitudes_reasignacion;
+CREATE TABLE Solicitudes_reasignacion(
+	correo VARCHAR(200),
+    id_dep INTEGER,
+    municipio VARCHAR(200),
+    direccion VARCHAR(200),
+    motivo VARCHAR(250),
+    PRIMARY KEY(correo),
+    FOREIGN KEY(correo) REFERENCES Repartidores(correo)
+)

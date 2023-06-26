@@ -758,3 +758,120 @@ agregar_elemento_pedido:BEGIN
 	SELECT 'Producto ingresado exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+-- ########################### PROCEDIMIENTO PARA ALMACENAR UNA NUEVA SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CrearSolicitudReasignacion $$
+CREATE PROCEDURE CrearSolicitudReasignacion(
+	IN correo_in VARCHAR(200),
+    IN departamento_in VARCHAR(200),
+    IN municipio_in VARCHAR(200),
+    IN direccion_in VARCHAR(200),
+    IN motivo_in VARCHAR(250)
+)
+crear_solicitud_reasignacion:BEGIN
+	DECLARE id_dep_in INTEGER;
+
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+    IF(ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'No se puede crear la solicitud debido a que ya existe una solicitud pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+	SELECT ObtenerDepartamento(departamento_in) INTO id_dep_in;
+    
+	INSERT INTO Solicitudes_reasignacion(correo, id_dep, municipio, direccion, motivo)
+    VALUES(correo_in, id_dep_in, municipio_in, direccion_in, motivo_in);
+    
+	SELECT 'Solicitud de reasignación realizada exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ACEPTAR SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarSolicitudReasignacion $$
+CREATE PROCEDURE AceptarSolicitudReasignacion(
+	IN correo_in VARCHAR(200)
+)
+aceptar_solicitud_reasignacion:BEGIN
+	DECLARE id_dep INTEGER;
+    DECLARE municipio VARCHAR(200);
+    DECLARE direccion VARCHAR(200);
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+    IF(NOT ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'El usuario que ha seleccionado no tiene una solicitud de reasignacion pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+    SELECT sr.id_dep, sr.municipio, sr.direccion 
+    INTO id_dep, municipio, direccion 
+    FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+    UPDATE Repartidores r
+    SET r.id_dep = id_dep, r.municipio = municipio, r.direccion = direccion
+    WHERE r.correo = correo_in;
+    
+    DELETE FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+	SELECT 'Solicitud de reasignación aceptada exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA RECHAZAR SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS RechazarSolicitudReasignacion $$
+CREATE PROCEDURE RechazarSolicitudReasignacion(
+	IN correo_in VARCHAR(200)
+)
+rechazar_solicitud_reasignacion:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+    IF(NOT ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'El usuario que ha seleccionado no tiene una solicitud de reasignacion pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+    DELETE FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+	SELECT 'Solicitud de reasignación rechazada exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
