@@ -23,6 +23,8 @@ import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
 import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 import Carrito from "./pages/Carrito/Carrito";
 import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
+import PedidosUsuario from "./pages/PedidosUsuario/PedidosUsuario";
+import { PedidoCliente } from "./pages/PedidoCliente/PedidoCliente";
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
               <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
               <Route path={"Carrito"} element={<Carrito />} />
               <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
+              <Route path={"Pedidos"} element={<PedidosUsuario />} />
+              <Route path={"Pedidos/:id/:estado"} element={<PedidoCliente />} />
             </Route>
           </Route>
 

@@ -119,6 +119,7 @@ export const ProductCard2 = (props) => {
                         item
                         xs={3}
                         sx={{border:0, mr:1, py:1, mt:1,
+                            borderRadius: '0.5em 0.5em 0.5em 0.5em',
                             '&:hover': {
                                 backgroundColor: '#206d52',
                             }}}
@@ -134,6 +135,7 @@ export const ProductCard2 = (props) => {
                         item
                         xs={3}
                         sx={{border:0, py:1, mt:1,
+                            borderRadius: '0.5em 0.5em 0.5em 0.5em',
                             '&:hover': {
                                 backgroundColor: '#990000',
                             }}}

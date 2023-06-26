@@ -27,25 +27,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const MenuDatos = (props) => {
+
     const { user } = useSesion();
 
-    const {title, id, name, desc, cost, image, categoria, disponible, addCategorias, edicion, addComp} = props;
-
-    const [name_, setName] = useState("")
-    const [desc_, setDesc] = useState("")
-    const [cost_, setCost] = useState("")
-    const [categoria_, setCategoria] = useState("Platos Fuertes")
-    const [disponible_, setDisponible] = useState(false)
-
-    const [count, setCount] = useState(0);
-
-    const [selectedFile, setSelectedFile] = useState()
-    const [preview, setPreview] = useState()
-
     const [metodo, setMetodo] = useState("tarjeta")
-    const [comentario, setComentario] = useState("")
     
     const [direccion, setDireccion] = useState("")
+
+    const [comentario, setComentario] = useState("")
 
     const [direcciones, setDirecciones] = useState([
         {
@@ -95,17 +84,33 @@ export const MenuDatos = (props) => {
         }
     ])
 
+    const [cupones, setCupones] = useState([
+        {
+            alias: "Cupon 1",
+            descuento: 0.2
+        },
+        {
+            alias: "Cupon 2",
+            descuento: 0.17
+        },
+        {
+            alias: "Cupon 3",
+            descuento: 0.50
+        }
+    ])  
+
+    const [pedido, setPedido] = useState({
+        restaurante: null,
+        departamento: null,
+        productos: [],
+        usuario: user.id
+    })
+
     const [actual, setActual] = useState("")
 
     const [actualCC, setActualCC] = useState("")
 
-    // const [tarjeta, setTarjeta] = useState({
-    //     alias: "",
-    //     name: "",
-    //     cc: 0,
-    //     date: "",
-    //     cvv: 0
-    // })
+    const [cupon, setCupon] = useState("")
 
     const [nameCC, setNameCC] = useState("")
     const [cc, setCC] = useState(0)
@@ -116,6 +121,8 @@ export const MenuDatos = (props) => {
     const [alias, setAlias] = useState("")
     const [saveCC, setSaveCC] = useState(false)
     const [aliasCC, setAliasCC] = useState("")
+
+    const [total, setTotal] = useState(0)
 
     const llenarDireccion = (event) => {
         event.preventDefault();
@@ -138,13 +145,40 @@ export const MenuDatos = (props) => {
         }
     },[actualCC])
 
-    const onSelectFile = e => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setSelectedFile(image)
-            return
+    useEffect(() => {
+        var carrito = window.sessionStorage.getItem("carrito");
+        if(carrito != null || carrito != undefined){
+            carrito = JSON.parse(carrito)
+            setPedido(carrito)
+        } 
+
+        var total_ = 0
+        for(var i = 0; i < carrito.productos.length; i++){
+            total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
         }
-        setSelectedFile(e.target.files[0])
-    }
+        setTotal(total_)
+    },[])
+
+    useEffect(() => {
+
+        var total_ = 0
+        for(var i = 0; i < pedido.productos.length; i++){
+            total_ += pedido.productos[i].cantidad * pedido.productos[i].costo
+        }
+
+        if(cupon == "No Usar"){
+            setTotal(total_)
+            return
+        }   
+
+        for(var i = 0; i<cupones.length; i++){
+            if(cupon == cupones[i].alias){
+                setTotal(total_ - (total_*cupones[i].descuento))
+                break
+            }
+        }
+    },[cupon])
+
 
     return (
 
@@ -169,7 +203,7 @@ export const MenuDatos = (props) => {
                         letterSpacing: '.3rem',
                         color: '#973f1c',
                     }}>
-                    {title}
+                    Datos de facturación
                 </Typography>
             </Grid>
 
@@ -281,6 +315,7 @@ export const MenuDatos = (props) => {
 
                         </Grid>
                     </Grid>
+                    
 
                     <Grid
                         item
@@ -294,6 +329,7 @@ export const MenuDatos = (props) => {
                             alignItems="center"
                             sx={{border:0}}
                         >
+                            {/* <Divider variant="middle" sx={{my:1, width:'90%'}}/> */}
 
                             <Grid
                                 item
@@ -458,84 +494,110 @@ export const MenuDatos = (props) => {
 
                             }
 
-                            {/* <Divider variant="middle" sx={{my:1, width:'90%'}}/>
-
-                            <Grid
-                                item
-                                xs={12}
-                                sx={{border:0, mr:2}}
-                                alignContent="left"
-                            >
-                                <FormGroup>
-                                    <FormControlLabel control={<Checkbox />} label="Guardar datos" checked={guardar} onChange={(event) => setGuardar(!guardar)}/>
-                                </FormGroup> 
-                                
-                            </Grid> */}
-
-                            
-
-
-                            {/* <Grid
-                                item
-                                xs={12}
-                                sx={{border:0, mt:0.5}}
-                            >
-                                <Typography variant="h6" component="h6" align='left' 
-                                    sx={{
-                                        fontFamily: 'monospace',
-                                        fontWeight: 700,
-                                        letterSpacing: '.3rem',
-                                        color: '#973f1c',
-                                    }}>
-                                    Comentario:
-                                </Typography>
-                            </Grid>
-
-                            <TextField
-                                margin="normal"
-                                fullWidth
-                                id="comentario"
-                                label="Comentario:"
-                                multiline
-                                name="comentario"
-                                rows={2}
-                                value={comentario}
-                                onChange={(event) => setComentario(event.target.value)}
-                            /> */}
-
-
-
-                            {/* <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="costo"
-                                label="Costo"
-                                type="number"
-                                id="costo"
-                                autoComplete="costo"
-                                InputProps={{ inputProps: { min: 0 } }}
-                                value={cost_}
-                                onChange={(event) => setCost(event.target.value)}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="descripcion"
-                                label="Descripción"
-                                multiline
-                                name="descripcion"
-                                rows={3}
-                                value={desc_}
-                                onChange={(event) => setDesc(event.target.value)}
-                            /> */}
+                            {/* <Divider variant="middle" sx={{my:1, width:'90%'}}/> */}
 
 
                         </Grid>
                     </Grid>
+
+                    <Grid
+                        item
+                        xs={6.1}
+                        sx={{border:0}}
+                    >
+
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{border:0, mt:0.5}}
+                        >
+                            <Typography variant="h6" component="h6" align='left' 
+                                sx={{
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: '#973f1c',
+                                }}>
+                                Comentario:
+                            </Typography>
+                        </Grid>
+
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            id="comentario"
+                            label="Comentario:"
+                            multiline
+                            name="comentario"
+                            rows={3}
+                            value={comentario}
+                            onChange={(event) => setComentario(event.target.value)}
+                        />              
+
+                    </Grid>
+
+                    <Grid
+                        item
+                        xs={6.1}
+                        sx={{border:0}}
+                    >
+
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{border:0, mt:0.5}}
+                        >
+                            <Typography variant="h6" component="h6" align='left' 
+                                sx={{
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: '#973f1c',
+                                }}>
+                                Aplicar Cupon:
+                            </Typography>
+                        </Grid>
+
+                        <FormControl fullWidth margin="normal" >
+                            <InputLabel id="licencia">Mis Cupones</InputLabel>
+                            <Select
+                                labelId="address_select_label"
+                                id="address_select"
+                                defaultValue=""
+                                label="Mis Cupones"
+                                name="address_select"
+                                value={cupon}
+                                onChange={(event) => setCupon(event.target.value)}
+                            >
+                                {cupones.map((item, i) => (
+                                    <MenuItem value={item.alias} key={item.alias}>{item.alias} &gt; {item.descuento*100}% de descuento</MenuItem>
+                                ))}
+                                <MenuItem value="No Usar" key="No Usar">-- No Usar --</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+
+                    </Grid>
                 </Grid>
-            </Box>  
+                
+            </Box> 
+
+            <Grid
+                item
+                xs={12}
+                sx={{border:0, mt:2}}
+            >
+                <Typography variant="h6" component="h6" align='center' 
+                    sx={{
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        letterSpacing: '.3rem',
+                        color: '#973f1c',
+                    }}>
+                    Total: ${total.toFixed(2)}
+                </Typography>
+            </Grid>       
 
             <Grid
                 item

@@ -7,7 +7,8 @@ export const links = {
   ],
 
   Cliente: [
-    { text: "Empresas", path: "/Empresas" }
+    { text: "Empresas", path: "/Empresas" },
+    { text: "Pedidos", path: "/Pedidos" }
   ],
 
   Repartidor: [
