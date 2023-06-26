@@ -669,7 +669,8 @@ CREATE PROCEDURE CrearPedido(
 	IN correo_c_in VARCHAR(200),
 	IN correo_e_in VARCHAR(200),
 	IN id_dir_in INTEGER,
-    IN id_formap_in INTEGER
+    IN id_formap_in INTEGER,
+    IN descripcion_in VARCHAR(250)
 )
 crear_pedido:BEGIN
 	DECLARE id_pedido INTEGER;
@@ -697,8 +698,8 @@ crear_pedido:BEGIN
         LEAVE crear_pedido;
     END IF;
 
-	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total)
-    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, 0);
+	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
+    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, 0, descripcion);
     
     SELECT p.id_pedido INTO id_pedido
     FROM Pedidos p
@@ -756,5 +757,210 @@ agregar_elemento_pedido:BEGIN
     VALUES(id_pedido_in, id_prod_in, id_combo_in, cantidad_in, total_in);
     
 	SELECT 'Producto ingresado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ALMACENAR UNA NUEVA SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CrearSolicitudReasignacion $$
+CREATE PROCEDURE CrearSolicitudReasignacion(
+	IN correo_in VARCHAR(200),
+    IN departamento_in VARCHAR(200),
+    IN municipio_in VARCHAR(200),
+    IN direccion_in VARCHAR(200),
+    IN motivo_in VARCHAR(250)
+)
+crear_solicitud_reasignacion:BEGIN
+	DECLARE id_dep_in INTEGER;
+
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+    IF(ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'No se puede crear la solicitud debido a que ya existe una solicitud pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_solicitud_reasignacion;
+    END IF;
+    
+	SELECT ObtenerDepartamento(departamento_in) INTO id_dep_in;
+    
+	INSERT INTO Solicitudes_reasignacion(correo, id_dep, municipio, direccion, motivo)
+    VALUES(correo_in, id_dep_in, municipio_in, direccion_in, motivo_in);
+    
+	SELECT 'Solicitud de reasignación realizada exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ACEPTAR SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarSolicitudReasignacion $$
+CREATE PROCEDURE AceptarSolicitudReasignacion(
+	IN correo_in VARCHAR(200)
+)
+aceptar_solicitud_reasignacion:BEGIN
+	DECLARE id_dep INTEGER;
+    DECLARE municipio VARCHAR(200);
+    DECLARE direccion VARCHAR(200);
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+    IF(NOT ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'El usuario que ha seleccionado no tiene una solicitud de reasignacion pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_solicitud_reasignacion;
+    END IF;
+    
+    SELECT sr.id_dep, sr.municipio, sr.direccion 
+    INTO id_dep, municipio, direccion 
+    FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+    UPDATE Repartidores r
+    SET r.id_dep = id_dep, r.municipio = municipio, r.direccion = direccion
+    WHERE r.correo = correo_in;
+    
+    DELETE FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+	SELECT 'Solicitud de reasignación aceptada exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA RECHAZAR SOLICITUD DE REASIGNACIÓN ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS RechazarSolicitudReasignacion $$
+CREATE PROCEDURE RechazarSolicitudReasignacion(
+	IN correo_in VARCHAR(200)
+)
+rechazar_solicitud_reasignacion:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+    IF(NOT ExisteSolicitudReasignacion(correo_in)) THEN
+		SELECT 'El usuario que ha seleccionado no tiene una solicitud de reasignacion pendiente' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE rechazar_solicitud_reasignacion;
+    END IF;
+    
+    DELETE FROM Solicitudes_reasignacion sr
+    WHERE sr.correo = correo_in;
+    
+	SELECT 'Solicitud de reasignación rechazada exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA AGREGAR CUPON A CLIENTE ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CrearCupon $$
+CREATE PROCEDURE CrearCupon(
+	IN correo_in VARCHAR(200),
+    IN nombre_in VARCHAR(200),
+    IN descuento_in DECIMAL(12,2)
+)
+crear_cupon:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+    IF(descuento_in < 0 OR descuento_in > 1) THEN
+		SELECT 'El porcentaje de descuento ingresado no es válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+    INSERT INTO Cupones(correo, nombre, descuento)
+    VALUES (correo_in, nombre_in, descuento_in);
+    
+	SELECT 'El cupón se ha creado y asignado exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ELIMINAR CUPON ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS EliminarCupon $$
+CREATE PROCEDURE EliminarCupon(
+	IN id_cupon_in INTEGER
+)
+eliminar_cupon:BEGIN
+	IF(NOT CuponExiste(id_cupon_in)) THEN
+		SELECT 'El cupón ingresado no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE eliminar_cupon;
+    END IF;
+    
+    DELETE FROM Cupones c
+    WHERE c.id_cupon = id_cupon_in;
+    
+	SELECT 'El cupón se canjeado exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA DESHABILITAR USUARIO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DeshabilitarCliente $$
+CREATE PROCEDURE DeshabilitarCliente(
+	IN correo_in VARCHAR(200)
+)
+deshabilitar_cliente:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+	IF(UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta deshabilitar no tiene un estado válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+    
+    UPDATE Usuarios
+    SET estado = 2
+    WHERE correo = correo_in;
+    
+	SELECT 'El usuario se ha deshabilitado exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$

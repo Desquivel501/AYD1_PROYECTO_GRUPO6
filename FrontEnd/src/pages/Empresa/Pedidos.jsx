@@ -5,10 +5,9 @@ import { postData } from "../../api/auth";
 import { useSesion } from "../../hooks/useSesion";
 import "./style.css";
 import pedidos from "../../mocks/pedidos.json";
-import detalles from "../../assets/productos.json";
-import { ListadoProductos } from "../../Componentes/ListadoProductos/ListadoProductos";
 import Swal from "sweetalert2";
 import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
+import {ModalDetallePedido} from "../../Componentes/DetallePedido/DetallePedido"
 
 export function PedidosEmpresa() {
   const { user } = useSesion();
@@ -155,21 +154,3 @@ export function PedidosEmpresa() {
   );
 }
 
-function ModalDetallePedido({ id, onClose }) {
-  const [productos, setProductos] = useState([]);
-  useEffect(() => {
-    const endpoint = "detallePedido";
-    const data = { id };
-    postData({ endpoint, data })
-      .then((data) => setProductos(data ?? detalles))
-      .catch((e) => console.log(e));
-  }, []);
-  return (
-    <Dialog onClose={onClose} open={id != ""} maxWidth="120vh">
-      <ListadoProductos
-        title={"Productos de la orden " + id}
-        productos={productos}
-      />
-    </Dialog>
-  );
-}
