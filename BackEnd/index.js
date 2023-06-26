@@ -641,6 +641,21 @@ app.post('/nuevaDireccion',upload.single('document'), cors(), (req,res)=>{
   });
 });
 
+//-- ##################################### Retornar solicitudes de reasignación #####################################
+app.get('/obtenerReasignaciones', cors(), (req, res)=>{
+  mysql.query(`SELECT correo, d.nombre as departamento, municipio, direccion, motivo 
+  FROM Solicitudes_reasignacion sr
+  JOIN Departamentos d
+  ON d.id_dep = sr.id_dep
+  `, (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
 //-- ##################################### Aceptar solicitud de reasignación #####################################
 app.post('/aceptarReasignacion', cors(), (req, res)=>{
   const correo = req.body.correo;
