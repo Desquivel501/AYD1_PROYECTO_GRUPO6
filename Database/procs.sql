@@ -930,3 +930,37 @@ eliminar_cupon:BEGIN
 	SELECT 'El cupón se canjeado exitósamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+-- ########################### PROCEDIMIENTO PARA DESHABILITAR USUARIO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DeshabilitarCliente $$
+CREATE PROCEDURE DeshabilitarCliente(
+	IN correo_in VARCHAR(200)
+)
+deshabilitar_cliente:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+	IF(UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta deshabilitar no tiene un estado válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+    
+    UPDATE Usuarios
+    SET estado = 2
+    WHERE correo = correo_in;
+    
+	SELECT 'El usuario se ha deshabilitado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
