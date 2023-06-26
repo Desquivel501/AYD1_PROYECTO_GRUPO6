@@ -5,11 +5,13 @@ import { postData } from "../../api/auth";
 import { useSesion } from "../../hooks/useSesion";
 import Rpedidos from "../../mocks/misPedidos.json";
 import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
+import {ModalDetallePedido} from "../../Componentes/DetallePedido/DetallePedido"
 
 export function MisPedidos() {
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
   const [find, setFind] = useState({ cliente: "", fecha: "",estado:-1 });
+  const [pedido, setPedido] = useState("");
   useEffect(() => {
     const endpoint = "ObtenerPedidosRepartidor";
     const data = { correo: user.id };
@@ -51,6 +53,7 @@ export function MisPedidos() {
 
   return (
     <ThemeProvider theme={customTheme}>
+      <ModalDetallePedido id={pedido} onClose={()=>setPedido("")} />
       <Box
         component="main"
         display="flex"
@@ -104,6 +107,7 @@ export function MisPedidos() {
                     tableLayout: "fixed",
                   }}
                   key={index}
+                  onClick={()=>setPedido(index)}
                 >
                   <td>{value.restaurante}</td>
                   <td>{value.cliente}</td>
