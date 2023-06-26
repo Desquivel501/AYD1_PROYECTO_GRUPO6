@@ -330,16 +330,17 @@ DELIMITER $$
 DROP FUNCTION IF EXISTS FormaPagoExistente $$
 CREATE FUNCTION FormaPagoExistente(
 	correo VARCHAR(200),
-    numero_tarjeta BIGINT
+    alias VARCHAR(200)
 )
 RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Formas_pago fp
-    WHERE ((fp.numero_tarjeta = numero_tarjeta)
-    OR (fp.numero_tarjeta IS NULL))
-    AND fp.correo = correo) INTO existe;
+    WHERE (fp.alias = alias)
+    AND (fp.correo = correo)
+    AND (fp.correo IS NOT NULL)
+    )INTO existe;
 	RETURN(existe);
 END $$
 
@@ -356,7 +357,7 @@ BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Direcciones d
 	WHERE d.correo = correo
-    AND d.nombre = nombre) INTO existe;
+    AND d.alias = nombre) INTO existe;
 	RETURN(existe);
 END $$
 
