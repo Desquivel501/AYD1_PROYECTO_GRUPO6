@@ -208,23 +208,23 @@ CREATE TABLE Detalle_combos(
 DROP TABLE IF EXISTS Direcciones;
 CREATE TABLE Direcciones(
 	id_direccion INTEGER AUTO_INCREMENT NOT NULL,
-	nombre VARCHAR(150),
+	alias VARCHAR(150),
     direccion VARCHAR(200),
     correo VARCHAR(200),
     PRIMARY KEY(id_direccion),
     FOREIGN KEY(correo) REFERENCES Clientes(correo),
-    UNIQUE(nombre, direccion, correo)
+    UNIQUE(alias, correo)
 );
 
 -- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR FORMAS DE PAGO ###########################
 DROP TABLE IF EXISTS Formas_pago;
 CREATE TABLE Formas_pago(
 	id_formap INTEGER AUTO_INCREMENT NOT NULL,
-	nombre VARCHAR(150),
+	alias VARCHAR(150),
+    nombre VARCHAR(200),
 	numero_tarjeta BIGINT,
     vencimiento VARCHAR(10),
     cvv INTEGER,
-    tipo VARCHAR(200),
     correo VARCHAR(200),
     PRIMARY KEY(id_formap),
     FOREIGN KEY(correo) REFERENCES Clientes(correo)
@@ -242,6 +242,7 @@ CREATE TABLE Pedidos(
     id_direccion INTEGER,
     fecha_pedido DATETIME,
 	id_formap INTEGER,
+    id_cupon INTEGER,
     calificacion INTEGER,
     confirmado BOOLEAN,
     total DECIMAL(12,2),
@@ -287,6 +288,7 @@ CREATE TABLE Cupones(
 	correo VARCHAR(200),
     nombre VARCHAR(200),
     descuento DECIMAL(12,2),
+    canjeado BOOLEAN DEFAULT FALSE,
     PRIMARY KEY(id_cupon),
     FOREIGN KEY(correo) REFERENCES Clientes(correo)
 );

@@ -608,57 +608,72 @@ END $$
 DELIMITER $$
 DROP PROCEDURE IF EXISTS CrearFormaPago $$
 CREATE PROCEDURE CrearFormaPago (
+	IN alias_in VARCHAR(150),
+    IN nombre_in VARCHAR(200),
 	IN numero_tarjeta_in BIGINT,
     IN vencimiento_in VARCHAR(10),
     IN cvv_in INTEGER,
-    IN tipo_in VARCHAR(200),
     IN correo_in VARCHAR(200)
 )
 crear_forma_pago:BEGIN
-	IF(NOT ExisteUsuario(correo_in)) THEN
+	DECLARE id_formap INTEGER;
+    
+	IF((NOT ExisteUsuario(correo_in)) AND (correo_in IS NOT NULL)) THEN
 		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_forma_pago;
     END IF;
     
-	IF(FormaPagoExistente(correo_in, numero_tarjeta_in)) THEN
+	IF(FormaPagoExistente(correo_in, alias_in)) THEN
 		SELECT 'La forma de pago ingresada ya existe en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_forma_pago;
     END IF;
     
-    INSERT INTO Formas_pago (numero_tarjeta, vencimiento, cvv, tipo, correo)
-    VALUES (numero_tarjeta_in, vencimiento_in, cvv_in, tipo_in, correo_in);
+    INSERT INTO Formas_pago (alias, nombre, numero_tarjeta, vencimiento, cvv, correo)
+    VALUES (alias_in, nombre_in ,numero_tarjeta_in, vencimiento_in, cvv_in, correo_in);
     
-    SELECT 'Forma de pago registrada exitosamente' AS 'MENSAJE',
-    'EXITO' AS 'TIPO';
+    SELECT fp.id_formap INTO id_formap
+    FROM Formas_pago fp
+    ORDER BY fp.id_formap DESC
+    LIMIT 1;
+
+	SELECT id_formap AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
 END $$
 
 -- ########################### GUARDAR UNA NUEVA DIRECCION ###########################
 DELIMITER $$
 DROP PROCEDURE IF EXISTS CrearDireccion $$
 CREATE PROCEDURE CrearDireccion(
-	IN nombre_in VARCHAR(150),
+	IN alias_in VARCHAR(150),
     IN direccion_in VARCHAR(200),
     IN correo_in VARCHAR(200)
 )	
 crear_direccion:BEGIN
-	IF(NOT ExisteUsuario(correo_in)) THEN
+	DECLARE id_direccion INTEGER;
+    
+	IF((NOT ExisteUsuario(correo_in)) AND (correo_in IS NOT NULL)) THEN
 		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_direccion;
     END IF;
   
-	IF(DireccionExistente(nombre_in ,correo_in)) THEN
+	IF(DireccionExistente(alias_in ,correo_in)) THEN
 		SELECT 'La direccion que desea crear ya existe en la base de datos' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_direccion;
     END IF;
     
-    INSERT INTO Direcciones (nombre, direccion, correo)
-    VALUES (nombre_in, direccion_in, correo_in);
-    
-	SELECT 'La direccion se agregó correctamente' AS 'MENSAJE',
+    INSERT INTO Direcciones (alias, direccion, correo)
+    VALUES (alias_in, direccion_in, correo_in);
+
+    SELECT d.id_direccion INTO id_direccion
+    FROM Direcciones d
+    ORDER BY d.id_direccion DESC
+    LIMIT 1;
+
+	SELECT id_direccion AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
 
@@ -670,6 +685,7 @@ CREATE PROCEDURE CrearPedido(
 	IN correo_e_in VARCHAR(200),
 	IN id_dir_in INTEGER,
     IN id_formap_in INTEGER,
+    IN id_cupon_in INTEGER,
     IN descripcion_in VARCHAR(250)
 )
 crear_pedido:BEGIN
@@ -696,6 +712,18 @@ crear_pedido:BEGIN
 		SELECT 'La forma de pago ingresada no existe en el sistema' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_pedido;
+    END IF;
+    
+    IF(id_cupon_in > 0) THEN
+		IF(NOT CuponExiste(id_cupon_in)) THEN
+			SELECT 'El cupon indicado no existe' AS 'MENSAJE',
+			'ERROR' AS 'TIPO';
+			LEAVE crear_pedido;
+        END IF;
+        
+        UPDATE Cupones c
+        SET c.canjeado = true
+        WHERE c.id_cupon = id_cupon_in;
     END IF;
 
 	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
