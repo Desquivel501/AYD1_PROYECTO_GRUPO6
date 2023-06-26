@@ -669,6 +669,43 @@ app.post('/aceptarReasignacion', cors(), (req, res)=>{
   })
 });
 
+//-- ##################################### Guardar una nueva dirección #####################################
+app.post('/guardarDireccion', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  let alias = req.body.alias;
+  const direccion = req.body.direccion;
+  
+  if (correo == null) alias = `${Date.now()}`
+
+  mysql.query('CALL CrearDireccion(?,?,?)',[alias, direccion, correo], (err,results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results)
+  });
+});
+
+//-- ##################################### Guardar una nueva dirección #####################################
+app.post('/guardarTarjeta', cors(), (req,res)=>{
+  const correo = req.body.correo;
+  let alias = req.body.alias;
+  const name = req.body.name;
+  const cc = req.body.cc;
+  const vencimiento = req.body.vencimiento;
+  const cvv = req.body.cvv;
+
+  if (correo == null) alias = `${Date.now()}`
+
+  mysql.query('CALL CrearFormaPago(?,?,?,?,?,?)',[alias, name, cc, vencimiento, cvv, correo], (err,results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results)
+  });
+});
+
 //-- ##################################### Rechazar solicitud de reasignación #####################################
 app.post('/rechazarReasignacion', cors(), (req, res)=>{
   const correo = req.body.correo;
