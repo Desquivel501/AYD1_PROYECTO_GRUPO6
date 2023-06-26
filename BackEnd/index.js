@@ -42,13 +42,6 @@ const upload = multer({
   }),
 });
 
-// app.post('/upload', upload.single('image'), (req, res) => {
-//   console.log(req.file.location);
-// // Return the URL of the uploaded image to the client
-//   res.json({ imageUrl: req.file.location });
-// });
-
-
 
 // ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
 app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
@@ -481,7 +474,6 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
     
 });
 
-
 //-- ##################################### Obtener los datos de una empresa en base a su departamento y nombre #####################################
 app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
   const nombre = req.body.nombre;
@@ -504,14 +496,12 @@ app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
         return;
       }
 
-      
       res.json(results);
       console.log(results);
 
     });
     
 });
-
 
 //-- ##################################### Obtener los datos de todas las empresas #####################################
 app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
@@ -616,6 +606,20 @@ app.get('/CategoriasEmpresa', cors(), (req, res) => {
     console.log(results);
   });
 
+});
+
+//-- ##################################### Deshabilitar cliente #####################################
+app.post('/deshabilitar', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  //const motivo = req.body.motivo;
+
+  mysql.query('CALL DeshabilitarCliente(?)', [correo], (err, results) =>{
+    if (err) {
+      res.status(404).end();
+    }
+
+    res.status(200).json(results);
+  });
 });
 
 // Inicia el servidor
