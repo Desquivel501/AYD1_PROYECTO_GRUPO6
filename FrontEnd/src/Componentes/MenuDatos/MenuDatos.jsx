@@ -112,7 +112,7 @@ export const MenuDatos = (props) => {
 
     const [actualCC, setActualCC] = useState("")
 
-    const [cupon, setCupon] = useState("")
+    const [cupon, setCupon] = useState("No Usar")
 
     const [nameCC, setNameCC] = useState("")
     const [cc, setCC] = useState(0)
@@ -168,6 +168,54 @@ export const MenuDatos = (props) => {
             total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
         }
         setTotal(total_)
+
+
+        fetch("http://localhost:3000/obtenerTarjetas", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setTarjetas(response)
+        })
+
+        fetch("http://localhost:3000/obtenerDirecciones", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setDirecciones(response)
+        })
+
+        fetch("http://localhost:3000/obtenerCupones", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setCupones(response)
+        })
+
+
     },[])
 
     useEffect(() => {
@@ -195,10 +243,10 @@ export const MenuDatos = (props) => {
     const handleSubmit = (event) => {
         
         var cambio_dir = false
-        var index_dir = 0
+        var id_dir = 0
         for(var i = 0; i < direcciones.length; i++){
             if(direcciones[i].name == actual){
-                index_dir = i
+                id_dir = direcciones[i].id
                 if(direcciones[i].direccion != direccion){
                     cambio_dir = true
                 }
@@ -232,16 +280,18 @@ export const MenuDatos = (props) => {
                             return
                         }
                     })
+                } else {
+                    id_dir = response[0][0].MENSAJE
                 }
             })
         }
 
 
         var cambio_tar = false
-        var index_tar = 0
+        var id_tar = 0
         for(var i = 0; i < direcciones.length; i++){
             if(tarjetas[i].alias == actualCC){
-                index_tar = i
+                id_tar = tarjetas[i].id
                 if(tarjetas[i].cc != cc && tarjetas[i].name == nameCC){
                     cambio_tar = true
                 }
@@ -278,32 +328,46 @@ export const MenuDatos = (props) => {
                             return
                         }
                     })
+                } else {
+                    id_tar = response[0][0].MENSAJE
                 }
             })
         }
 
-        
+
+        var json = {
+            "departamento": pedido.departamento,
+            "restaurante": pedido.restaurante,
+            "usuario": pedido.usuario,
+            "productos": []
+        }
 
 
+        for(var i = 0; i < pedido.productos.length; i++){
+            json.productos.push({
+                "id": pedido.productos[i].id,
+                "cantidad": pedido.productos[i].cantidad,
+                "combo": pedido.productos[i].tipo == "producto" ? false : true,
+                "costo": pedido.productos[i].costo,
+                "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
+            })
+        }
 
-        // var json = {
-        //     "departamento": pedido.departamento,
-        //     "restaurante": pedido.restaurante,
-        //     "usuario": pedido.usuario,
-        //     "productos": []
-        // }
+        json["direccion"] = id_dir
+        json["forma_pago"] = (metodo == "tarjeta") ? id_tar : 0
+        json["descripcion"] = comentario
 
-        // var total = 0
-        // for(var i = 0; i < pedido.productos.length; i++){
-        //     json.productos.push({
-        //         "id": pedido.productos[i].id,
-        //         "cantidad": pedido.productos[i].cantidad,
-        //         "combo": pedido.productos[i].tipo == "producto" ? false : true,
-        //         "costo": pedido.productos[i].costo,
-        //         "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
-        //     })
-        //     total += pedido.productos[i].costo*pedido.productos[i].cantidad
-        // }
+        var id_cupon = 0
+        for(var i = 0; i < cupones.length; i++){
+            if(cupon == cupones[i].alias){
+                id_cupon = cupones[i].id
+                break
+            }
+        }
+        json["cupon"] = (metodo != "No Usar") ? id_cupon : 0
+
+        json["total"] = total
+
 
         // for(var i = 0; i < direcciones.length; i++){
         //     if(direcciones[i].name == actual){
@@ -731,7 +795,7 @@ export const MenuDatos = (props) => {
                                 onChange={(event) => setCupon(event.target.value)}
                             >
                                 {cupones.map((item, i) => (
-                                    <MenuItem value={item.alias} key={item.alias}>{item.alias} &gt; {item.descuento*100}% de descuento</MenuItem>
+                                    <MenuItem value={item.alias} key={i}>{item.alias} &gt; {item.descuento*100}% de descuento</MenuItem>
                                 ))}
                                 <MenuItem value="No Usar" key="No Usar">-- No Usar --</MenuItem>
                             </Select>
