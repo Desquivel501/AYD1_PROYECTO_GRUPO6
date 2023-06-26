@@ -19,8 +19,8 @@ import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
-import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
-import { MisPedidos } from "./pages/Repartidor/MisPedidos";
+// import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
+// import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 import Carrito from "./pages/Carrito/Carrito";
 import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 import PedidosUsuario from "./pages/PedidosUsuario/PedidosUsuario";
@@ -50,7 +50,7 @@ function App() {
             element={<ControlRuta usuario={"Repartidor"} />}
           >
             <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
-            <Route path={"MisPedidos"} element={<MisPedidos />} />
+            {/* <Route path={"MisPedidos"} element={<MisPedidos />} /> */}
           </Route>
 
           <Route element={<ControlRuta usuario={"Cliente"} />}>
@@ -70,7 +70,7 @@ function App() {
               <Route path={"EditarProductos"} element={<EditarProductos />} />
               <Route path={"CrearCombo"} element={<CrearCombo />} />
               <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
-              <Route path={"Pedidos"} element={<PedidosEmpresa />} />
+              {/* <Route path={"Pedidos"} element={<PedidosEmpresa />} /> */}
             </Route>
           </Route>
           <Route element={<ControlRuta usuario={"Administrador"} />}>
