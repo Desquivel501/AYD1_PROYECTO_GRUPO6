@@ -127,22 +127,12 @@ export const MenuDatos = (props) => {
 
     const [total, setTotal] = useState(0)
 
-
-    const [vencimiento, setVencimiento] = useState({})
-
     function handleDateChange(e, date){
-        // setVencimiento(date)
-        // console.log((prev) => ({ ...prev, [name]: value }))
-        // console.log(value)
-        // console.log(JSON.stringify(date));
-        // console.log(JSON.stringify(e));
         var date = new Date(e);
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const withSlashes = [month, year].join('/');
-        
-        console.log(withSlashes);
-
+        setDate(withSlashes)
     }
 
     useEffect(() => {
@@ -203,56 +193,149 @@ export const MenuDatos = (props) => {
 
 
     const handleSubmit = (event) => {
-        var json = {
-            "departamento": pedido.departamento,
-            "restaurante": pedido.restaurante,
-            "usuario": pedido.usuario,
-            "productos": []
-        }
-
-        var total = 0
-        for(var i = 0; i < pedido.productos.length; i++){
-            json.productos.push({
-                "id": pedido.productos[i].id,
-                "cantidad": pedido.productos[i].cantidad,
-                "combo": pedido.productos[i].tipo == "producto" ? false : true,
-                "costo": pedido.productos[i].costo,
-                "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
-            })
-            total += pedido.productos[i].costo*pedido.productos[i].cantidad
-        }
-
+        
+        var cambio_dir = false
+        var index_dir = 0
         for(var i = 0; i < direcciones.length; i++){
             if(direcciones[i].name == actual){
-                json["direccion"] = direcciones[i].id
+                index_dir = i
+                if(direcciones[i].direccion != direccion){
+                    cambio_dir = true
+                }
                 break
             }
         }
 
-        if( metodo != "tarjeta"){
-            json["forma_pago"] = 0
-        } else {
-            for(var i = 0; i < tarjetas.length; i++){
-                if(tarjetas[i].alias == actualCC){
-                    json["forma_pago"] = tarjetas[i].id
-                    break
+        if(cambio_dir == true || saveAdd){
+            fetch("http://localhost:3000/guardarDireccion", {
+                method: "POST",
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    correo: saveAdd ? user.id : null,
+                    alias: saveAdd ? alias : null,
+                    direccion: direccion
+                })
+            })
+            .then(res => res.json())
+            .then(response =>{
+                console.log(response[0][0])
+                    
+                if(response[0][0].TIPO != "EXITO"){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error',
+                        text: response[0][0].MENSAJE,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            return
+                        }
+                    })
                 }
+            })
+        }
+
+
+        var cambio_tar = false
+        var index_tar = 0
+        for(var i = 0; i < direcciones.length; i++){
+            if(tarjetas[i].alias == actualCC){
+                index_tar = i
+                if(tarjetas[i].cc != cc && tarjetas[i].name == nameCC){
+                    cambio_tar = true
+                }
+                break
             }
         }
 
-        json["descripcion"] = comentario
-
-
-        if(cupon == ""){
-            json["cupon"] = 0
-        } else {
-            for(var i = 0; i<cupones.length; i++){
-                if(cupon == cupones[i].alias){
-                    json["cupon"] = cupones[i].id
-                    break
+        if(cambio_tar == true || saveCC){
+            fetch("http://localhost:3000/guardarTarjeta", {
+                method: "POST",
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    correo: saveCC ? user.id : null,
+                    alias: saveCC ? aliasCC : null,
+                    name: nameCC,
+                    cc: cc,
+                    vencimiento: date,
+                    cvv: cvv
+                })
+            })
+            .then(res => res.json())
+            .then(response =>{
+                console.log(response[0][0])
+                    
+                if(response[0][0].TIPO != "EXITO"){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error',
+                        text: response[0][0].MENSAJE,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            return
+                        }
+                    })
                 }
-            }
+            })
         }
+
+        
+
+
+
+        // var json = {
+        //     "departamento": pedido.departamento,
+        //     "restaurante": pedido.restaurante,
+        //     "usuario": pedido.usuario,
+        //     "productos": []
+        // }
+
+        // var total = 0
+        // for(var i = 0; i < pedido.productos.length; i++){
+        //     json.productos.push({
+        //         "id": pedido.productos[i].id,
+        //         "cantidad": pedido.productos[i].cantidad,
+        //         "combo": pedido.productos[i].tipo == "producto" ? false : true,
+        //         "costo": pedido.productos[i].costo,
+        //         "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
+        //     })
+        //     total += pedido.productos[i].costo*pedido.productos[i].cantidad
+        // }
+
+        // for(var i = 0; i < direcciones.length; i++){
+        //     if(direcciones[i].name == actual){
+        //         json["direccion"] = direcciones[i].id
+        //         break
+        //     }
+        // }
+
+        // if( metodo != "tarjeta"){
+        //     json["forma_pago"] = 0
+        // } else {
+        //     for(var i = 0; i < tarjetas.length; i++){
+        //         if(tarjetas[i].alias == actualCC){
+        //             json["forma_pago"] = tarjetas[i].id
+        //             break
+        //         }
+        //     }
+        // }
+
+        // json["descripcion"] = comentario
+
+
+        // if(cupon == ""){
+        //     json["cupon"] = 0
+        // } else {
+        //     for(var i = 0; i<cupones.length; i++){
+        //         if(cupon == cupones[i].alias){
+        //             json["cupon"] = cupones[i].id
+        //             break
+        //         }
+        //     }
+        // }
 
     }
 
@@ -575,10 +658,6 @@ export const MenuDatos = (props) => {
                                 </>
 
                             }
-
-                            {/* <Divider variant="middle" sx={{my:1, width:'90%'}}/> */}
-
-
                         </Grid>
                     </Grid>
 
@@ -689,7 +768,7 @@ export const MenuDatos = (props) => {
                 <Button
                     variant="contained"
                     type="submit"
-                    // onClick={handleSubmit}
+                    onClick={handleSubmit}
                     sx={{ 
                         mt: 2, mb: 1,
                         bgcolor: "#2f9d76",
