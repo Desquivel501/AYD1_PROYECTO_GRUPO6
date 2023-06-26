@@ -669,7 +669,8 @@ CREATE PROCEDURE CrearPedido(
 	IN correo_c_in VARCHAR(200),
 	IN correo_e_in VARCHAR(200),
 	IN id_dir_in INTEGER,
-    IN id_formap_in INTEGER
+    IN id_formap_in INTEGER,
+    IN descripcion_in VARCHAR(250)
 )
 crear_pedido:BEGIN
 	DECLARE id_pedido INTEGER;
@@ -697,8 +698,8 @@ crear_pedido:BEGIN
         LEAVE crear_pedido;
     END IF;
 
-	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total)
-    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, 0);
+	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
+    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, 0, descripcion);
     
     SELECT p.id_pedido INTO id_pedido
     FROM Pedidos p
@@ -873,5 +874,93 @@ rechazar_solicitud_reasignacion:BEGIN
     WHERE sr.correo = correo_in;
     
 	SELECT 'Solicitud de reasignación rechazada exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA AGREGAR CUPON A CLIENTE ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CrearCupon $$
+CREATE PROCEDURE CrearCupon(
+	IN correo_in VARCHAR(200),
+    IN nombre_in VARCHAR(200),
+    IN descuento_in DECIMAL(12,2)
+)
+crear_cupon:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+    IF(descuento_in < 0 OR descuento_in > 1) THEN
+		SELECT 'El porcentaje de descuento ingresado no es válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
+    INSERT INTO Cupones(correo, nombre, descuento)
+    VALUES (correo_in, nombre_in, descuento_in);
+    
+	SELECT 'El cupón se ha creado y asignado exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ELIMINAR CUPON ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS EliminarCupon $$
+CREATE PROCEDURE EliminarCupon(
+	IN id_cupon_in INTEGER
+)
+eliminar_cupon:BEGIN
+	IF(NOT CuponExiste(id_cupon_in)) THEN
+		SELECT 'El cupón ingresado no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE eliminar_cupon;
+    END IF;
+    
+    DELETE FROM Cupones c
+    WHERE c.id_cupon = id_cupon_in;
+    
+	SELECT 'El cupón se canjeado exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA DESHABILITAR USUARIO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DeshabilitarCliente $$
+CREATE PROCEDURE DeshabilitarCliente(
+	IN correo_in VARCHAR(200)
+)
+deshabilitar_cliente:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+	IF(UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta deshabilitar no tiene un estado válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_cliente;
+    END IF;
+    
+    
+    UPDATE Usuarios
+    SET estado = 2
+    WHERE correo = correo_in;
+    
+	SELECT 'El usuario se ha deshabilitado exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
