@@ -421,3 +421,18 @@ BEGIN
     WHERE sr.correo = correo) INTO existe;
     RETURN(existe);
 END $$
+
+-- ########################### VERIFICAR SI UN CUPÓN YA EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS CuponExiste $$
+CREATE FUNCTION CuponExiste(
+	id_cupon VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Cupones c
+    WHERE c.id_cupon = id_cupon) INTO existe;
+    RETURN(existe);
+END $$
