@@ -425,7 +425,7 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
   const parametro1 = req.body.correo;
-  let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv  
+  let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv , 0 as estrellas
   FROM Usuarios u 
   JOIN Repartidores r 
   ON u.correo = r.correo 
@@ -764,6 +764,89 @@ app.post('/rechazarReasignacion', cors(), (req, res)=>{
     }
     res.status(200).json(results);
   })
+});
+
+//-- ##################################### Crear nuevo pedido #####################################
+app.post('/crearPedido', cors(), (req, res)=>{
+  const departamento = req.body.departamento; //id del departamento
+  const restaurante = req.body.restaurante; // nombre del restaurante
+  const cliente = req.body.usuario; //correo del cliente
+  const productos = req.body.productos; //listado de los productos
+  const direccion = req.body.direccion; //id de la direccion
+  let forma_pago = req.body.forma_pago; //id de la forma de pago (0 si es efectivo)
+  let cupon = req.body.cupon; //id del cupon (0 si no hay cupon)
+  const total = req.body.total; //total del pedido
+  const descripcion = req.body.descripcion; //total del pedido
+
+  if(cupon == 0) cupon = null;
+  if(forma_pago == 0) forma_pago == null;
+
+  mysql.query('CALL CrearPedido(?,?,?,?,?,?,?,?)', [cliente, departamento, restaurante, direccion, forma_pago, cupon, total, descripcion], (err, results)=>{
+      if(err){
+        console.log(err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      }
+      let id_pedido = results[0][0].MENSAJE
+      productos.forEach((producto, index)=>{
+        let query = producto.combo?`CALL AgregarElementoPedido(?,null,${producto.id},?,?)`:`CALL AgregarElementoPedido(?,${producto.id},null,?,?)`
+        mysql.query(query, [id_pedido, producto.cantidad, producto.subtotal], (err, results)=>{
+          if(err){
+            console.log(err);
+            res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+          }
+        });
+        
+      });
+      res.status(200).json({'TIPO': 'EXITO', 'MENSAJE':'El pedido se ha realizado exitósamente'});
+    });
+});
+
+//-- ##################################### Obtener los pedidos de un repartidor #####################################
+app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, correo_c AS cliente, 
+  total AS costo, fecha_pedido AS fecha, p.estado AS estado
+  FROM Pedidos p
+  JOIN Empresas e
+  ON  p.correo_e = e.correo
+  AND p.correo_r = ?
+  `
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Obtener los pedidos de una empresa #####################################
+app.post('/obtenerPedidosEmpresa', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
+  FROM Pedidos p
+  WHERE p.correo_e = ?
+  AND confirmado = false`
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Aceptar el pedido de una empresa #####################################
+app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
+  const id_pedido = req.body.id
+  const correo = req.body.correo
+  mysql.query('CALL AceptarPedidoEmpresa(?,?)', [id_pedido, correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
 });
 
 // Inicia el servidor
