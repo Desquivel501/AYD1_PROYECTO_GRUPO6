@@ -8,16 +8,9 @@ import "./navbar.css";
 import { Link } from "react-router-dom";
 import { useSesion } from "../../hooks/useSesion";
 import { links } from "../../assets/navBars";
-import { useState } from "react";
-import { useEffect } from "react";
 
 function Navbar() {
   const { user, logout } = useSesion();
-  const [data, setdata] = useState([])
-
-  useEffect(() => {
-    setdata(links[user.rol])
-  }, []);
 
   const handleClick = ()=>{
     logout()
