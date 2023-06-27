@@ -956,12 +956,6 @@ app.post('/entregarPedido', cors(), (req, res)=>{
   });
 });
 
-// Inicia el servidor
-app.listen(3000, () => {
-  console.log('Servidor escuchando en el puerto 3000');
-});
-
-
 //-- ##################################### Obtener todos los pedidos #####################################
 app.post('/obtenerPedidos', cors(), (req, res)=>{
   const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
@@ -973,4 +967,10 @@ app.post('/obtenerPedidos', cors(), (req, res)=>{
     }
     res.status(200).json(results);
   });
+});
+
+
+// Inicia el servidor
+app.listen(3000, () => {
+  console.log('Servidor escuchando en el puerto 3000');
 });
