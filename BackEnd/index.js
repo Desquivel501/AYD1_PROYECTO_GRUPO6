@@ -872,6 +872,7 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
   });
 });
 
+//-- ##################################### Obtener los pedidos de un cliente #####################################
 app.post('/pedidosCliente', cors(), (req, res)=>{
   const correo = req.body.correo;
   const query = `SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, CONCAT(u.nombre, " ", u.apellidos) AS repartidor, 
@@ -894,6 +895,7 @@ app.post('/pedidosCliente', cors(), (req, res)=>{
   });  
 });
 
+//-- ##################################### Obtener datos de un pedido específico #####################################
 app.post('/datosPedido', cors(), (req, res)=>{
   const correo = req.body.correo;
   const id_pedido = req.body.id;
@@ -908,6 +910,7 @@ app.post('/datosPedido', cors(), (req, res)=>{
   }); 
 });
 
+//-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
 app.post('/pedidosDisponibles', cors(), (req, res)=>{
   const correo = req.body.correo;
   mysql.query('CALL PedidosDisponibles(?)', [correo], (err, results)=>{
@@ -919,6 +922,7 @@ app.post('/pedidosDisponibles', cors(), (req, res)=>{
   });
 });
 
+//-- ##################################### Calificar un pedido específico #####################################
 app.post('/calificarPedido', cors(), (req, res)=>{
   const id_pedido = req.body.id;
   const calificacion = req.body.calificacion;
@@ -931,6 +935,7 @@ app.post('/calificarPedido', cors(), (req, res)=>{
   });
 });
 
+//-- ##################################### Aceptar un pedido #####################################
 app.post('/aceptarPedidoRepartidor', cors(), (req, res)=>{
   const id_pedido = req.body.id;
   const correo = req.body.correo;
@@ -944,6 +949,7 @@ app.post('/aceptarPedidoRepartidor', cors(), (req, res)=>{
   });
 });
 
+//-- ##################################### Entregar un pedido #####################################
 app.post('/entregarPedido', cors(), (req, res)=>{
   const id_pedido = req.body.id;
 
