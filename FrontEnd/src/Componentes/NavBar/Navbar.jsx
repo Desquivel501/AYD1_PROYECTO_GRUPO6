@@ -22,11 +22,6 @@ function Navbar() {
   const navigate = useNavigate();
 
   const { user, logout } = useSesion();
-  const [data, setdata] = useState([])
-
-  useEffect(() => {
-    setdata(links[user.rol])
-  }, []);
 
   const handleClick = ()=>{
     navigate("/")

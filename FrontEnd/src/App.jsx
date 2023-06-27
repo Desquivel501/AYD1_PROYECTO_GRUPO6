@@ -23,6 +23,7 @@ import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
 import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 import Carrito from "./pages/Carrito/Carrito";
 import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
+import { PedidosDisponibles } from "./pages/Repartidor/PedidosDiponibles";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           >
             <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
             <Route path={"MisPedidos"} element={<MisPedidos />} />
+            <Route path={"Pedidos"} element={<PedidosDisponibles />} />
           </Route>
 
           <Route element={<ControlRuta usuario={"Cliente"} />}>

@@ -798,25 +798,31 @@ app.post('/crearPedido', cors(), (req, res)=>{
   const descripcion = req.body.descripcion; //total del pedido
 
   if(cupon == 0) cupon = null;
-  if(forma_pago == 0) forma_pago == null;
+  if(forma_pago == 0) forma_pago = null;
 
   mysql.query('CALL CrearPedido(?,?,?,?,?,?,?,?)', [cliente, departamento, restaurante, direccion, forma_pago, cupon, total, descripcion], (err, results)=>{
       if(err){
         console.log(err);
         res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      let id_pedido = results[0][0].MENSAJE
-      productos.forEach((producto, index)=>{
-        let query = producto.combo?`CALL AgregarElementoPedido(?,null,${producto.id},?,?)`:`CALL AgregarElementoPedido(?,${producto.id},null,?,?)`
-        mysql.query(query, [id_pedido, producto.cantidad, producto.subtotal], (err, results)=>{
-          if(err){
-            console.log(err);
-            res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-          }
+      if(results[0][0].TIPO == 'EXITO'){
+        let id_pedido = results[0][0].MENSAJE
+        productos.forEach((producto, index)=>{
+          let query = producto.combo?`CALL AgregarElementoPedido(?,null,${producto.id},?,?)`:`CALL AgregarElementoPedido(?,${producto.id},null,?,?)`
+          mysql.query(query, [id_pedido, producto.cantidad, producto.subtotal], (err, results)=>{
+            if(err){
+              console.log(err);
+              res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+            }
+          });
+          
         });
-        
-      });
-      res.status(200).json({'TIPO': 'EXITO', 'MENSAJE':'El pedido se ha realizado exitósamente'});
+        res.status(200).json({'TIPO': 'EXITO', 'MENSAJE':'El pedido se ha realizado exitósamente'});
+      }else{
+        console.log(results[0][0])
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      }
     });
 });
 
@@ -857,8 +863,8 @@ app.post('/obtenerPedidosEmpresa', cors(), (req, res)=>{
 
 //-- ##################################### Aceptar el pedido de una empresa #####################################
 app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
-  const id_pedido = req.body.id
-  const correo = req.body.correo
+  const id_pedido = req.body.id;
+  const correo = req.body.correo;
   mysql.query('CALL AceptarPedidoEmpresa(?,?)', [id_pedido, correo], (err, results)=>{
     if(err){
       console.log(err);
@@ -866,6 +872,42 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
     }
     res.status(200).json(results);
   });
+});
+
+app.post('/pedidosCliente', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  const query = `SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, CONCAT(u.nombre, " ", u.apellidos) AS repartidor, 
+  d.direccion, p.total AS costo, p.fecha_pedido AS fecha, p.estado
+  FROM Pedidos p
+  JOIN Empresas e
+  ON p.correo_e = e.correo
+  AND p.correo_c = ?
+  LEFT JOIN Usuarios u
+  ON p.correo_r = u.correo
+  JOIN Direcciones d
+  ON d.id_direccion = p.id_direccion`
+
+  mysql.query(query, [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });  
+});
+
+app.post('/datosPedido', cors(), (req, res)=>{
+  const correo = req.body.correo
+  const id_pedido = req.body.id
+
+  mysql.query('CALL DatosPedido(?,?)', [correo, id_pedido], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    results[0][0].productos = JSON.parse(results[0][0].productos)
+    res.status(200).json(results[0][0]);
+  }); 
 });
 
 // Inicia el servidor
