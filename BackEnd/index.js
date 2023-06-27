@@ -547,6 +547,25 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
     });
 });
 
+//-- ##################################### Obtener listado de usuarios#####################################
+app.get('/ObtenerHabilitados', cors(), (req, res) => {
+  query = `SELECT correo AS id, nombre, apellidos, rol, fecha_registro AS fecha,contrasenia, estado 
+  FROM Usuarios 
+  WHERE Usuarios.rol != 0 AND Usuarios.estado=1`
+
+  mysql.query(query, (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        return;
+      }
+
+      
+      res.json(results);
+      console.log(results);
+
+    });
+});
+
 //-- ##################################### Obtener las solicitudes de repartidores #####################################
 app.get('/SolicitudesRepartidores', cors(), (req, res) => {
 

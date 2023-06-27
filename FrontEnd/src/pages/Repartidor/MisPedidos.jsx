@@ -5,25 +5,49 @@ import { postData } from "../../api/auth";
 import { useSesion } from "../../hooks/useSesion";
 import Rpedidos from "../../mocks/misPedidos.json";
 import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
-import {ModalDetallePedido} from "../../Componentes/DetallePedido/DetallePedido"
-
+import { ModalDetallePedido } from "../../Componentes/DetallePedido/DetallePedido";
+import { Tabla } from "../../Componentes/Tabla/Tabla";
+const HEADERS = [
+  "ID",
+  "Restaurante",
+  "Cliente",
+  "Costo",
+  "Fecha",
+  "Estado",
+  "Detalle",
+];
+const objectAttributes = [
+  "id",
+  "restaurante",
+  "cliente",
+  "costo",
+  "fecha",
+  "estado",
+];
+const estados = {
+  name: "estado",
+  options: {
+    "0": { color: "#080", txt: "Entregado" },
+    "1": { color: "#00f", txt: "En Proceso" },
+    "2": { color: "#f00", txt: "Cancelado" },
+  },
+};
 export function MisPedidos() {
+  const [pedido, setPedido] = useState("");
+  const [find, setFind] = useState({ cliente: "", fecha: "", estado: -1 });
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
-  const [find, setFind] = useState({ cliente: "", fecha: "",estado:-1 });
-  const [pedido, setPedido] = useState("");
   useEffect(() => {
     const endpoint = "ObtenerPedidosRepartidor";
     const data = { correo: user.id };
-    //const id = setInterval(() => {
     postData({ endpoint, data })
       .then((data) => setPedidos(data ?? Rpedidos))
       .catch((e) => console.log(e));
-    //}, 5000);
-    //return () => clearInterval(id);
   }, []);
   const filterUsers = () => {
-    if (find.fecha == "" && find.cliente == "" && find.estado==-1) return pedidos;
+    if (find.fecha == "" && find.cliente == "" && find.estado == -1) {
+      return pedidos;
+    }
     let temp = pedidos;
     if (find.cliente != "") {
       const regex = "^" + find.cliente;
@@ -38,6 +62,11 @@ export function MisPedidos() {
     }
     return temp;
   };
+  const handleClick = (e) => {
+    const parent = e.currentTarget.parentElement.parentElement;
+    const id = parent.firstChild;
+    setPedido(id.innerText);
+  };
   const customTheme = createTheme({
     palette: {
       background: {
@@ -45,15 +74,9 @@ export function MisPedidos() {
       },
     },
   });
-  const estados = {
-    "0": {color:"#080",txt: "Entregado"},
-    "1": {color:"#00f",txt: "En Proceso"},
-    "2": {color:"#f00",txt: "Cancelado"},
-  };
-
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDetallePedido id={pedido} onClose={()=>setPedido("")} />
+      <ModalDetallePedido id={pedido} onClose={() => setPedido("")} />
       <Box
         component="main"
         display="flex"
@@ -79,48 +102,30 @@ export function MisPedidos() {
             find={find}
             onChange={setFind}
           />
-          <table style={{ marginTop: "10px", borderCollapse: "collapse" }}>
-            <thead
-              className="sombra"
-              style={{
-                display: "table",
-                width: "calc( 100% - 1em )",
-                tableLayout: "fixed",
-              }}
-            >
-              <th>Restaurante</th>
-              <th>Cliente</th>
-              <th>Dirección</th>
-              <th>Costo</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-            </thead>
-            <tbody
-              style={{ display: "block", overflowY: "scroll", height: "55vh" }}
-              className="sombra-tr"
-            >
-              {filterUsers().map((value, index) => (
-                <tr
-                  style={{
-                    display: "table",
-                    width: "100%",
-                    tableLayout: "fixed",
-                  }}
-                  key={index}
-                  onClick={()=>setPedido(index)}
-                >
-                  <td>{value.restaurante}</td>
-                  <td>{value.cliente}</td>
-                  <td>{value.direccion}</td>
-                  <td>{value.costo}</td>
-                  <td>{value.fecha}</td>
-                  <td style={{padding:"5px",color:estados[value.estado].color}}>
-                    {estados[value.estado].txt}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Tabla
+            headers={HEADERS}
+            fields={objectAttributes}
+            data={filterUsers()}
+            categoria={estados}
+          >
+            <td>
+              <button
+                className="sombra"
+                style={{
+                  backgroundColor: "#198754",
+                  color: "#fff",
+                  border: "1px solid #198754 ",
+                  borderRadius: "5px",
+                  padding: "5px 10px",
+                  margin: "5px 0px",
+                  width: "50%",
+                }}
+                onClick={handleClick}
+              >
+                Ver
+              </button>
+            </td>
+          </Tabla>
         </Grid>
       </Box>
     </ThemeProvider>
