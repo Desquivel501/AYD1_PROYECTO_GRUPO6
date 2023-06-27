@@ -1,4 +1,4 @@
-[{"cliente":"Irena","fecha":"1/12/2023","costo":"$9.12"},
+[{"id":1,"cliente":"Irena","fecha":"1/12/2023","costo":"$9.12"},
 {"cliente":"Carney","fecha":"10/22/2022","costo":"$3.61"},
 {"cliente":"Shermy","fecha":"9/12/2022","costo":"$8.14"},
 {"cliente":"Burgess","fecha":"6/21/2023","costo":"$3.87"},
