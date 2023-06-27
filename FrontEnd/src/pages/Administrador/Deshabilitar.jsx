@@ -5,8 +5,30 @@ import "./Deshabilitar.css";
 import { useState } from "react";
 import { getData, postData } from "../../api/auth";
 import { useEffect } from "react";
-import { Modal } from "../../Componentes/Modal/Modal";
 import Swal from "sweetalert2";
+import { Tabla } from "../../Componentes/Tabla/Tabla";
+const HEADERS = [
+  "Correo",
+  "Nombre",
+  "FechaRegistro",
+  "Rol",
+  "Acción",
+];
+const objectAttributes = [
+  "id",
+  "nombre",
+  "fecha",
+  "rol",
+];
+const estados = {
+  name: "rol",
+  options: {
+    "0": { color: "#000", txt: "Administrador" },
+    "1": { color: "#000", txt: "Cliente" },
+    "2": { color: "#000", txt: "Repartidor" },
+    "3": { color: "#000", txt: "Empresa" },
+  },
+};
 
 export function Deshabilitar() {
   const [correo, setCorreo] = useState("");
@@ -14,13 +36,18 @@ export function Deshabilitar() {
   const [find, setFind] = useState("");
 
   useEffect(() => {
-    const endpoint = "ObtenerUsuarios";
+    const endpoint = "ObtenerHabilitados";
     getData({ endpoint })
       .then((data) => setUsuarios(data ?? users))
       .catch((e) => console.log(e));
   }, []);
   const quitarCorreo = () => {
     setCorreo("");
+  };
+  const handleClick = (e) => {
+    const parent = e.currentTarget.parentElement.parentElement;
+    const id = parent.firstChild;
+    setCorreo(id.innerText);
   };
   const filterUsers = () => {
     if (find == "") return usuarios;
@@ -35,12 +62,6 @@ export function Deshabilitar() {
       },
     },
   });
-  const roles = {
-    "0": "Administrador",
-    "1": "Cliente",
-    "2": "Repartidor",
-    "3": "Empresa",
-  };
   return (
     <ThemeProvider theme={customTheme}>
       <ModalDisable email={correo} close={quitarCorreo} />
@@ -49,7 +70,6 @@ export function Deshabilitar() {
         display="flex"
         height="80vh"
         sx={{ padding: "10vh" }}
-        width={"100vh"}
         margin="auto"
       >
         <Grid
@@ -72,40 +92,21 @@ export function Deshabilitar() {
             onChange={(e) => setFind(e.target.value)}
             placeholder="ejemplo@email.com"
           />
-          <p
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              width: "100%",
-            }}
+          <Tabla
+            headers={HEADERS}
+            fields={objectAttributes}
+            data={filterUsers()}
+            categoria={estados}
           >
-            <span>Correo</span>
-            <span>Rol</span>
-            <span>Acción</span>
-          </p>
-          <Grid
-            item
-            width="100%"
-            sx={{ overflowY: "scroll" }}
-          >
-            <ul
-              className="lista-deshabilitar"
-              style={{ listStyle: "none", padding: 0 }}
-            >
-              {filterUsers().map((value) => (
-                <li key={value.id}>
-                  <span>{value.id}</span>
-                  <span>{roles[value.rol]}</span>
-                  <button
-                    className="btn-disable"
-                    onClick={() => setCorreo(value.id)}
-                  >
-                    Deshabilitar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Grid>
+            <td>
+              <button
+                className="btn-disable"
+                onClick={handleClick}
+              >
+                Deshabilitar
+              </button>
+            </td>
+          </Tabla>
         </Grid>
       </Box>
     </ThemeProvider>
@@ -117,7 +118,8 @@ function ModalDisable({ email, close }) {
     const endpoint = "deshabilitar";
     const data = { correo: email, motivo };
     postData({ endpoint, data })
-      .then((mensaje) => {
+      .then((response) => {
+        const mensaje = response[0][0];
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
