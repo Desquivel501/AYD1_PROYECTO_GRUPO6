@@ -10,7 +10,7 @@ import { FilterTab } from '../../Componentes/FilterTab/FilterTab';
 import { ProductDialog } from '../../Componentes/ProductDialog/ProductDialog';
 import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
 import { useSesion } from "../../hooks/useSesion";
-import { useParams } from 'react-router-dom';
+import { json, useParams } from 'react-router-dom';
 
 export default function ListadoProductos() {
 
@@ -91,7 +91,6 @@ export default function ListadoProductos() {
         })
         .then(res => res.json())
         .then(response =>{
-            console.log(response[0])
             setDatos(response[0])   
         })
     }, [])
@@ -108,7 +107,6 @@ export default function ListadoProductos() {
         .then(res => res.json())
         .then(response =>{
             setCombo(response)
-            console.log(response)
         })
 
         fetch("http://localhost:3000/ObtenerProductos", {
@@ -121,7 +119,6 @@ export default function ListadoProductos() {
         .then(res => res.json())
         .then(response =>{
             setCatalogo(response)
-            console.log(response)
         })
 
     }, [datos])
@@ -150,6 +147,52 @@ export default function ListadoProductos() {
             }
         }
         setOpen2(true);
+    }
+
+    const addCarrito = (p_id,name,tipo,cant,costo,img) => {
+        var carrito = window.sessionStorage.getItem("carrito");
+        
+        if(carrito == null || carrito == undefined){
+            carrito = {
+                restaurante: id,
+                departamento: departamento,
+                productos: [],
+                usuario: user.id
+            }
+        } else {
+            carrito = JSON.parse(carrito)
+            if(carrito.restaurante != id){
+                carrito = {
+                    restaurante: id,
+                    departamento: departamento,
+                    productos: [],
+                    usuario: user.id
+                }
+            }
+        }
+
+        var found = false
+        for(var i = 0; i < carrito.productos.length; i++){
+            if(carrito.productos[i].id == p_id && carrito.productos[i].tipo == tipo){
+                carrito.productos[i].cantidad += parseInt(cant)
+                found = true
+                break
+            }
+        }
+        if(!found){
+            carrito.productos.push({
+                id: p_id,
+                name: name,
+                tipo: tipo,
+                cantidad: parseInt(cant),
+                costo: parseInt(costo),
+                image: img
+            })
+        }
+        window.sessionStorage.setItem("carrito", JSON.stringify(carrito));
+
+        // window.sessionStorage.setItem("carrito", "");
+        // const sesion = window.sessionStorage.getItem("carrito");
     }
 
     
@@ -185,6 +228,7 @@ export default function ListadoProductos() {
             <ProductDialog 
                 open={open}
                 onClose={handleClose}
+                id={actual.id}
                 title={actual.title}
                 cost={actual.cost}
                 image={actual.image}
@@ -192,11 +236,13 @@ export default function ListadoProductos() {
                 categoria={actual.categoria}
                 disponible={actual.disponible}
                 venta={true}
+                onOrder={addCarrito}
             />
 
             <ComboDialog 
                 open={open2}
                 onClose={handleClose}
+                id={actual2.id}
                 title={actual2.title}
                 cost={actual2.cost}
                 image={actual2.image}
@@ -205,6 +251,7 @@ export default function ListadoProductos() {
                 disponible={actual2.disponible}
                 productos={actual2.productos}
                 venta={true}
+                onOrder={addCarrito}
             />
 
 

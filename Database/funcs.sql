@@ -524,3 +524,51 @@ BEGIN
     WHERE p.id_pedido = id_pedido;
     RETURN(existe);
 END $$
+
+-- ########################### RETORNA SI UN PEDIDO SE ENCUENTRA ENTREGADO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoEntregado $$
+CREATE FUNCTION PedidoEntregado(
+	id_pedido INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE entregado BOOLEAN;
+    SELECT p.estado = 'ENTREGADO' INTO entregado
+    FROM Pedidos p
+    WHERE p.id_pedido = id_pedido;
+    RETURN(entregado);
+END $$
+
+-- ########################### RETORNA SI UN PEDIDO SE ENCUENTRA ENTREGADO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoEnProceso $$
+CREATE FUNCTION PedidoEnProceso(
+	id_pedido INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE proceso BOOLEAN;
+    SELECT p.estado = 'EN PROCESO' INTO proceso
+    FROM Pedidos p
+    WHERE p.id_pedido = id_pedido;
+    RETURN(proceso);
+END $$
+
+-- ########################### RETORNA SI UN PEDIDO SE ENCUENTRA EN CAMINO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoEnCamino $$
+CREATE FUNCTION PedidoEnCamino(
+	id_pedido INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE camino BOOLEAN;
+    SELECT p.estado = 'EN CAMINO' INTO camino
+    FROM Pedidos p
+    WHERE p.id_pedido = id_pedido;
+    RETURN(camino);
+END $$

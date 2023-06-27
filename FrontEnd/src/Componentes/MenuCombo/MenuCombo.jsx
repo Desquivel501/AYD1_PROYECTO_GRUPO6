@@ -180,7 +180,6 @@ export const MenuCombo = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="description"
-                                    maxRows={3}
                                     rows={3}
                                     value={desc_}
                                     onChange={(event) => setDesc(event.target.value)}

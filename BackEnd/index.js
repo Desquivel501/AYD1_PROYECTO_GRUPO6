@@ -820,12 +820,10 @@ app.post('/crearPedido', cors(), (req, res)=>{
         });
         res.status(200).json({'TIPO': 'EXITO', 'MENSAJE':'El pedido se ha realizado exitósamente'});
       }else{
-        console.log(results[0][0])
         res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       }
     });
 });
-
 //-- ##################################### Obtener los pedidos de un repartidor #####################################
 app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
   const correo = req.body.correo;
@@ -961,4 +959,18 @@ app.post('/entregarPedido', cors(), (req, res)=>{
 // Inicia el servidor
 app.listen(3000, () => {
   console.log('Servidor escuchando en el puerto 3000');
+});
+
+
+//-- ##################################### Obtener todos los pedidos #####################################
+app.post('/obtenerPedidos', cors(), (req, res)=>{
+  const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
+  FROM Pedidos p`
+  mysql.query(query, (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
 });

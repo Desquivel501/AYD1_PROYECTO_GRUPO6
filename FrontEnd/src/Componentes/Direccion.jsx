@@ -15,7 +15,13 @@ export function DireccionEnRegistro() {
   }, [departamento]);
 
   return (
-    <>
+    <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        sx={{border:0}}
+    >
       <Grid
         item
         xs={4}
@@ -90,6 +96,6 @@ export function DireccionEnRegistro() {
           InputProps={{ inputProps: { min: 0, max: 99 } }}
         />
       </Grid>
-    </>
+    </Grid>
   );
 }
