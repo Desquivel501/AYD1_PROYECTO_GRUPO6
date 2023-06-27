@@ -19,11 +19,13 @@ import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
-import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
-import { MisPedidos } from "./pages/Repartidor/MisPedidos";
+// import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
+// import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 import Carrito from "./pages/Carrito/Carrito";
 import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 import { PedidosDisponibles } from "./pages/Repartidor/PedidosDiponibles";
+import PedidosUsuario from "./pages/PedidosUsuario/PedidosUsuario";
+import { PedidoCliente } from "./pages/PedidoCliente/PedidoCliente";
 
 function App() {
   return (
@@ -50,7 +52,6 @@ function App() {
           >
             <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
             <Route path={"MisPedidos"} element={<MisPedidos />} />
-            <Route path={"Pedidos"} element={<PedidosDisponibles />} />
           </Route>
 
           <Route element={<ControlRuta usuario={"Cliente"} />}>
@@ -59,6 +60,8 @@ function App() {
               <Route path={"Empresas/:departamento/:id"} element={<ListadoProductos />} />
               <Route path={"Carrito"} element={<Carrito />} />
               <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
+              <Route path={"Pedidos"} element={<PedidosUsuario />} />
+              <Route path={"Pedidos/:id/:estado"} element={<PedidoCliente />} />
             </Route>
           </Route>
 
@@ -68,7 +71,7 @@ function App() {
               <Route path={"EditarProductos"} element={<EditarProductos />} />
               <Route path={"CrearCombo"} element={<CrearCombo />} />
               <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
-              <Route path={"Pedidos"} element={<PedidosEmpresa />} />
+              {/* <Route path={"Pedidos"} element={<PedidosEmpresa />} /> */}
             </Route>
           </Route>
           <Route element={<ControlRuta usuario={"Administrador"} />}>
