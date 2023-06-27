@@ -30,11 +30,27 @@ export const DetallesPedido = (props) => {
     const [open2, setOpen2] = useState(false);
 
     const [pedido, setPedido] = useState({
-        restaurante: null,
-        departamento: null,
-        productos: [],
-        usuario: user.id
+        calificacion: 0,
+        costo: 0,
+        direccion: "",
+        estado: "",
+        fecha: "",
+        id: 0,
+        img_categoria: "https://placehold.co/200",
+        nota: null,
+        numero_tarjeta: 0,
+        repartidor: null,
+        restaurante: "",
+        productos: []
     })
+
+    const estados = {
+        "PENDIENTE":"#CE93D8",
+        "EN CAMINO":"#ffcc00",
+        "ENTREGADO":"#29B6F6",
+        "TERMINADA":"#10d21b",
+        "EN PROCESO":"#FFA000"
+      }
 
     const [total, setTotal] = useState(0)
 
@@ -61,12 +77,29 @@ export const DetallesPedido = (props) => {
         })
         .then(res => res.json())
         .then(response =>{
-            // setCatalogo(response)
             console.log(response)
-            setPedidos(response)
+            setPedido(response)
         })
 
     },[])
+
+
+    const mostrarEstrellas = () => {
+        const entero = Math.trunc(actual.estrellas);
+        const decimal = actual.estrellas % 1;
+        console.log({ entero, decimal });
+        const estrellas = []
+        while (estrellas.length<entero) {
+          estrellas.push(<StarIcon sx={{ fontSize: 50, color:"#ffcc00" }} />);
+        } 
+        if (decimal != 0) {
+          estrellas.push(<StarHalfIcon sx={{ fontSize: 50, color:"#ffcc00" }} />);
+        }
+        while (estrellas.length<5) {
+          estrellas.push(<StarOutlineIcon sx={{ fontSize: 50, color:"#ffcc00" }} />);
+        }
+        return estrellas
+      };
 
     const customTheme = createTheme({
         palette: {
@@ -200,8 +233,6 @@ export const DetallesPedido = (props) => {
                                                     ¿Como calificarias el servicio?
                                                 </Typography>
                                             </Grid>
-
-                                            
 
                                             <Grid
                                                 item
@@ -404,7 +435,7 @@ export const DetallesPedido = (props) => {
                                                     item
                                                     xs={12}
                                                     sm={12}
-                                                    lg={1}
+                                                    lg={1.5}
                                                     sx={{border:0}}
                                                 >
                                                     <Box
@@ -413,7 +444,7 @@ export const DetallesPedido = (props) => {
                                                             height: 'auto', maxWidth: '100%'
                                                         }}
                                                         alt="Logo"
-                                                        src="https://logodownload.org/wp-content/uploads/2014/04/mcdonalds-logo-4-1.png"
+                                                        src={pedido.img_categoria}
                                                     />  
                                                 </Grid>
 
@@ -421,7 +452,7 @@ export const DetallesPedido = (props) => {
                                                     item
                                                     xs={12}
                                                     sm={12}
-                                                    lg={11}
+                                                    lg={9}
                                                     sx={{border:0}}
                                                 >
                                                     <Typography variant="h3" component="h3" align='left' 
@@ -431,7 +462,7 @@ export const DetallesPedido = (props) => {
                                                             letterSpacing: '.3rem',
                                                             color: '#973f1c',
                                                         }}>
-                                                        McDonald's
+                                                        {pedido.restaurante}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -469,7 +500,7 @@ export const DetallesPedido = (props) => {
 
                                             <Box
                                                 sx={{
-                                                    backgroundColor: "#ffcc00",
+                                                    backgroundColor: estados[pedido.estado],
                                                     height: 50,
                                                     width: 200,
                                                     borderRadius: '1em 1em 1em 1em',
@@ -478,125 +509,125 @@ export const DetallesPedido = (props) => {
                                                     justifyContent: 'center'
                                                 }}
                                             >
-                                                En Camino
+                                                {pedido.estado}
                                             </Box>
 
 
                                         </Grid>
                                     </Grid>
 
-                                    <Grid
-                                        item
-                                        xs={6.1}
-                                        sx={{border:0}}
-                                    >
+                                    {pedido.repartidor != null &&
+
                                         <Grid
-                                            container
-                                            direction="row"
-                                            justifyContent="center"
-                                            alignItems="center"
+                                            item
+                                            xs={6.1}
                                             sx={{border:0}}
                                         >
                                             <Grid
-                                                item
-                                                xs={12}
-                                                sx={{border:0, mt:2}}
-                                            >
-                                                <Typography variant="h6" component="h6" align='left' 
-                                                    sx={{
-                                                        fontFamily: 'monospace',
-                                                        fontWeight: 700,
-                                                        letterSpacing: '.3rem',
-                                                        color: '#973f1c',
-                                                    }}>
-                                                    Repartidor:
-                                                </Typography>
-                                            </Grid>
-
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                sx={{border:0, mt:2}}
+                                                container
+                                                direction="row"
                                                 justifyContent="center"
-                                                alignContent="center"
+                                                alignItems="center"
+                                                sx={{border:0}}
                                             >
                                                 <Grid
-                                                    container
-                                                    direction="row"
-                                                    alignItems="center"
-                                                
-                                                > 
-
-                                                    <Grid
-                                                        item
-                                                        xs={12}
-                                                        sm={12}
-                                                        lg={12}
-                                                        sx={{border:0}}
-                                                    >
-                                                        <Typography variant="h4" component="h4" align='center' 
-                                                            sx={{
-                                                                fontFamily: 'monospace',
-                                                                fontWeight: 700,
-                                                                letterSpacing: '.3rem',
-                                                                color: '#973f1c',
-                                                            }}>
-                                                            John Smith
-                                                        </Typography>
-                                                    </Grid>
-
-                                                    <Grid
-                                                        item
-                                                        xs={12}
-                                                        sm={12}
-                                                        lg={12}
-                                                        sx={{border:0}}
-                                                    >
-                                                        <StarIcon
-                                                            sx={{ 
-                                                                fontSize: 50,
-                                                                color:"#ffcc00"
-                                                            }}
-                                                        />
-                                                        <StarIcon
-                                                            sx={{ 
-                                                                fontSize: 50,
-                                                                color:"#ffcc00"
-                                                            }}
-                                                        />
-                                                        <StarIcon
-                                                            sx={{ 
-                                                                fontSize: 50,
-                                                                color:"#ffcc00"
-                                                            }}
-                                                        />
-                                                        <StarIcon
-                                                            sx={{ 
-                                                                fontSize: 50,
-                                                                color:"#ffcc00"
-                                                            }}
-                                                        />
-                                                        <StarHalfIcon
-                                                            sx={{ 
-                                                                fontSize: 50,
-                                                                color:"#ffcc00"
-                                                            }}
-                                                        />
-                                                    </Grid>
-
-                                                    
-
-                                                
-
+                                                    item
+                                                    xs={12}
+                                                    sx={{border:0, mt:2}}
+                                                >
+                                                    <Typography variant="h6" component="h6" align='left' 
+                                                        sx={{
+                                                            fontFamily: 'monospace',
+                                                            fontWeight: 700,
+                                                            letterSpacing: '.3rem',
+                                                            color: '#973f1c',
+                                                        }}>
+                                                        Repartidor:
+                                                    </Typography>
                                                 </Grid>
+
                                                 
+                                                
+                                                    <Grid
+                                                        item
+                                                        xs={12}
+                                                        sx={{border:0, mt:2}}
+                                                        justifyContent="center"
+                                                        alignContent="center"
+                                                    >
+                                                        <Grid
+                                                            container
+                                                            direction="row"
+                                                            alignItems="center"
+                                                        
+                                                        > 
+
+                                                            <Grid
+                                                                item
+                                                                xs={12}
+                                                                sm={12}
+                                                                lg={12}
+                                                                sx={{border:0}}
+                                                            >
+                                                                <Typography variant="h4" component="h4" align='center' 
+                                                                    sx={{
+                                                                        fontFamily: 'monospace',
+                                                                        fontWeight: 700,
+                                                                        letterSpacing: '.3rem',
+                                                                        color: '#973f1c',
+                                                                    }}>
+                                                                    {pedido.repartidor}
+                                                                </Typography>
+                                                            </Grid>
+
+                                                            { (pedido.calificacion != 0) &&  
+                                                                <Grid
+                                                                    item
+                                                                    xs={12}
+                                                                    sm={12}
+                                                                    lg={12}
+                                                                    sx={{border:0}}
+                                                                >
+                                                                    <StarIcon
+                                                                        sx={{ 
+                                                                            fontSize: 50,
+                                                                            color:"#ffcc00"
+                                                                        }}
+                                                                    />
+                                                                    <StarIcon
+                                                                        sx={{ 
+                                                                            fontSize: 50,
+                                                                            color:"#ffcc00"
+                                                                        }}
+                                                                    />
+                                                                    <StarIcon
+                                                                        sx={{ 
+                                                                            fontSize: 50,
+                                                                            color:"#ffcc00"
+                                                                        }}
+                                                                    />
+                                                                    <StarIcon
+                                                                        sx={{ 
+                                                                            fontSize: 50,
+                                                                            color:"#ffcc00"
+                                                                        }}
+                                                                    />
+                                                                    <StarHalfIcon
+                                                                        sx={{ 
+                                                                            fontSize: 50,
+                                                                            color:"#ffcc00"
+                                                                        }}
+                                                                    />
+                                                                </Grid>
+                                                            }
+
+                                                        </Grid>
+                                                        
+                                                    </Grid>
                                             </Grid>
-
-                                        
-
-
                                         </Grid>
-                                    </Grid>
+
+                                    }
 
                                     <Grid
                                         item
@@ -644,11 +675,11 @@ export const DetallesPedido = (props) => {
                                                 <Collapse in={open} timeout="auto" unmountOnExit>
                                                     {pedido.productos.map((item, i) => (
                                                         <ProductCard3
-                                                            key={item.id + item.name}
+                                                            key={item.id + item.titulo}
                                                             id={item.id}
-                                                            title={item.name}
-                                                            cost={item.costo}
-                                                            image={item.image}
+                                                            title={item.titulo}
+                                                            cost={item.precio}
+                                                            image={item.Combo ? "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png" : item.imagen}
                                                             cantidad={item.cantidad}
                                                         />
                                                     ))}
@@ -661,15 +692,10 @@ export const DetallesPedido = (props) => {
                                                             color: '#973f1c',
                                                             marginTop:1
                                                         }}>
-                                                        Total: ${total}
-                                                    </Typography>
-
-                                                
-                                                    
+                                                        Total: ${pedido.costo}
+                                                    </Typography>       
                                                 </Collapse>
-
                                             </Grid>
-
                                         </Grid>
                                     </Grid>
 
@@ -721,8 +747,9 @@ export const DetallesPedido = (props) => {
                                                     id="direccion"
                                                     label="Dirección"
                                                     name="direccion"
-                                                    value="159 Cherry St"
+                                                    value={pedido.direccion}
                                                 />
+
 
                                                 <TextField
                                                     margin="normal"
@@ -731,19 +758,21 @@ export const DetallesPedido = (props) => {
                                                     id="forma"
                                                     label="Forma de pago"
                                                     name="forma"
-                                                    value="Tarjeta"
+                                                    value={pedido.numero_tarjeta == null ? "Efectivo" : "Tarjeta"}
                                                 />  
 
-                                                
-                                                <TextField
-                                                    margin="normal"
-                                                    fullWidth
-                                                    // disabled
-                                                    id="cc"
-                                                    label="No. Tarjeta"
-                                                    name="cc"
-                                                    value="**** ***** **** 2581"
-                                                />  
+                                                {pedido.numero_tarjeta != null &&
+                                                    <TextField
+                                                        margin="normal"
+                                                        fullWidth
+                                                        // disabled
+                                                        id="cc"
+                                                        label="No. Tarjeta"
+                                                        name="cc"
+                                                        value= {"**** ***** **** " + pedido.numero_tarjeta.toString().substr(-4)}
+                                                    />  
+                                                    
+                                                }
 
                                                 <TextField
                                                     margin="normal"
@@ -753,7 +782,7 @@ export const DetallesPedido = (props) => {
                                                     multiline
                                                     name="comentario"
                                                     rows={3}
-                                                    value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer feugiat ex vitae est egestas finibus. Phasellus lacinia nibh quis elit imperdiet pharetra ut gravida lectus. Sed et ultrices neque, quis tristique risus. Suspendisse nec tincidunt metus. "
+                                                    value={(pedido.nota != null) ? pedido.nota : ""}
                                                 />    
                                             </Collapse>
 
