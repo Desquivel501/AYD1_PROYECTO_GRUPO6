@@ -897,8 +897,8 @@ app.post('/pedidosCliente', cors(), (req, res)=>{
 });
 
 app.post('/datosPedido', cors(), (req, res)=>{
-  const correo = req.body.correo
-  const id_pedido = req.body.id
+  const correo = req.body.correo;
+  const id_pedido = req.body.id;
 
   mysql.query('CALL DatosPedido(?,?)', [correo, id_pedido], (err, results)=>{
     if(err){
@@ -908,6 +908,54 @@ app.post('/datosPedido', cors(), (req, res)=>{
     results[0][0].productos = JSON.parse(results[0][0].productos)
     res.status(200).json(results[0][0]);
   }); 
+});
+
+app.post('/pedidosDisponibles', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  mysql.query('CALL PedidosDisponibles(?)', [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.post('/calificarPedido', cors(), (req, res)=>{
+  const id_pedido = req.body.id;
+  const calificacion = req.body.calificacion;
+  mysql.query('CALL CalificarPedido(?,?)', [id_pedido, calificacion], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.post('/aceptarPedidoRepartidor', cors(), (req, res)=>{
+  const id_pedido = req.body.id;
+  const correo = req.body.correo;
+
+  mysql.query('CALL AceptarPedidoRepartidor(?,?)', [correo, id_pedido], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.post('/entregarPedido', cors(), (req, res)=>{
+  const id_pedido = req.body.id;
+
+  mysql.query('CALL EntregarPedido(?)', [id_pedido], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
 });
 
 // Inicia el servidor
