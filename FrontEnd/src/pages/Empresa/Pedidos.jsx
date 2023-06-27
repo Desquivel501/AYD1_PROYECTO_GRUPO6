@@ -7,7 +7,22 @@ import "./style.css";
 import pedidos from "../../mocks/pedidos.json";
 import Swal from "sweetalert2";
 import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
-import {ModalDetallePedido} from "../../Componentes/DetallePedido/DetallePedido"
+import { ModalDetallePedido } from "../../Componentes/DetallePedido/DetallePedido";
+import { Tabla } from "../../Componentes/Tabla/Tabla";
+const HEADERS = [
+  "ID",
+  "Cliente",
+  "Fecha",
+  "Costo",
+  "Productos",
+  "¿Aceptar?",
+];
+const objectAttributes = [
+  "id",
+  "cliente",
+  "fecha",
+  "costo",
+];
 
 export function PedidosEmpresa() {
   const { user } = useSesion();
@@ -25,7 +40,6 @@ export function PedidosEmpresa() {
     //return () => clearInterval(id);
   }, []);
   const filterUsers = () => {
-    console.log(find);
     if (find.fecha == "" && find.cliente == "") return usuarios;
     let temp = usuarios;
     if (find.cliente != "") {
@@ -38,6 +52,11 @@ export function PedidosEmpresa() {
     }
     return temp;
   };
+  const handleClick = (e) => {
+    const parent = e.currentTarget.parentElement.parentElement;
+    const id = parent.firstChild;
+    setPedido(id.innerText);
+  };
   const customTheme = createTheme({
     palette: {
       background: {
@@ -46,7 +65,9 @@ export function PedidosEmpresa() {
     },
   });
   const handleClose = () => setPedido("");
-  const aceptarPedido = (id) => {
+  const aceptarPedido = (e) => {
+    const parent = e.currentTarget.parentElement.parentElement;
+    const id = parent.firstChild.innerText;
     const endpoint = "aceptarPedidoEmpresa";
     const data = { id: id, correo: user.id };
     postData({ endpoint, data })
@@ -76,7 +97,6 @@ export function PedidosEmpresa() {
         display="flex"
         height="80vh"
         sx={{ padding: "10vh" }}
-        width={"120vh"}
         margin="auto"
       >
         <Grid
@@ -97,60 +117,42 @@ export function PedidosEmpresa() {
             onChange={setFind}
             estado={false}
           />
-          <p className="header-pedido sombra">
-            <span>Cliente</span>
-            <span>Fecha</span>
-            <span>Costo</span>
-            <span>Productos</span>
-            <span>¿Aceptar?</span>
-          </p>
-          <Grid
-            item
-            width="100%"
-            sx={{ overflowY: "scroll" }}
+          <Tabla
+            headers={HEADERS}
+            fields={objectAttributes}
+            data={filterUsers()}
           >
-            <ul
-              className="lista-deshabilitar"
-              style={{ listStyle: "none", padding: 0 }}
-            >
-              {filterUsers().map((value, index) => (
-                <li className="item-pedido" key={index}>
-                  <span>{value.cliente}</span>
-                  <span>{value.fecha}</span>
-                  <span>{value.costo}</span>
-                  <button
-                    className="sombra"
-                    onClick={() =>
-                      setPedido(value.id)}
-                    style={{
-                      backgroundColor: "#f2890d",
-                      color: "#000",
-                      border: "1px solid #f2890d",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Ver productos
-                  </button>
-                  <button
-                    className="sombra"
-                    onClick={() =>
-                      aceptarPedido(value.cliente)}
-                    style={{
-                      backgroundColor: "#198754",
-                      color: "#000",
-                      border: "1px solid #198754 ",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Aceptar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Grid>
+            <td>
+              <button
+                className="sombra"
+                onClick={handleClick}
+                style={{
+                  backgroundColor: "#f2890d",
+                  color: "#000",
+                  border: "1px solid #f2890d",
+                  borderRadius: "5px",
+                }}
+              >
+                Ver productos
+              </button>
+            </td>
+            <td>
+              <button
+                className="sombra"
+                onClick={aceptarPedido}
+                style={{
+                  backgroundColor: "#198754",
+                  color: "#000",
+                  border: "1px solid #198754 ",
+                  borderRadius: "5px",
+                }}
+              >
+                Aceptar
+              </button>
+            </td>
+          </Tabla>
         </Grid>
       </Box>
     </ThemeProvider>
   );
 }
-
