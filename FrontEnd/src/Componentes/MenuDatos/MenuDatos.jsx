@@ -409,6 +409,8 @@ export const MenuDatos = (props) => {
             json["total"] = total_ - (total_ * descuento)
         }
 
+        console.log(json)
+
         fetch("http://localhost:3000/crearPedido", {
             method: "POST",
             headers: {
