@@ -1042,3 +1042,35 @@ aceptar_pedido_empresa:BEGIN
 	SELECT 'El pedido se confirmó correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
+
+-- ########################### PROCEDIMIENTO PARA RETORNAR EL DETALLE DE UN PEDIDO EN ESPECÍFICO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DatosPedido $$
+CREATE PROCEDURE DatosPedido(
+	IN correo_in VARCHAR(200),
+    IN id_pedido_in INTEGER
+)
+datos_pedido:BEGIN
+  SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, ce.imagen AS img_categoria,
+  CONCAT(u.nombre, " ", u.apellidos) AS repartidor, p.calificacion, d.direccion, p.total AS costo, p.fecha_pedido AS fecha,
+  p.estado, fp.numero_tarjeta, p.descripcion AS nota, JSON_ARRAYAGG(
+    CASE WHEN prod.id_prod IS NOT NULL THEN JSON_OBJECT(
+      'id', prod.id_prod, 'Combo', false, 'titulo', prod.nombre, 'imagen', prod.imagen, 'descripcion', prod.descripcion, 
+      'cantidad', dp.cantidad, 'precio', prod.precio
+    )
+    ELSE JSON_OBJECT(
+      'id', co.id_combo, 'Combo', true, 'titulo', co.nombre, 'imagen', '', 'descripcion', co.descripcion, 
+      'cantidad', dp.cantidad, 'precio', co.precio
+    ) END
+  ) AS productos
+  FROM Pedidos p
+  JOIN Empresas e ON p.correo_e = e.correo AND p.id_pedido = id_pedido_in
+  JOIN Categorias_empresa ce ON e.id_cat = ce.id_cat
+  JOIN Direcciones d ON p.id_direccion = d.id_direccion
+  LEFT JOIN Formas_pago fp ON p.id_formap = fp.id_formap
+  LEFT JOIN Usuarios u ON p.correo_r = u.correo
+  JOIN Detalle_pedidos dp ON p.id_pedido = dp.id_pedido
+  LEFT JOIN Productos prod ON dp.id_prod = prod.id_prod
+  LEFT JOIN Combos co ON dp.id_combo = co.id_combo
+  GROUP BY id;
+END $$
