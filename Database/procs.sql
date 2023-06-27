@@ -1036,7 +1036,8 @@ aceptar_pedido_empresa:BEGIN
     END IF;
     
     UPDATE Pedidos p
-    SET confirmado = true
+    SET confirmado = true,
+    estado = 'EN PROCESO'
     WHERE p.id_pedido = id_pedido_in;
     
 	SELECT 'El pedido se confirmó correctamente' AS 'MENSAJE',
@@ -1073,4 +1074,138 @@ datos_pedido:BEGIN
   LEFT JOIN Productos prod ON dp.id_prod = prod.id_prod
   LEFT JOIN Combos co ON dp.id_combo = co.id_combo
   GROUP BY id;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA RETORNAR LOS PEDIDOS DISPONIBLES DE UN REPARTIDOR ESPECÍFICO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS PedidosDisponibles $$
+CREATE PROCEDURE PedidosDisponibles(
+	IN correo_in VARCHAR(200)
+)
+pedidos_disponibles:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE pedidos_disponibles;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE pedidos_disponibles;
+    END IF;
+    
+    SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, p.correo_c AS cliente, d.direccion, p.total AS costo
+    FROM Pedidos p
+	JOIN Empresas e
+    ON p.correo_e = e.correo
+    JOIN Repartidores r
+    ON e.id_dep = r.id_dep
+    AND r.correo = correo_in
+    AND p.estado = 'EN PROCESO'
+    JOIN Direcciones d
+    ON d.id_direccion = p.id_direccion;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA CALIFICAR UN PEDIDO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CalificarPedido $$
+CREATE PROCEDURE CalificarPedido(
+	IN id_pedido_in INTEGER,
+    IN nota_in INTEGER
+)
+calificar_pedido:BEGIN
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE calificar_pedido;
+    END IF;
+    
+    IF(nota_in < 0) THEN
+		SELECT 'La nota del pedido debe ser un valor positivo' AS 'MENSAJE',
+        'TIPO' AS 'ERROR';
+        LEAVE calificar_pedido;
+    END IF;
+    
+    IF(NOT PedidoEntregado(id_pedido_in)) THEN
+		SELECT 'Estado de pedido inválido para poder calificarlo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE calificar_pedido;
+    END IF;
+    
+    UPDATE Pedidos p
+    SET p.calificacion = nota_in,
+    p.estado = 'TERMINADA'
+    WHERE p.id_pedido = id_pedido_in;
+    
+	SELECT 'Calificación realizada exitósamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA QUE UN REPARTIDOR ACEPTE UN PEDIDO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarPedidoRepartidor $$
+CREATE PROCEDURE AceptarPedidoRepartidor(
+	IN correo_in VARCHAR(200),
+    IN id_pedido_in INTEGER
+)
+aceptar_pedido_repartidor:BEGIN
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_repartidor;
+    END IF;
+    
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_repartidor;
+    END IF;
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_repartidor;
+    END IF;
+    
+    IF(NOT PedidoEnProceso(id_pedido_in)) THEN
+		SELECT 'Estado de pedido inválido para poder aceptarlo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_repartidor;
+    END IF;
+    
+    UPDATE Pedidos p
+    SET p.correo_r = correo_in,
+    estado = 'EN CAMINO'
+    WHERE p.id_pedido = id_pedido_in;
+    
+	SELECT 'El pedido fue aceptado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA QUE UN REPARTIDOR ENTREGUE UN PEDIDO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS EntregarPedido $$
+CREATE PROCEDURE EntregarPedido(
+    IN id_pedido_in INTEGER
+)
+entregar_pedido:BEGIN
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE entregar_pedido;
+    END IF;
+    
+    IF(NOT PedidoEnCamino(id_pedido_in)) THEN
+		SELECT 'Estado de pedido inválido para poder entregarlo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE entregar_pedido;
+    END IF;
+    
+    UPDATE Pedidos p
+    SET p.estado = 'ENTREGADO'
+    WHERE p.id_pedido = id_pedido_in;
+    
+	SELECT 'El pedido fue entregado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
 END $$
