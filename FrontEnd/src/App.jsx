@@ -24,8 +24,8 @@ import { MisPedidos } from "./pages/Repartidor/MisPedidos";
 import Carrito from "./pages/Carrito/Carrito";
 import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 import { PedidosDisponibles } from "./pages/Repartidor/PedidosDiponibles";
-import PedidosUsuario from "./pages/PedidosUsuario/PedidosUsuario";
-import { PedidoCliente } from "./pages/PedidoCliente/PedidoCliente";
+import PedidosUsuario from "./pages/PedidosCliente/PedidosUsuario";
+import { DetallesPedido } from "./pages/PedidosCliente/DetallesPedido";
 import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 
 function App() {
@@ -66,7 +66,7 @@ function App() {
               <Route path={"Carrito"} element={<Carrito />} />
               <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
               <Route path={"Pedidos"} element={<PedidosUsuario />} />
-              <Route path={"Pedidos/:id/:estado"} element={<PedidoCliente />} />
+              <Route path={"Pedidos/:id/:estado"} element={<DetallesPedido />} />
             </Route>
           </Route>
 

@@ -872,7 +872,8 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
   });
 });
 
-//-- ##################################### Obtener los pedidos de un cliente #####################################
+
+//-- ##################################### Obtener todos los pedidos de un cliente #####################################
 app.post('/pedidosCliente', cors(), (req, res)=>{
   const correo = req.body.correo;
   const query = `SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, CONCAT(u.nombre, " ", u.apellidos) AS repartidor, 
@@ -895,10 +896,11 @@ app.post('/pedidosCliente', cors(), (req, res)=>{
   });  
 });
 
-//-- ##################################### Obtener datos de un pedido específico #####################################
+
+//-- ##################################### Obtener los datos de un pedido #####################################
 app.post('/datosPedido', cors(), (req, res)=>{
-  const correo = req.body.correo;
-  const id_pedido = req.body.id;
+  const correo = req.body.correo
+  const id_pedido = req.body.id
 
   mysql.query('CALL DatosPedido(?,?)', [correo, id_pedido], (err, results)=>{
     if(err){
@@ -910,57 +912,11 @@ app.post('/datosPedido', cors(), (req, res)=>{
   }); 
 });
 
-//-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
-app.post('/pedidosDisponibles', cors(), (req, res)=>{
-  const correo = req.body.correo;
-  mysql.query('CALL PedidosDisponibles(?)', [correo], (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
-    res.status(200).json(results);
-  });
+// Inicia el servidor
+app.listen(3000, () => {
+  console.log('Servidor escuchando en el puerto 3000');
 });
 
-//-- ##################################### Calificar un pedido específico #####################################
-app.post('/calificarPedido', cors(), (req, res)=>{
-  const id_pedido = req.body.id;
-  const calificacion = req.body.calificacion;
-  mysql.query('CALL CalificarPedido(?,?)', [id_pedido, calificacion], (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
-    res.status(200).json(results);
-  });
-});
-
-//-- ##################################### Aceptar un pedido #####################################
-app.post('/aceptarPedidoRepartidor', cors(), (req, res)=>{
-  const id_pedido = req.body.id;
-  const correo = req.body.correo;
-
-  mysql.query('CALL AceptarPedidoRepartidor(?,?)', [correo, id_pedido], (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
-    res.status(200).json(results);
-  });
-});
-
-//-- ##################################### Entregar un pedido #####################################
-app.post('/entregarPedido', cors(), (req, res)=>{
-  const id_pedido = req.body.id;
-
-  mysql.query('CALL EntregarPedido(?)', [id_pedido], (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
-    res.status(200).json(results);
-  });
-});
 
 //-- ##################################### Obtener todos los pedidos #####################################
 app.post('/obtenerPedidos', cors(), (req, res)=>{
@@ -973,10 +929,4 @@ app.post('/obtenerPedidos', cors(), (req, res)=>{
     }
     res.status(200).json(results);
   });
-});
-
-
-// Inicia el servidor
-app.listen(3000, () => {
-  console.log('Servidor escuchando en el puerto 3000');
 });
