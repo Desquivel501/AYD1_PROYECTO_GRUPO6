@@ -682,25 +682,25 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS CrearPedido $$
 CREATE PROCEDURE CrearPedido(
 	IN correo_c_in VARCHAR(200),
-	IN correo_e_in VARCHAR(200),
+    IN id_dep INTEGER,
+    IN nombre_res VARCHAR(250),
 	IN id_dir_in INTEGER,
     IN id_formap_in INTEGER,
     IN id_cupon_in INTEGER,
+    IN total_in DECIMAL(12,2),
     IN descripcion_in VARCHAR(250)
 )
 crear_pedido:BEGIN
 	DECLARE id_pedido INTEGER;
+    DECLARE correo_e_in VARCHAR(200);
+    
 	IF(NOT ExisteCliente(correo_c_in)) THEN
 		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE crear_pedido;
     END IF;
     
-	IF(NOT ExisteEmpresa(correo_e_in)) THEN
-		SELECT 'El correo de empresa ingresado no se encuentra en el sistema' AS 'MENSAJE',
-        'ERROR' AS 'TIPO';
-        LEAVE crear_pedido;
-    END IF;
+    SELECT CorreoRestaurante(nombre_res, id_dep) INTO correo_e_in;
     
 	IF(NOT ExisteDireccion(id_dir_in)) THEN
 		SELECT 'La direccion ingresada no existe en el sistema' AS 'MENSAJE',
@@ -727,11 +727,11 @@ crear_pedido:BEGIN
     END IF;
 
 	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
-    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, 0, descripcion);
+    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, total_in, descripcion);
     
     SELECT p.id_pedido INTO id_pedido
     FROM Pedidos p
-    ORDER BY id_pedido
+    ORDER BY p.id_pedido DESC
     LIMIT 1;
 
 	SELECT id_pedido AS 'MENSAJE',
@@ -758,7 +758,7 @@ agregar_elemento_pedido:BEGIN
     END IF;
     
     IF(id_combo_in IS NOT NULL) THEN
-		IF(NOT ExisteComboId(id_prod_In)) THEN
+		IF(NOT ExisteComboId(id_combo_in)) THEN
 			SELECT 'El combo ingresado no existe en el sistema' AS 'MENSAJE',
 			'ERROR' AS 'TIPO';
 			LEAVE agregar_elemento_pedido;
@@ -776,10 +776,6 @@ agregar_elemento_pedido:BEGIN
 		'ERROR' AS 'TIPO';
 		LEAVE agregar_elemento_pedido;
     END IF;
-	
-    UPDATE Pedidos p
-    SET p.total = p.total + total_in
-    WHERE p.id_pedido = id_pedido_in;
     
     INSERT INTO Detalle_pedidos(id_pedido, id_prod, id_combo, cantidad, total)
     VALUES(id_pedido_in, id_prod_in, id_combo_in, cantidad_in, total_in);
@@ -926,6 +922,12 @@ crear_cupon:BEGIN
         LEAVE crear_cupon;
     END IF;
     
+	IF(CuponRepetido(nombre_in, correo_in)) THEN
+		SELECT 'Un usuario no puede tener cupones repetidos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE crear_cupon;
+    END IF;
+    
     IF(descuento_in < 0 OR descuento_in > 1) THEN
 		SELECT 'El porcentaje de descuento ingresado no es válido' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -990,5 +992,51 @@ deshabilitar_cliente:BEGIN
     WHERE correo = correo_in;
     
 	SELECT 'El usuario se ha deshabilitado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA ACEPTAR PEDIDO DE EMPRESA ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AceptarPedidoEmpresa $$
+CREATE PROCEDURE AceptarPedidoEmpresa(
+	id_pedido_in INTEGER,
+    correo_in VARCHAR(200)
+)
+aceptar_pedido_empresa:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_empresa;
+    END IF;
+
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo de empresa ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_empresa;
+    END IF;
+    
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_empresa;
+    END IF;
+    
+	IF(NOT PedidoPertenece(id_pedido_in, correo_in)) THEN
+		SELECT 'El pedido que se envió no pertenece a la empresa enviada' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_empresa;
+    END IF;
+    
+	IF(PedidoConfirmado(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió ya ha sido confirmado' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_empresa;
+    END IF;
+    
+    UPDATE Pedidos p
+    SET confirmado = true
+    WHERE p.id_pedido = id_pedido_in;
+    
+	SELECT 'El pedido se confirmó correctamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$
