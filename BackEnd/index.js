@@ -872,3 +872,17 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
 app.listen(3000, () => {
   console.log('Servidor escuchando en el puerto 3000');
 });
+
+
+//-- ##################################### Obtener todos los pedidos #####################################
+app.post('/obtenerPedidos', cors(), (req, res)=>{
+  const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
+  FROM Pedidos p`
+  mysql.query(query, (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
