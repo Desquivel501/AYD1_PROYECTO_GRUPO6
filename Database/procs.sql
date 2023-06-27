@@ -708,11 +708,13 @@ crear_pedido:BEGIN
         LEAVE crear_pedido;
     END IF;
 
-	IF(NOT ExisteFormaPago(id_formap_in)) THEN
-		SELECT 'La forma de pago ingresada no existe en el sistema' AS 'MENSAJE',
-        'ERROR' AS 'TIPO';
-        LEAVE crear_pedido;
-    END IF;
+	IF(id_formap_in IS NOT NULL) THEN
+		IF(NOT ExisteFormaPago(id_formap_in)) THEN
+			SELECT 'La forma de pago ingresada no existe en el sistema' AS 'MENSAJE',
+			'ERROR' AS 'TIPO';
+			LEAVE crear_pedido;
+		END IF;
+	END IF;
     
     IF(id_cupon_in > 0) THEN
 		IF(NOT CuponExiste(id_cupon_in)) THEN
@@ -727,7 +729,7 @@ crear_pedido:BEGIN
     END IF;
 
 	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
-    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, total_in, descripcion);
+    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, total_in, descripcion_in);
     
     SELECT p.id_pedido INTO id_pedido
     FROM Pedidos p
@@ -750,7 +752,7 @@ CREATE PROCEDURE AgregarElementoPedido (
 )
 agregar_elemento_pedido:BEGIN
 	IF(id_prod_in IS NOT NULL) THEN
-		IF(NOT ExisteProducto(id_prod_In)) THEN
+		IF(NOT ExisteProducto(id_prod_in)) THEN
 			SELECT 'El producto ingresado no existe en el sistema' AS 'MENSAJE',
 			'ERROR' AS 'TIPO';
 			LEAVE agregar_elemento_pedido;
