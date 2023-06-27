@@ -13,20 +13,29 @@ import FormControl from '@mui/material/FormControl';
 import Button from "@mui/material/Button";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Divider from '@mui/material/Divider';
+import { useState } from "react";
+import Swal from 'sweetalert2'
 
 export const ProductDialog = (props) => {
 
-  const { onClose, selectedValue, open, title, id, name, descripcion, cost, image, categoria, disponible, venta } = props;
+  const { onClose, selectedValue, open, title, id, name, descripcion, cost, image, categoria, disponible, venta, onOrder } = props;
+
+  const [cantidad, setCantidad] = useState(1);
 
   const handleClose = () => {
     // onClose(selectedValue);
     onClose(true);
   };
 
-  const handleListItemClick = (value) => {
-    // onClose(value);
-    onClose(true)
-  };
+  const handleSelect = () => {
+    onOrder(id, title, "producto", cantidad, cost, image);   
+    onClose(true);
+    Swal.fire({
+        icon: 'success',
+        title: 'Agregado',
+        text: `"${title}" agregado al carrito`,
+      })
+  }
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -104,7 +113,6 @@ export const ProductDialog = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="description"
-                                    maxRows={3}
                                     rows={3}
                                     value={descripcion}
                                 />
@@ -235,8 +243,9 @@ export const ProductDialog = (props) => {
                             type="number"
                             id="cantidad"
                             autoComplete="cantidad"
-                            defaultValue={1}
                             InputProps={{ inputProps: { min: 0 } }}
+                            value={cantidad}
+                            onChange={(event) => setCantidad(event.target.value)}
                         />
                     </Grid> 
 
@@ -250,7 +259,7 @@ export const ProductDialog = (props) => {
                                 size="large"
                                 sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
                                 endIcon={<AddShoppingCartIcon />}
-                                // onClick={() => enviar()}
+                                onClick={handleSelect}
                             >
                                 Comprar
                             </Button>

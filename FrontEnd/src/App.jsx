@@ -19,10 +19,14 @@ import { Usuarios } from "./pages/Administrador/Usuarios";
 import Page_404 from "./pages/404/404";
 import ListadoRestaurantes from "./pages/CatalogoUsuarios/ListadoRestaurantes";
 import ListadoProductos from "./pages/CatalogoUsuarios/ListadoProductos";
-import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 import { PedidosEmpresa } from "./pages/Empresa/Pedidos";
 import { MisPedidos } from "./pages/Repartidor/MisPedidos";
+import Carrito from "./pages/Carrito/Carrito";
+import FinalizarCompra from "./pages/FinalizarCompra/FinalizarCompra";
 import { PedidosDisponibles } from "./pages/Repartidor/PedidosDiponibles";
+import PedidosUsuario from "./pages/PedidosUsuario/PedidosUsuario";
+import { PedidoCliente } from "./pages/PedidoCliente/PedidoCliente";
+import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 
 function App() {
   return (
@@ -59,6 +63,10 @@ function App() {
                 path={"Empresas/:departamento/:id"}
                 element={<ListadoProductos />}
               />
+              <Route path={"Carrito"} element={<Carrito />} />
+              <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
+              <Route path={"Pedidos"} element={<PedidosUsuario />} />
+              <Route path={"Pedidos/:id/:estado"} element={<PedidoCliente />} />
             </Route>
           </Route>
 
