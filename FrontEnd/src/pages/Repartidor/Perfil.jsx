@@ -19,12 +19,13 @@ export function PerfilRepartidor() {
     direccion: "",
     tipo_licencia: "",
     cv: "",
+    estrellas: 4.5,
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    data.append("Correo",user.id)
+    data.append("Correo", user.id);
     const endpoint = "nuevaDireccion";
     const respuesta = sendFormData({ endpoint, data });
     console.log(respuesta);
@@ -33,11 +34,27 @@ export function PerfilRepartidor() {
 
   useEffect(() => {
     const endpoint = "ObtenerDatosRepartidor";
-    const data = {correo:user.id}
+    const data = { correo: user.id };
     postData({ endpoint, data })
       .then((data) => setActual(data[0]))
       .catch((e) => console.log(e));
   }, []);
+  const mostrarEstrellas = () => {
+    const entero = Math.trunc(actual.estrellas);
+    const decimal = actual.estrellas % 1;
+    console.log({ entero, decimal });
+    const estrellas = []
+    while (estrellas.length<entero) {
+      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/star.png" />);
+    } 
+    if (decimal != 0) {
+      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/halfStar.png" />);
+    }
+    while (estrellas.length<5) {
+      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/emptyStar.png" />);
+    }
+    return estrellas
+  };
 
   return (
     <Box
@@ -116,11 +133,7 @@ export function PerfilRepartidor() {
             <h2 className="calificacion">
               Calificación:
               <div className="stars">
-                <img src="/src/assets/icons/star.png" />
-                <img src="/src/assets/icons/star.png" />
-                <img src="/src/assets/icons/star.png" />
-                <img src="/src/assets/icons/star.png" />
-                <img src="/src/assets/icons/halfStar.png" />
+                {mostrarEstrellas()}
               </div>
             </h2>
             <h3 style={{ margin: 0 }}>
