@@ -17,7 +17,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { ProductCard3 } from "../../Componentes/ProductCard/ProductCard3";
 
-export const PedidoCliente = (props) => {
+export const DetallesPedido = (props) => {
 
     const { user } = useSesion();
     
@@ -39,18 +39,32 @@ export const PedidoCliente = (props) => {
     const [total, setTotal] = useState(0)
 
     useEffect(() => {
-        console.log(id + " - " + estado)
-        var carrito = window.sessionStorage.getItem("carrito");
-        if(carrito != null || carrito != undefined){
-            carrito = JSON.parse(carrito)
-            setPedido(carrito)
-        } 
+        // console.log(id + " - " + estado)
+        // var carrito = window.sessionStorage.getItem("carrito");
+        // if(carrito != null || carrito != undefined){
+        //     carrito = JSON.parse(carrito)
+        //     setPedido(carrito)
+        // } 
 
-        var total_ = 0
-        for(var i = 0; i < carrito.productos.length; i++){
-            total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
-        }
-        setTotal(total_)
+        // var total_ = 0
+        // for(var i = 0; i < carrito.productos.length; i++){
+        //     total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
+        // }
+        // setTotal(total_)
+
+        fetch("http://localhost:3000/datosPedido", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id, id: id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            // setCatalogo(response)
+            console.log(response)
+            setPedidos(response)
+        })
 
     },[])
 

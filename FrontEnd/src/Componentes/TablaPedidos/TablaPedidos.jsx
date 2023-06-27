@@ -34,11 +34,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
   const estados = {
-    "Pendiente":"#CE93D8",
-    "En Camino":"#ffcc00",
-    "Entregado":"#29B6F6",
-    "Terminado":"#10d21b",
-    "En Cocina":"#FFA000"
+    "PENDIENTE":"#CE93D8",
+    "EN CAMINO":"#ffcc00",
+    "ENTREGADO":"#29B6F6",
+    "TERMINADA":"#10d21b",
+    "EN PROCESO":"#FFA000"
   }
 
     
