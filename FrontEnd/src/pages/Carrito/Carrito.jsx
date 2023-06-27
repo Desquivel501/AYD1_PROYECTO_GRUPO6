@@ -36,6 +36,7 @@ export default function Carrito() {
     );
 
     const [cont, setCont] = useState(1)
+    
 
 
     function subTotal() {
@@ -51,7 +52,7 @@ export default function Carrito() {
         if(carrito != null || carrito != undefined){
             carrito = JSON.parse(carrito)
             setPedido(carrito)
-        } 
+        }
     },[])
 
     const handleUpdate = (id, cantidad) => {

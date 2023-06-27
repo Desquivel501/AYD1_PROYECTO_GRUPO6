@@ -4,68 +4,55 @@ import { useEffect, useState } from "react";
 import { postData } from "../../api/auth";
 import { useSesion } from "../../hooks/useSesion";
 import Rpedidos from "../../mocks/misPedidos.json";
-import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
-import { ModalDetallePedido } from "../../Componentes/DetallePedido/DetallePedido";
 import { Tabla } from "../../Componentes/Tabla/Tabla";
 const HEADERS = [
   "ID",
   "Restaurante",
   "Cliente",
+  "Dirección",
   "Costo",
-  "Fecha",
-  "Estado",
-  "Detalle",
+  "¿Aceptar?",
 ];
 const objectAttributes = [
   "id",
   "restaurante",
   "cliente",
+  "direccion",
   "costo",
-  "fecha",
-  "estado",
 ];
-const estados = {
-  name: "estado",
-  options: {
-    "0": { color: "#080", txt: "Entregado" },
-    "1": { color: "#00f", txt: "En Proceso" },
-    "2": { color: "#f00", txt: "Cancelado" },
-  },
-};
-export function MisPedidos() {
-  const [pedido, setPedido] = useState("");
-  const [find, setFind] = useState({ cliente: "", fecha: "", estado: -1 });
+export function PedidosDisponibles() {
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
   useEffect(() => {
-    const endpoint = "ObtenerPedidosRepartidor";
+    const endpoint = "PedidosDisponibles";
     const data = { correo: user.id };
     postData({ endpoint, data })
       .then((data) => setPedidos(data ?? Rpedidos))
       .catch((e) => console.log(e));
   }, []);
-  const filterUsers = () => {
-    if (find.fecha == "" && find.cliente == "" && find.estado == -1) {
-      return pedidos;
-    }
-    let temp = pedidos;
-    if (find.cliente != "") {
-      const regex = "^" + find.cliente;
-      const r = new RegExp(regex);
-      temp = pedidos.filter(({ cliente }) => r.test(cliente));
-    }
-    if (find.fecha != "") {
-      temp = temp.filter(({ fecha }) => fecha == find.fecha);
-    }
-    if (find.estado != -1) {
-      temp = temp.filter(({ estado }) => estado == find.estado);
-    }
-    return temp;
-  };
   const handleClick = (e) => {
     const parent = e.currentTarget.parentElement.parentElement;
-    const id = parent.firstChild;
-    setPedido(id.innerText);
+    const id = parent.firstChild.innerText;
+    const endpoint = "AceptarPedidoRepartidor";
+    const data = { id, correo: user.id };
+    postData({ endpoint, data })
+      .then((response) => {
+        const mensaje = response[0][0];
+        if (mensaje.TIPO == "EXITO") {
+          Swal.fire({
+            icon: "success",
+            title: "Creado",
+            text: mensaje.MENSAJE,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: mensaje.MENSAJE,
+          });
+        }
+      })
+      .catch((e) => console.log(e));
   };
   const customTheme = createTheme({
     palette: {
@@ -76,7 +63,6 @@ export function MisPedidos() {
   });
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDetallePedido id={pedido} onClose={() => setPedido("")} />
       <Box
         component="main"
         display="flex"
@@ -97,16 +83,11 @@ export function MisPedidos() {
           flexDirection={"column"}
           alignItems={"center"}
         >
-          <h1>Mis Pedidos</h1>
-          <FilterPedidos
-            find={find}
-            onChange={setFind}
-          />
+          <h1>Pedidos Disponibles</h1>
           <Tabla
             headers={HEADERS}
             fields={objectAttributes}
-            data={filterUsers()}
-            categoria={estados}
+            data={pedidos}
           >
             <td>
               <button

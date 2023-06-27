@@ -28,9 +28,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { json } from "react-router-dom";
 import { gridColumnGroupsLookupSelector } from "@mui/x-data-grid";
 
+import { useNavigate } from "react-router-dom";
+
 export const MenuDatos = (props) => {
 
     const { user } = useSesion();
+
+    const navigate = useNavigate();
 
     const [metodo, setMetodo] = useState("tarjeta")
     
@@ -112,7 +116,7 @@ export const MenuDatos = (props) => {
 
     const [actualCC, setActualCC] = useState("")
 
-    const [cupon, setCupon] = useState("")
+    const [cupon, setCupon] = useState("No Usar")
 
     const [nameCC, setNameCC] = useState("")
     const [cc, setCC] = useState(0)
@@ -127,22 +131,12 @@ export const MenuDatos = (props) => {
 
     const [total, setTotal] = useState(0)
 
-
-    const [vencimiento, setVencimiento] = useState({})
-
     function handleDateChange(e, date){
-        // setVencimiento(date)
-        // console.log((prev) => ({ ...prev, [name]: value }))
-        // console.log(value)
-        // console.log(JSON.stringify(date));
-        // console.log(JSON.stringify(e));
         var date = new Date(e);
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const withSlashes = [month, year].join('/');
-        
-        console.log(withSlashes);
-
+        setDate(withSlashes)
     }
 
     useEffect(() => {
@@ -167,17 +161,77 @@ export const MenuDatos = (props) => {
     // },[vencimiento])
 
     useEffect(() => {
+
+        fetch("http://localhost:3000/obtenerTarjetas", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setTarjetas(response)
+        })
+
+        fetch("http://localhost:3000/obtenerDirecciones", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setDirecciones(response)
+        })
+
+        fetch("http://localhost:3000/obtenerCupones", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+                correo: user.id,
+            })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)
+            setCupones(response)
+        })
+
+
         var carrito = window.sessionStorage.getItem("carrito");
         if(carrito != null || carrito != undefined){
             carrito = JSON.parse(carrito)
             setPedido(carrito)
-        } 
 
-        var total_ = 0
-        for(var i = 0; i < carrito.productos.length; i++){
-            total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
+            var total_ = 0
+            for(var i = 0; i < carrito.productos.length; i++){
+                total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
+            }
+            setTotal(total_)
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error',
+                text: 'No se puede procesar un pedido sin productos',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate("/Empresas")
+                }
+            })
         }
-        setTotal(total_)
+
+        
     },[])
 
     useEffect(() => {
@@ -203,6 +257,112 @@ export const MenuDatos = (props) => {
 
 
     const handleSubmit = (event) => {
+
+        if(pedido.productos.length == 0){
+            Swal.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error',
+                text: 'No se puede procesar un pedido sin productos',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    return
+                }
+            })
+        }
+        
+        var cambio_dir = false
+        var id_dir = 0
+        for(var i = 0; i < direcciones.length; i++){
+            if(direcciones[i].name == actual){
+                id_dir = direcciones[i].id
+                if(direcciones[i].direccion != direccion){
+                    cambio_dir = true
+                }
+                break
+            }
+        }
+
+        if(cambio_dir == true || saveAdd){
+            fetch("http://localhost:3000/guardarDireccion", {
+                method: "POST",
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    correo: saveAdd ? user.id : null,
+                    alias: saveAdd ? alias : null,
+                    direccion: direccion
+                })
+            })
+            .then(res => res.json())
+            .then(response =>{
+                console.log(response[0][0])
+                    
+                if(response[0][0].TIPO != "EXITO"){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error',
+                        text: response[0][0].MENSAJE,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            return
+                        }
+                    })
+                } else {
+                    id_dir = response[0][0].MENSAJE
+                }
+            })
+        }
+
+        if(metodo == "tarjeta"){
+            var cambio_tar = false
+            var id_tar = 0
+            for(var i = 0; i < direcciones.length; i++){
+                if(tarjetas[i].alias == actualCC){
+                    id_tar = tarjetas[i].id
+                    if(tarjetas[i].cc != cc && tarjetas[i].name == nameCC){
+                        cambio_tar = true
+                    }
+                    break
+                }
+            }
+
+            if(cambio_tar == true || saveCC){
+                fetch("http://localhost:3000/guardarTarjeta", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        correo: saveCC ? user.id : null,
+                        alias: saveCC ? aliasCC : null,
+                        name: nameCC,
+                        cc: cc,
+                        vencimiento: date,
+                        cvv: cvv
+                    })
+                })
+                .then(res => res.json())
+                .then(response =>{
+                    console.log(response[0][0])
+                        
+                    if(response[0][0].TIPO != "EXITO"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ha ocurrido un error',
+                            text: response[0][0].MENSAJE,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                return
+                            }
+                        })
+                    } else {
+                        id_tar = response[0][0].MENSAJE
+                    }
+                })
+            }
+        }
+
         var json = {
             "departamento": pedido.departamento,
             "restaurante": pedido.restaurante,
@@ -210,7 +370,7 @@ export const MenuDatos = (props) => {
             "productos": []
         }
 
-        var total = 0
+
         for(var i = 0; i < pedido.productos.length; i++){
             json.productos.push({
                 "id": pedido.productos[i].id,
@@ -219,40 +379,67 @@ export const MenuDatos = (props) => {
                 "costo": pedido.productos[i].costo,
                 "subtotal": pedido.productos[i].costo*pedido.productos[i].cantidad
             })
-            total += pedido.productos[i].costo*pedido.productos[i].cantidad
         }
 
-        for(var i = 0; i < direcciones.length; i++){
-            if(direcciones[i].name == actual){
-                json["direccion"] = direcciones[i].id
+        json["direccion"] = id_dir
+        json["forma_pago"] = (metodo == "tarjeta") ? id_tar : 0
+        json["descripcion"] = comentario
+
+        var id_cupon = 0
+        var descuento = 0
+        for(var i = 0; i < cupones.length; i++){
+            if(cupon == cupones[i].alias){
+                id_cupon = cupones[i].id
+                descuento = cupones[i].descuento
                 break
             }
         }
+        json["cupon"] = (cupon != "No Usar") ? id_cupon : 0
 
-        if( metodo != "tarjeta"){
-            json["forma_pago"] = 0
-        } else {
-            for(var i = 0; i < tarjetas.length; i++){
-                if(tarjetas[i].alias == actualCC){
-                    json["forma_pago"] = tarjetas[i].id
-                    break
-                }
-            }
+
+        var total_ = 0
+        for(var i = 0; i < pedido.productos.length; i++){
+            total_ += pedido.productos[i].cantidad * pedido.productos[i].costo
         }
 
-        json["descripcion"] = comentario
 
-
-        if(cupon == ""){
-            json["cupon"] = 0
+        if(cupon == "No Usar"){
+            json["total"] = total_
         } else {
-            for(var i = 0; i<cupones.length; i++){
-                if(cupon == cupones[i].alias){
-                    json["cupon"] = cupones[i].id
-                    break
-                }
-            }
+            json["total"] = total_ - (total_ * descuento)
         }
+
+        console.log(json)
+
+        fetch("http://localhost:3000/crearPedido", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify(json)
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response)                
+            if(response.TIPO != "EXITO"){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ha ocurrido un error',
+                    text: response.MENSAJE,
+                })
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pedido Registrado',
+                    text: response.MENSAJE,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.sessionStorage.removeItem("carrito");
+                        navigate("/Empresas")
+                    }
+                })
+            }
+        })
 
     }
 
@@ -575,10 +762,6 @@ export const MenuDatos = (props) => {
                                 </>
 
                             }
-
-                            {/* <Divider variant="middle" sx={{my:1, width:'90%'}}/> */}
-
-
                         </Grid>
                     </Grid>
 
@@ -652,7 +835,7 @@ export const MenuDatos = (props) => {
                                 onChange={(event) => setCupon(event.target.value)}
                             >
                                 {cupones.map((item, i) => (
-                                    <MenuItem value={item.alias} key={item.alias}>{item.alias} &gt; {item.descuento*100}% de descuento</MenuItem>
+                                    <MenuItem value={item.alias} key={i}>{item.alias} &gt; {item.descuento*100}% de descuento</MenuItem>
                                 ))}
                                 <MenuItem value="No Usar" key="No Usar">-- No Usar --</MenuItem>
                             </Select>
@@ -689,7 +872,7 @@ export const MenuDatos = (props) => {
                 <Button
                     variant="contained"
                     type="submit"
-                    // onClick={handleSubmit}
+                    onClick={handleSubmit}
                     sx={{ 
                         mt: 2, mb: 1,
                         bgcolor: "#2f9d76",

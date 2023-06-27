@@ -64,6 +64,25 @@ BEGIN
     RETURN(existe);
 END $$
 
+-- ########################### OBTENER ID DE UN RESTAURANTE EN BASE A SU NOMBRE Y DEPARAMENTO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS CorreoRestaurante $$
+CREATE FUNCTION CorreoRestaurante(
+	nombre VARCHAR(250),
+    departamento INTEGER
+)
+RETURNS VARCHAR(200)
+DETERMINISTIC
+BEGIN
+	DECLARE correo VARCHAR(200);
+    SELECT e.correo INTO correo 
+    FROM Empresas e
+    WHERE e.nombre_entidad = nombre
+    AND id_dep = departamento;
+    
+    RETURN(correo);
+END $$
+
 -- ########################### COMPROBAR SI EXISTE UN RESTAURANTE ###########################
 DELIMITER $$
 DROP FUNCTION IF EXISTS ExisteEmpresa $$
@@ -330,16 +349,17 @@ DELIMITER $$
 DROP FUNCTION IF EXISTS FormaPagoExistente $$
 CREATE FUNCTION FormaPagoExistente(
 	correo VARCHAR(200),
-    numero_tarjeta BIGINT
+    alias VARCHAR(200)
 )
 RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Formas_pago fp
-    WHERE ((fp.numero_tarjeta = numero_tarjeta)
-    OR (fp.numero_tarjeta IS NULL))
-    AND fp.correo = correo) INTO existe;
+    WHERE (fp.alias = alias)
+    AND (fp.correo = correo)
+    AND (fp.correo IS NOT NULL)
+    )INTO existe;
 	RETURN(existe);
 END $$
 
@@ -356,7 +376,7 @@ BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Direcciones d
 	WHERE d.correo = correo
-    AND d.nombre = nombre) INTO existe;
+    AND d.alias = nombre) INTO existe;
 	RETURN(existe);
 END $$
 
@@ -426,7 +446,7 @@ END $$
 DELIMITER $$
 DROP FUNCTION IF EXISTS CuponExiste $$
 CREATE FUNCTION CuponExiste(
-	id_cupon VARCHAR(200)
+	id_cupon INTEGER
 )
 RETURNS BOOLEAN
 DETERMINISTIC
@@ -434,5 +454,73 @@ BEGIN
 	DECLARE existe BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Cupones c
     WHERE c.id_cupon = id_cupon) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UN CUPÓN YA EXISTE PARA UN USUARIO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS CuponRepetido $$
+CREATE FUNCTION CuponRepetido(
+	nombre VARCHAR(200),
+    correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Cupones c
+    WHERE c.nombre = nombre
+	AND c.correo = correo
+    ) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UN PEDIDO EXISTE ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoExiste $$
+CREATE FUNCTION PedidoExiste(
+	id_pedido INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Pedidos p
+    WHERE p.id_pedido = id_pedido
+    ) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### VERIFICAR SI UN PEDIDO PERTENECE A UNA EMPRESA ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoPertenece $$
+CREATE FUNCTION PedidoPertenece(
+	id_pedido INTEGER,
+    correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Pedidos p
+    WHERE p.id_pedido = id_pedido
+    AND p.correo_e = correo
+    ) INTO existe;
+    RETURN(existe);
+END $$
+
+-- ########################### RETORNA EL ESTADO DE CONFIRMADO DE UN PEDIDO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoConfirmado $$
+CREATE FUNCTION PedidoConfirmado(
+	id_pedido INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT p.confirmado INTO existe
+    FROM Pedidos p
+    WHERE p.id_pedido = id_pedido;
     RETURN(existe);
 END $$
