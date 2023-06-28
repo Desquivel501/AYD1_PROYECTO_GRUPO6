@@ -797,6 +797,8 @@ app.post('/crearPedido', cors(), (req, res)=>{
   const total = req.body.total; //total del pedido
   const descripcion = req.body.descripcion; //total del pedido
 
+  console.log(cupon + "-----------------------------------------------------------------")
+
   if(cupon == 0) cupon = null;
   if(forma_pago == 0) forma_pago = null;
 

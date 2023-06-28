@@ -14,7 +14,7 @@ import { useState } from "react";
 
 export const ProductCard3 = (props) => {
 
-    const {image, id, title, cantidad, cost} = props;
+    const {image, id, title, cantidad, cost, coupon, discount} = props;
 
     const [cantidad_, setCantidad] = useState(0)
 
@@ -76,42 +76,87 @@ export const ProductCard3 = (props) => {
 
             <Divider orientation="vertical" flexItem sx={{mx:1, my:1}}/>
 
-            <Grid
-                item
-                xs={1.5}
-                sx={{border:0}}
-            >
-                <Typography variant="p" component="p" align='center' 
-                    sx={{
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: '#000'
-                    }}>
-                    x{cantidad}
-                </Typography>
-            </Grid>
+            { coupon &&
+                <>
+                    <Grid
+                        item
+                        xs={1.5}
+                        sx={{border:0}}
+                        >
+                        <Typography variant="p" component="p" align='center' 
+                            sx={{
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: '#000'
+                            }}>
+                            x1
+                        </Typography>
+                    </Grid>
 
-            <Divider orientation="vertical" flexItem sx={{mx:1, my:1}}/>
+                    <Divider orientation="vertical" flexItem sx={{mx:1, my:1}}/>
 
-            <Grid
-                item
-                xs={1.5}
-                sx={{border:0}}
-            >
-                <Typography variant="p" component="p" align='center' 
-                    sx={{
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: '#000'
-                    }}>
-                    ${parseFloat(cost)*cantidad}
-                </Typography>
-            </Grid>
+                    <Grid
+                        item
+                        xs={1.5}
+                        sx={{border:0}}
+                        >
+                        <Typography variant="p" component="p" align='center' 
+                            sx={{
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: '#000'
+                            }}>
+                            -${discount}
+                        </Typography>
+                    </Grid>
+                </>
+            }
 
 
+            { !coupon &&
+                <>
+                    <Grid
+                        item
+                        xs={1.5}
+                        sx={{border:0}}
+                        >
+                        <Typography variant="p" component="p" align='center' 
+                            sx={{
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: '#000'
+                            }}>
+                            x{cantidad}
+                        </Typography>
+                    </Grid>
+
+                    <Divider orientation="vertical" flexItem sx={{mx:1, my:1}}/>
+
+                    <Grid
+                        item
+                        xs={1.5}
+                        sx={{border:0}}
+                        >
+                        <Typography variant="p" component="p" align='center' 
+                            sx={{
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: '#000'
+                            }}>
+                            ${parseFloat(cost)*cantidad}
+                        </Typography>
+                    </Grid>
+                </>
+            }
+
+            
         </Grid>
+
+       
     </Grid>
     
   );
