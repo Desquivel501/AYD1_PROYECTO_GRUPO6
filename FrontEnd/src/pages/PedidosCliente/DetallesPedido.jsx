@@ -676,12 +676,12 @@ export const DetallesPedido = (props) => {
 
                                                     { pedido.cupon != null &&
                                                         <ProductCard3
-                                                            title={JSON.parse(pedido.cupon).nombre}
+                                                            title={pedido.cupon.nombre}
                                                             cost={0}
                                                             image={"https://webiside.com/wp-content/uploads/2021/07/discount.png"}
                                                             cantidad={0}
                                                             coupon={true}
-                                                            discount={parseFloat(JSON.parse(pedido.cupon).porcentaje) * ((pedido.costo)/(1 -  parseFloat(JSON.parse(pedido.cupon).porcentaje)))}
+                                                            discount={pedido.cupon.porcentaje * ((pedido.costo)/(1 -  pedido.cupon.porcentaje))}
                                                         />
                                                     }
 
