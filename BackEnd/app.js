@@ -205,15 +205,6 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
 app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
     const parametro1 = (req.file === undefined) ? "" : req.file.location;
-
-    // if(parametro1 == ""){
-    //   res.json([{
-    //     MENSAJE: "No se ha seleccionado una imagen",
-    //     TIPO: "ERROR"
-    //   }]);
-    //   return
-    // }
-
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
@@ -317,7 +308,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
     }));
 
     if (formattedResult2.TIPO == "ERROR") {
-      res.json(formattedResult2);
+      res.status(500).json(formattedResult2);
       return
     }
 
@@ -325,6 +316,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
       mysql.query('CALL AgregarProductoCombo(?,?,?)', [parametro1, parametro2, elemento], (err, results) => {
         if (err) {
           console.error('Error al ejecutar el procedimiento almacenado AgregarProductoCombo:', err);
+          res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
           return;
         }
 
@@ -457,11 +449,6 @@ app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
   ON ce.id_cat = e.id_cat`
 
   mysql.query(query, (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-        return;
-      }
       res.json(results);
     });
     
@@ -474,11 +461,6 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
   WHERE Usuarios.rol != 0`
 
   mysql.query(query, (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-        return;
-      }
       res.json(results);
     });
 });
@@ -490,11 +472,6 @@ app.get('/ObtenerHabilitados', cors(), (req, res) => {
   WHERE Usuarios.rol != 0 AND Usuarios.estado=1`
 
   mysql.query(query, (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-        return;
-      }
       res.json(results);
     });
 });
@@ -509,11 +486,6 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
   ON Repartidores.id_dep = Departamentos.id_dep`
 
   mysql.query(query, (err, results) => {
-      if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-        return;
-      }
       res.json(results);
     });
     
@@ -528,10 +500,6 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
   AND estado = 0`
 
   mysql.query(query, (err, results) => {
-      if (err) {
-        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-        return;
-      }
       res.json(results);
     });
     
@@ -542,11 +510,6 @@ app.get('/CategoriasEmpresa', cors(), (req, res) => {
   let query = `SELECT id_cat AS id, nombre AS categoria, imagen FROM Categorias_empresa`
 
   mysql.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-      return;
-    }
     res.json(results);
   });
 
@@ -593,10 +556,6 @@ app.get('/obtenerReasignaciones', cors(), (req, res)=>{
   ON d.id_dep = sr.id_dep
   `;
   mysql.query(query, (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
     res.status(200).json(results);
   });
 });
@@ -910,10 +869,6 @@ app.get('/obtenerPedidos', cors(), (req, res)=>{
   const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
   FROM Pedidos p`
   mysql.query(query, (err, results)=>{
-    if(err){
-      console.log(err);
-      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
-    }
     res.status(200).json(results);
   });
 });
