@@ -1052,6 +1052,12 @@ CREATE PROCEDURE DatosPedido(
     IN id_pedido_in INTEGER
 )
 datos_pedido:BEGIN
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE datos_pedido;
+    END IF;
+
   SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, ce.imagen AS img_categoria,
   CONCAT(u.nombre, " ", u.apellidos) AS repartidor, p.calificacion, d.direccion, p.total AS costo, p.fecha_pedido AS fecha,
   p.estado, fp.numero_tarjeta, p.descripcion AS nota, JSON_ARRAYAGG(

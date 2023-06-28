@@ -906,6 +906,7 @@ app.post('/datosPedido', cors(), (req, res)=>{
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     results[0][0].productos = JSON.parse(results[0][0].productos)
+    results[0][0].cupon = JSON.parse(results[0][0].cupon)
     res.status(200).json(results[0][0]);
   }); 
 });
