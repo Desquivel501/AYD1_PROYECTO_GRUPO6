@@ -1203,6 +1203,9 @@ CREATE PROCEDURE EntregarPedido(
     IN id_pedido_in INTEGER
 )
 entregar_pedido:BEGIN
+	DECLARE total_pedido DECIMAL(12,2);
+	DECLARE correo_r VARCHAR(200);
+    
 	IF(NOT PedidoExiste(id_pedido_in)) THEN
 		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
@@ -1219,6 +1222,196 @@ entregar_pedido:BEGIN
     SET p.estado = 'ENTREGADO'
     WHERE p.id_pedido = id_pedido_in;
     
+    SELECT p.total, p.correo_r INTO total_pedido, correo_r
+    FROM Pedidos p
+    WHERE p.id_pedido = id_pedido_in;
+    
+    UPDATE Repartidores r
+    SET r.comisiones = r.comisiones + total_pedido*0.05
+    WHERE r.correo = correo_r;
+    
 	SELECT 'El pedido fue entregado exitosamente' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER LOS DATOS DE UN REPARTIDOR ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ObtenerDatosRepartidor $$
+CREATE PROCEDURE ObtenerDatosRepartidor(
+	IN correo_in VARCHAR(200)
+)
+obtener_datos_repartidor:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE obtener_datos_repartidor;
+    END IF;	
+    
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE obtener_datos_repartidor;
+    END IF;
+    
+	SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, 
+	direccion, celular, cv , comisiones, (
+		SELECT AVG(p.calificacion)
+		FROM Pedidos p
+		JOIN Repartidores r
+		ON p.correo_r = r.correo
+        AND p.correo = id
+	) as estrellas
+	FROM Usuarios u 
+	JOIN Repartidores r 
+	ON u.correo = r.correo 
+	AND u.correo = correo_in 
+	JOIN Departamentos d 
+	ON r.id_dep = d.id_dep;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER LAS EMPRESAS QUE MÁS PEDIDOS HAN GENERADO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS TopPedidosEmpresas $$
+CREATE PROCEDURE TopPedidosEmpresas()
+producto_popular_empresa:BEGIN
+	SELECT e.correo, e.nombre_entidad AS restaurante, COUNT(*) AS Pedidos FROM Pedidos p
+    JOIN Empresas e
+    ON p.correo_e = e.correo
+    GROUP BY e.correo
+    LIMIT 5;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER HISTORIAL DE PEDIDOS DE UNA EMPRESA ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS HistorialPedidosEmpresa $$
+CREATE PROCEDURE HistorialPedidosEmpresa(
+	IN correo_in VARCHAR(200)
+)
+historial_pedidos_empresa:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE historial_pedidos_empresa;
+    END IF;	
+    
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo de empresa ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE historial_pedidos_empresa;
+    END IF;
+    
+    SELECT id_pedido AS id, correo_r AS repartidor, correo_c AS cliente, p.descripcion, p.estado, p.fecha_pedido AS pedido, p.total AS costo
+    FROM Pedidos p
+    JOIN Empresas e
+    ON p.correo_e = e.correo
+    AND e.correo = correo_in;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER HISTORIAL DE PEDIDOS DE UN USUARIO ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS HistorialPedidosCliente $$
+CREATE PROCEDURE HistorialPedidosCliente(
+	IN correo_in VARCHAR(200)
+)
+historial_pedidos_cliente:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE historial_pedidos_cliente;
+    END IF;	
+    
+	IF(NOT ExisteCliente(correo_in)) THEN
+		SELECT 'El correo de cliente ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE historial_pedidos_cliente;
+    END IF;
+    
+    SELECT id_pedido AS id, correo_r AS repartidor, e.nombre_entidad AS restaurante, p.descripcion, p.estado, p.fecha_pedido AS pedido, p.total AS costo
+    FROM Pedidos p
+    JOIN Clientes c
+    ON p.correo_c = c.correo
+    AND c.correo = correo_in
+    JOIN Empresas e
+    ON p.correo_e = e.correo;
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER TOP DE MEJORES REPARTIDORES ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS TopMejoresRepartidores $$
+CREATE PROCEDURE TopMejoresRepartidores()
+top_mejores_repartidores:BEGIN
+	SELECT u.correo as id, u.nombre, apellidos, municipio, d.nombre as departamento, 
+	direccion, (
+		SELECT AVG(p.calificacion)
+		FROM Pedidos p
+		JOIN Repartidores r
+		ON p.correo_r = r.correo
+        AND r.correo = id
+	) as estrellas
+	FROM Usuarios u 
+	JOIN Repartidores r 
+	ON u.correo = r.correo 
+	JOIN Departamentos d 
+	ON r.id_dep = d.id_dep
+    ORDER BY estrellas DESC;	
+END $$
+
+-- ########################### PROCEDIMIENTO PARA OBTENER TOP PRODUCTOS MÁS VENDIDOS (GLOBAL) ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS TopProductosGlobal $$
+CREATE PROCEDURE TopProductosGlobal()
+top_productos_global:BEGIN
+	SELECT	
+		CASE WHEN dp.id_prod IS NOT NULL THEN dp.id_prod ELSE dp.id_combo END AS id,
+		CASE WHEN dp.id_prod IS NOT NULL THEN false ELSE true END AS combo,
+		CASE WHEN dp.id_prod IS NOT NULL THEN p.nombre ELSE c.nombre END AS nombre,
+		e.nombre_entidad AS restaurante,
+		SUM(dp.cantidad) AS ventas
+	FROM Detalle_pedidos dp
+	LEFT JOIN Productos p
+	ON dp.id_prod = p.id_prod
+	LEFT JOIN Combos c
+	ON dp.id_combo = c.id_combo
+	LEFT JOIN Empresas e
+	ON p.correo = e.correo OR c.correo = e.correo
+	GROUP BY dp.id_prod, dp.id_combo, e.nombre_entidad, e.correo
+    ORDER BY ventas DESC;
+END $$
+
+-- ########################### PRODUCTO MÁS POPULAR DE CADA EMPRESA ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS TopProductoEmpresa $$
+CREATE PROCEDURE TopProductoEmpresa(
+	IN correo_in VARCHAR(200)
+)
+top_producto_empresa:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE top_producto_empresa;
+    END IF;	
+    
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo de empresa ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE top_producto_empresa;
+    END IF;
+
+	SELECT	
+		CASE WHEN dp.id_prod IS NOT NULL THEN dp.id_prod ELSE dp.id_combo END AS id,
+		CASE WHEN dp.id_prod IS NOT NULL THEN false ELSE true END AS combo,
+		CASE WHEN dp.id_prod IS NOT NULL THEN p.nombre ELSE c.nombre END AS nombre,
+		SUM(dp.cantidad) AS ventas
+	FROM Detalle_pedidos dp
+	LEFT JOIN Productos p
+	ON dp.id_prod = p.id_prod
+	LEFT JOIN Combos c
+	ON dp.id_combo = c.id_combo
+	LEFT JOIN Empresas e
+	ON p.correo = e.correo OR c.correo = e.correo
+    AND e.correo = correo_in
+	GROUP BY dp.id_prod, dp.id_combo
+    ORDER BY ventas DESC
+    LIMIT 1;
+    
 END $$
