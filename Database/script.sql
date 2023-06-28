@@ -124,6 +124,7 @@ CREATE TABLE Repartidores (
     direccion VARCHAR(200),
     celular INTEGER,
     cv VARCHAR(250),
+    comisiones DECIMAL(12,2) DEFAULT 0,
     PRIMARY KEY(correo),
     FOREIGN KEY(correo) REFERENCES Usuarios(correo),
     FOREIGN KEY(id_dep) REFERENCES Departamentos(id_dep)
