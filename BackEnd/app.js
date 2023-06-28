@@ -569,10 +569,10 @@ app.post('/deshabilitar', cors(), (req, res)=>{
 //-- ##################################### Solicitar nueva dirección #####################################
 app.post('/nuevaDireccion',upload.single('document'), cors(), (req,res)=>{
   const correo = req.body.correo;
-  const departamento = req.body.departamento;
-  const municipio = req.body.municipio;
+  const departamento = req.body.Departamento;
+  const municipio = req.body.Municipio;
   const zona = req.body.zona;
-  const motivo = req.body.motivo;
+  const motivo = req.body.Motivo;
 
   const direccion = `${departamento} ${municipio} ${zona}`;
 
@@ -991,3 +991,4 @@ app.post('/topProductoEmpresa', cors(), (req, res)=>{
 app.listen(3000, () => {
   console.log('Servidor escuchando en el puerto 3000');
 });*/
+module.exports = app;
