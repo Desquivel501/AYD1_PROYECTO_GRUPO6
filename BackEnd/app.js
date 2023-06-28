@@ -53,7 +53,7 @@ app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
     mysql.query('CALL RegistrarCliente(?,?,?,?)', [parametro1, parametro2, parametro3, parametro4], (err, results) => {
         if (err) {
           console.error('Error al ejecutar el procedimiento almacenado RegistrarCliente:', err);
-          res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+          res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
           return
         }
         
@@ -74,7 +74,7 @@ app.post('/InicioSesion',upload.single('document'), cors(), (req, res) => {
   mysql.query('CALL InicioSesion(?,?)', [parametro1, parametro2], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado InicioSesion:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
       
@@ -105,7 +105,7 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarRepartidor:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
       
@@ -131,7 +131,7 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
   mysql.query(`CALL ${procedimeinto}(?,?)`, [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AceptarRepartidor:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
 
@@ -162,7 +162,7 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarEmpresa:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
       
@@ -188,7 +188,7 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
   mysql.query(`CALL ${procedimeinto}(?,?)`, [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AceptarEmpresa:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       }
       
       const formattedResult = results[0].map(row => ({
@@ -224,7 +224,7 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
   mysql.query('CALL AlmacenarProducto(?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AlmacenarProducto:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
       
@@ -254,7 +254,7 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
   mysql.query('CALL ActualizarProducto(?,?,?,?,?,?,?,?)', [parametro0, parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ActualizarProducto:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       
@@ -277,7 +277,7 @@ app.post('/EliminarProducto', cors(), (req, res) => {
   mysql.query('CALL EliminarProducto(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado EliminarProducto:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       
@@ -307,7 +307,7 @@ app.post('/CrearCombo', cors(), (req, res) => {
   mysql.query('CALL AlmacenarCombo(?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6], (err, results) => {
     if (err) {
       console.error('Error al ejecutar el procedimiento almacenado AlmacenarCombo:', err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return;
     }
 
@@ -344,7 +344,7 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
   mysql.query('Call ObtenerCombosConProductos(?)',[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
 
@@ -372,7 +372,7 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
   mysql.query(query, [parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerTodosLosProductos:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -393,7 +393,7 @@ app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
   mysql.query(query,[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
 
@@ -418,7 +418,7 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
   mysql.query(query,[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -444,7 +444,7 @@ app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
 
   mysql.query(query,[nombre, departamento], (err, results) => {
       if (err) {
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -466,7 +466,7 @@ app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -483,7 +483,7 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -499,7 +499,7 @@ app.get('/ObtenerHabilitados', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -518,7 +518,7 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -536,7 +536,7 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
 
   mysql.query(query, (err, results) => {
       if (err) {
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
@@ -551,7 +551,7 @@ app.get('/CategoriasEmpresa', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
     if (err) {
       console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return;
     }
     res.json(results);
@@ -567,7 +567,7 @@ app.post('/deshabilitar', cors(), (req, res)=>{
   mysql.query('CALL DeshabilitarCliente(?)', [correo], (err, results) =>{
     if (err) {
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -586,7 +586,7 @@ app.post('/nuevaDireccion',upload.single('document'), cors(), (req,res)=>{
   mysql.query('CALL CrearSolicitudReasignacion(?,?,?,?,?)', [correo, departamento, municipio, direccion, motivo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -602,7 +602,7 @@ app.get('/obtenerReasignaciones', cors(), (req, res)=>{
   mysql.query(query, (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -615,7 +615,7 @@ app.post('/aceptarReasignacion', cors(), (req, res)=>{
   mysql.query('CALL AceptarSolicitudReasignacion(?)', [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -632,7 +632,7 @@ app.post('/guardarDireccion', cors(), (req, res)=>{
   mysql.query('CALL CrearDireccion(?,?,?)',[alias, direccion, correo], (err,results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -652,7 +652,7 @@ app.post('/guardarTarjeta', cors(), (req, res)=>{
   mysql.query('CALL CrearFormaPago(?,?,?,?,?,?)',[alias, name, cc, vencimiento, cvv, correo], (err,results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -668,7 +668,7 @@ app.post('/obtenerTarjetas', cors(), (req, res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -684,7 +684,7 @@ app.post('/obtenerDirecciones', cors(), (req,res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -700,7 +700,7 @@ app.post('/obtenerCupones', cors(), (req, res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -713,7 +713,7 @@ app.post('/rechazarReasignacion', cors(), (req, res)=>{
   mysql.query('CALL RechazarSolicitudReasignacion(?)', [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   })
@@ -739,7 +739,7 @@ app.post('/crearPedido', cors(), (req, res)=>{
   mysql.query('CALL CrearPedido(?,?,?,?,?,?,?,?)', [cliente, departamento, restaurante, direccion, forma_pago, cupon, total, descripcion], (err, results)=>{
       if(err){
         console.log(err);
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return
       }
       if(results[0][0].TIPO == 'EXITO'){
@@ -749,7 +749,7 @@ app.post('/crearPedido', cors(), (req, res)=>{
           mysql.query(query, [id_pedido, producto.cantidad, producto.subtotal], (err, results)=>{
             if(err){
               console.log(err);
-              res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+              res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
               return
             }
           });
@@ -757,7 +757,7 @@ app.post('/crearPedido', cors(), (req, res)=>{
         });
         res.status(200).json({'TIPO': 'EXITO', 'MENSAJE':'El pedido se ha realizado exitósamente'});
       }else{
-        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       }
     });
 });
@@ -776,7 +776,7 @@ app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
     res.status(200).json(results);
@@ -793,7 +793,7 @@ app.post('/obtenerPedidosEmpresa', cors(), (req, res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
     res.status(200).json(results);
@@ -807,7 +807,7 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
   mysql.query('CALL AceptarPedidoEmpresa(?,?)', [id_pedido, correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
     res.status(200).json(results);
@@ -831,7 +831,7 @@ app.post('/pedidosCliente', cors(), (req, res)=>{
   mysql.query(query, [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
     res.status(200).json(results);
@@ -846,7 +846,7 @@ app.post('/datosPedido', cors(), (req, res)=>{
   mysql.query('CALL DatosPedido(?,?)', [correo, id_pedido], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
 
@@ -868,7 +868,7 @@ app.post('/pedidosDisponibles', cors(), (req, res)=>{
   mysql.query('CALL PedidosDisponibles(?)', [correo], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -881,7 +881,7 @@ app.post('/calificarPedido', cors(), (req, res)=>{
   mysql.query('CALL CalificarPedido(?,?)', [id_pedido, calificacion], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -895,7 +895,7 @@ app.post('/aceptarPedidoRepartidor', cors(), (req, res)=>{
   mysql.query('CALL AceptarPedidoRepartidor(?,?)', [correo, id_pedido], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -908,7 +908,7 @@ app.post('/entregarPedido', cors(), (req, res)=>{
   mysql.query('CALL EntregarPedido(?)', [id_pedido], (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
@@ -921,7 +921,7 @@ app.get('/obtenerPedidos', cors(), (req, res)=>{
   mysql.query(query, (err, results)=>{
     if(err){
       console.log(err);
-      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     res.status(200).json(results);
   });
