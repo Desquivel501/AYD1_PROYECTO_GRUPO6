@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { DireccionEnRegistro } from "../../Componentes/Direccion";
 import { postData, sendFormData } from "../../api/auth";
+import Swal from "sweetalert2";
 
 export function PerfilRepartidor() {
   const { user } = useSesion();
@@ -20,15 +21,31 @@ export function PerfilRepartidor() {
     tipo_licencia: "",
     cv: "",
     estrellas: 4.5,
+    comisiones: 0,
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    data.append("Correo", user.id);
+    data.append("correo", user.id);
     const endpoint = "nuevaDireccion";
-    const respuesta = sendFormData({ endpoint, data });
-    console.log(respuesta);
+    const respuesta = sendFormData({ endpoint, data })
+      .then((response) => {
+        const mensaje = response[0][0];
+        if (mensaje.TIPO == "EXITO") {
+          Swal.fire({
+            icon: "success",
+            title: "Solicitud",
+            text: mensaje.MENSAJE,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: mensaje.MENSAJE,
+          });
+        }
+      });
     e.target.reset();
   };
 
@@ -36,24 +53,32 @@ export function PerfilRepartidor() {
     const endpoint = "ObtenerDatosRepartidor";
     const data = { correo: user.id };
     postData({ endpoint, data })
-      .then((data) => setActual(data[0]))
+      .then((response) => {
+        const datos = response[0][0];
+        setActual(datos);
+      })
       .catch((e) => console.log(e));
   }, []);
   const mostrarEstrellas = () => {
     const entero = Math.trunc(actual.estrellas);
     const decimal = actual.estrellas % 1;
-    console.log({ entero, decimal });
-    const estrellas = []
-    while (estrellas.length<entero) {
-      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/star.png" />);
-    } 
+    const estrellas = [];
+    while (estrellas.length < entero) {
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/star.png" />,
+      );
+    }
     if (decimal != 0) {
-      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/halfStar.png" />);
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/halfStar.png" />,
+      );
     }
-    while (estrellas.length<5) {
-      estrellas.push(<img key={estrellas.length} src="/src/assets/icons/emptyStar.png" />);
+    while (estrellas.length < 5) {
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/emptyStar.png" />,
+      );
     }
-    return estrellas
+    return estrellas;
   };
 
   return (
@@ -140,7 +165,7 @@ export function PerfilRepartidor() {
               Total de comisiones
             </h3>
             <h1>
-              {`$${245.70}`}
+              {`Q${actual.comisiones}`}
             </h1>
           </Grid>
           <Grid item>

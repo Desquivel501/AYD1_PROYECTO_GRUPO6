@@ -40,7 +40,7 @@ export function SesionProvider({ children }) {
       setUser(newUser);
       window.sessionStorage.setItem("user", JSON.stringify(newUser));
       if (newUser.rol == "Administrador") return "/Administrador/Solicitudes";
-      if (newUser.rol == "Repartidor") return "/Repartidor";
+      if (newUser.rol == "Repartidor") return "/Repartidor/Pedidos";
       if (newUser.rol == "Empresa") return "/Empresa/CatalogoEmpresa";
       if (newUser.rol == "Cliente") return "/Empresas";
     }

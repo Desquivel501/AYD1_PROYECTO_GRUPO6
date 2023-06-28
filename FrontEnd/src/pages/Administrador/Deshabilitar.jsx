@@ -33,14 +33,14 @@ const estados = {
 
 export function Deshabilitar() {
   const [correo, setCorreo] = useState("");
-  const [usuarios, setUsuarios] = useState(users);
+  const [usuarios, setUsuarios] = useState([]);
   const [find, setFind] = useState("");
   const [disable, setDisable] = useState(false);
 
   useEffect(() => {
     const endpoint = "ObtenerHabilitados";
     getData({ endpoint })
-      .then((data) => setUsuarios(data ?? users))
+      .then((data) => setUsuarios(data ?? []))
       .catch((e) => console.log(e));
   }, [disable]);
   const quitarCorreo = () => {
