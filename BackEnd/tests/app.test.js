@@ -94,6 +94,7 @@ describe('POST /AceptarEmpresa', () => {
     });
 });
 
+
 describe('POST /InicioSesion', () => {
     it('Deberia retornar una respuesta de 200 si las credenciales de usuario son validas', async () =>{
         const response = await api.post('/InicioSesion')
@@ -102,6 +103,7 @@ describe('POST /InicioSesion', () => {
         expect(response.status).toBe(200);
     });
 });
+
 
 describe('POST /CrearProducto', () => {
     it('Deberia retornar una respuesta de 200 si se creo el producto', async () =>{
@@ -116,14 +118,6 @@ describe('POST /CrearProducto', () => {
     });
 });
 
-
-// describe('POST /CrearProducto', () => {
-//     it('Deberia retornar una respuesta de 500 si no se pudo crear el producto', async () =>{
-//         const response = await api.post('/InicioSesion')
-//             .field("costo", "ajdhajk")
-//             expect(response.status).toBe(500);
-//     });
-// });
 
 
 describe('POST /EditarProducto', () => {
@@ -317,6 +311,14 @@ describe('POST /guardarTarjeta', () => {
             .field("cvv", "111")
             .field("vencimiento", "28/2025")
         expect(response.status).toBe(200);
+    });
+});
+
+
+describe('POST /crearPedido', () => {
+    it('Deberia retornar una respuesta de 200 de que si no se pudo crear el pedido', async () =>{
+        const response = await api.post('/crearPedido')
+        expect(response.status).toBe(500);
     });
 });
 
