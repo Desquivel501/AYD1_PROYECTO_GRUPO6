@@ -27,14 +27,14 @@ export function PedidosDisponibles() {
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
   const { pedidoActual } = usePedido()
-  const navigate = useNavigate() 
+  const [ get,setGet ] = useState(false)
   useEffect(() => {
     const endpoint = "PedidosDisponibles";
     const data = { correo: user.id };
     postData({ endpoint, data })
-      .then((data) => setPedidos(data[0] ?? Rpedidos))
+      .then((data) => setPedidos(data[0] ?? []))
       .catch((e) => console.log(e));
-  }, []);
+  }, [get]);
   const handleClick = (e) => {
     const parent = e.currentTarget.parentElement.parentElement;
     const id = parent.firstChild.innerText;
@@ -43,7 +43,6 @@ export function PedidosDisponibles() {
     postData({ endpoint, data })
       .then((response) => {
         const mensaje = response[0][0];
-        console.log(response)
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
@@ -53,7 +52,7 @@ export function PedidosDisponibles() {
           const estado = "EN CAMINO"
           pedidoActual.id = id
           pedidoActual.estado =  estado
-          console.log(pedidoActual)
+          setGet(!get)
         } else {
           Swal.fire({
             icon: "error",

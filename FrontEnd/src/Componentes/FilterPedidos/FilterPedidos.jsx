@@ -1,19 +1,16 @@
 import { MenuItem, Select } from "@mui/material";
-export function FilterPedidos({ find, onChange, estado = true }) {
+export function FilterPedidos({ find, onChange, categorias }) {
   const handleChange = (e) => {
     const key = e.target.name.toString();
     if (key == "cliente") {
       return onChange((prev) => ({ ...prev, cliente: e.target.value }));
     }
     if (key == "fecha") {
-      const x = e.target.value.split("-");
-      const nuevaFecha = x.length == 1
-        ? ""
-        : parseInt(x[1]) + "/" + parseInt(x[2]) + "/" + x[0];
-      return onChange((prev) => ({ ...prev, fecha: nuevaFecha }));
+      const x = e.target.value;
+      return onChange((prev) => ({ ...prev, fecha: x == "" ? "" : x }));
     }
-    if (key == "estado") {
-      return onChange((prev) => ({ ...prev, estado: e.target.value }));
+    if (key == "categoria") {
+      return onChange((prev) => ({ ...prev, categoria: e.target.value }));
     }
   };
   return (
@@ -33,19 +30,18 @@ export function FilterPedidos({ find, onChange, estado = true }) {
         onChange={handleChange}
         name="fecha"
       />
-      {estado && (
+      {categorias?.length && (
         <>
           <label>Por estado:</label>
           <Select
             onChange={handleChange}
             defaultValue="Todos"
-            name="estado"
+            name="categoria"
             sx={{ height: "35px", width: "150px" }}
           >
-            <MenuItem value={-1}>Todos</MenuItem>
-            <MenuItem value={0}>Entregado</MenuItem>
-            <MenuItem value={1}>En proceso</MenuItem>
-            <MenuItem value={2}>Cancelado</MenuItem>
+            {categorias.map(({ value, texto }) => (
+              <MenuItem key={value} value={value}>{texto}</MenuItem>
+            ))}
           </Select>
         </>
       )}

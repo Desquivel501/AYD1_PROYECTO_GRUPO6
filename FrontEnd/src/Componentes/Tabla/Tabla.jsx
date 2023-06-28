@@ -33,6 +33,12 @@ export function Tabla({ headers, fields, data, children, categoria }) {
                   </td>
                 );
               }
+              if (item == "fecha") {
+                const x = (value[item]).split("T")[0].split("-");
+                const a = parseInt(x[1]) + "/" + parseInt(x[2]) + "/" +
+                  x[0];
+                return <td>{a}</td>;
+              }
               return <td>{value[item]}</td>;
             })}
             {children}

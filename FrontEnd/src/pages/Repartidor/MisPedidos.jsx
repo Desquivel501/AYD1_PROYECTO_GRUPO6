@@ -27,25 +27,35 @@ const objectAttributes = [
 const estados = {
   name: "estado",
   options: {
-    "0": { color: "#080", txt: "Entregado" },
-    "1": { color: "#00f", txt: "En Proceso" },
-    "2": { color: "#f00", txt: "Cancelado" },
+    "PENDIENTE": { color: "#CE93D8", txt: "Pendiente" },
+    "EN CAMINO": { color: "#ffcc00", txt: "En camino" },
+    "ENTREGADO": { color: "#29B6F6", txt: "Entregado" },
+    "TERMINADA": { color: "#10d21b", txt: "Terminada" },
+    "EN PROCESO": { color: "#FFA000", txt: "En proceso" },
   },
 };
+const categorias = [
+  { value: "", texto: "Todos" },
+  { value: "PENDIENTE", texto: "Pendiente" },
+  { value: "EN CAMINO", texto: "En camino" },
+  { value: "ENTREGADO", texto: "Entregado" },
+  { value: "TERMINADA", texto: "Terminada" },
+  { value: "EN PROCESO", texto: "En proceso" },
+];
 export function MisPedidos() {
   const [pedido, setPedido] = useState("");
-  const [find, setFind] = useState({ cliente: "", fecha: "", estado: -1 });
+  const [find, setFind] = useState({ cliente: "", fecha: "", categoria: "" });
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
   useEffect(() => {
     const endpoint = "ObtenerPedidosRepartidor";
     const data = { correo: user.id };
     postData({ endpoint, data })
-      .then((data) => setPedidos(data ?? Rpedidos))
+      .then((data) => setPedidos(data ?? []))
       .catch((e) => console.log(e));
   }, []);
   const filterUsers = () => {
-    if (find.fecha == "" && find.cliente == "" && find.estado == -1) {
+    if (find.fecha == "" && find.cliente == "" && find.categoria == "") {
       return pedidos;
     }
     let temp = pedidos;
@@ -55,10 +65,10 @@ export function MisPedidos() {
       temp = pedidos.filter(({ cliente }) => r.test(cliente));
     }
     if (find.fecha != "") {
-      temp = temp.filter(({ fecha }) => fecha == find.fecha);
+      temp = temp.filter(({ fecha }) => fecha.includes(find.fecha));
     }
-    if (find.estado != -1) {
-      temp = temp.filter(({ estado }) => estado == find.estado);
+    if (find.categoria != "") {
+      temp = temp.filter(({ estado }) => estado == find.categoria);
     }
     return temp;
   };
@@ -76,7 +86,12 @@ export function MisPedidos() {
   });
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDetallePedido id={pedido} onClose={() => setPedido("")} />
+      {pedido && (
+        <ModalDetallePedido
+          id={pedido}
+          onClose={() => setPedido("")}
+        />
+      )}
       <Box
         component="main"
         display="flex"
@@ -101,6 +116,7 @@ export function MisPedidos() {
           <FilterPedidos
             find={find}
             onChange={setFind}
+            categorias={categorias}
           />
           <Tabla
             headers={HEADERS}

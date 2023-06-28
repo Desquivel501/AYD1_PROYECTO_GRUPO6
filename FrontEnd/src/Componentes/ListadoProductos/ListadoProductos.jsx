@@ -44,10 +44,11 @@ export const ListadoProductos = (props) => {
         {productos.map((producto, i) => (
           <ProductCard
             key={i}
-            title={producto.title}
-            cost={producto.cost}
-            image={producto.image}
+            title={producto.titulo}
+            cost={producto.precio}
+            image={producto.imagen}
             descripcion={producto.descripcion}
+            combo={producto.Combo}
             size={10}
             addCost
             addDesc
