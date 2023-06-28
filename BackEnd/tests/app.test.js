@@ -16,9 +16,9 @@ describe('POST /RegistrarCliente', () => {
 });
 
 describe('POST /RegistrarCliente', () => {
-    it('Deberia retornar una respuesta de 404 si no se puedo crear el cliente', async () =>{
+    it('Deberia retornar una respuesta de 500 si no se puedo crear el cliente', async () =>{
         const response = await api.post('/RegistrarCliente')
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(500);
     });
 });
 
@@ -40,9 +40,9 @@ describe('POST /RegistrarRepartidor', () => {
 });
 
 describe('POST /RegistrarRepartidor', () => {
-    it('Deberia retornar una respuesta de 404 si no se puedo crear el repartidor', async () =>{
+    it('Deberia retornar una respuesta de 500 si no se puedo crear el repartidor', async () =>{
         const response = await api.post('/RegistrarCliente')
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(500);
     });
 });
 
@@ -75,9 +75,9 @@ describe('POST /RegistrarEmpresa', () => {
 });
 
 describe('POST /RegistrarEmpresa', () => {
-    it('Deberia retornar una respuesta de 404 si no se puedo crear la empresa', async () =>{
+    it('Deberia retornar una respuesta de 500 si no se puedo crear la empresa', async () =>{
         const response = await api.post('/RegistrarEmpresa')
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(500);
     });
 });
 
@@ -118,10 +118,10 @@ describe('POST /CrearProducto', () => {
 
 
 // describe('POST /CrearProducto', () => {
-//     it('Deberia retornar una respuesta de 404 si no se pudo crear el producto', async () =>{
+//     it('Deberia retornar una respuesta de 500 si no se pudo crear el producto', async () =>{
 //         const response = await api.post('/InicioSesion')
 //             .field("costo", "ajdhajk")
-//             expect(response.status).toBe(404);
+//             expect(response.status).toBe(500);
 //     });
 // });
 
@@ -141,10 +141,10 @@ describe('POST /EditarProducto', () => {
 });
 
 describe('POST /EditarProducto', () => {
-    it('Deberia retornar una respuesta de 404 si no se pudo editar el producto', async () =>{
+    it('Deberia retornar una respuesta de 500 si no se pudo editar el producto', async () =>{
         const response = await api.post('/EditarProducto')
             .field("costo", "ajdhajk")
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(500);
     });
 });
 
