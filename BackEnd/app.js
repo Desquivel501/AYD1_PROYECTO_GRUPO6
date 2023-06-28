@@ -424,16 +424,9 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
 
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
-  const parametro1 = req.body.correo;
-  let query = `SELECT u.correo as id, u.nombre, apellidos, contrasenia, tipo_licencia, municipio, d.nombre as departamento, direccion, celular, cv , 0 as estrellas
-  FROM Usuarios u 
-  JOIN Repartidores r 
-  ON u.correo = r.correo 
-  AND u.correo = ? 
-  JOIN Departamentos d 
-  ON r.id_dep = d.id_dep`
+  const correo = req.body.correo;
 
-  mysql.query(query,[parametro1], (err, results) => {
+  mysql.query('CALL ObtenerDatosRepartidor(?)',[correo], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         return;
@@ -784,17 +777,15 @@ app.post('/rechazarReasignacion', cors(), (req, res)=>{
 
 //-- ##################################### Crear nuevo pedido #####################################
 app.post('/crearPedido', cors(), (req, res)=>{
-  const departamento = req.body.departamento; //id del departamento
-  const restaurante = req.body.restaurante; // nombre del restaurante
-  const cliente = req.body.usuario; //correo del cliente
-  const productos = req.body.productos; //listado de los productos
-  const direccion = req.body.direccion; //id de la direccion
-  let forma_pago = req.body.forma_pago; //id de la forma de pago (0 si es efectivo)
-  let cupon = req.body.cupon; //id del cupon (0 si no hay cupon)
-  const total = req.body.total; //total del pedido
-  const descripcion = req.body.descripcion; //total del pedido
-
-  console.log(cupon + "-----------------------------------------------------------------")
+  const departamento = req.body.departamento; 
+  const restaurante = req.body.restaurante; 
+  const cliente = req.body.usuario; 
+  const productos = req.body.productos; 
+  const direccion = req.body.direccion; 
+  let forma_pago = req.body.forma_pago; 
+  let cupon = req.body.cupon; 
+  const total = req.body.total; 
+  const descripcion = req.body.descripcion; 
 
   if(cupon == 0) cupon = null;
   if(forma_pago == 0) forma_pago = null;
@@ -963,7 +954,7 @@ app.post('/entregarPedido', cors(), (req, res)=>{
 });
 
 //-- ##################################### Obtener todos los pedidos #####################################
-app.post('/obtenerPedidos', cors(), (req, res)=>{
+app.get('/obtenerPedidos', cors(), (req, res)=>{
   const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
   FROM Pedidos p`
   mysql.query(query, (err, results)=>{
@@ -975,5 +966,76 @@ app.post('/obtenerPedidos', cors(), (req, res)=>{
   });
 });
 
+//-- ##################################### Top de las empresas que más pedidos generan #####################################
+app.get('/topPedidosEmpresas', cors(), (req, res)=>{
+  mysql.query('CALL TopPedidosEmpresas()', (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
 
-module.exports = app;
+//-- ##################################### Historial de pedidos de una empresa específica #####################################
+app.post('/historialPedidosEmpresa', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  mysql.query('CALL HistorialPedidosEmpresa(?)', [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Historial de pedidos de un cliente específico #####################################
+app.post('/historialPedidosCliente', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  mysql.query('CALL HistorialPedidosCliente(?)', [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Top de los mejores repartidores #####################################
+app.get('/topMejoresRepartidores', cors(), (req, res)=>{
+  mysql.query('CALL TopMejoresRepartidores()', (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Top global de productos #####################################
+app.get('/topProductosGlobal', cors(), (req, res)=>{
+  mysql.query('CALL TopProductosGlobal()', (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Top producto de cada empresa #####################################
+app.post('/topProductoEmpresa', cors(), (req, res)=>{
+  const correo = req.body.correo;
+  mysql.query('CALL TopProductoEmpresa(?)', [correo], (err, results)=>{
+    if(err){
+      console.log(err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Inicia el servidor
+app.listen(3000, () => {
+  console.log('Servidor escuchando en el puerto 3000');
+});
