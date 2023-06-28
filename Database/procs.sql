@@ -728,8 +728,8 @@ crear_pedido:BEGIN
         WHERE c.id_cupon = id_cupon_in;
     END IF;
 
-	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion)
-    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, total_in, descripcion_in);
+	INSERT INTO Pedidos(correo_c, correo_r, correo_e, estado, id_direccion, id_formap, calificacion, confirmado, total, descripcion, id_cupon)
+    VALUES(correo_c_in, null, correo_e_in, 'PENDIENTE', id_dir_in, id_formap_in, 0, false, total_in, descripcion_in, id_cupon_in);
     
     SELECT p.id_pedido INTO id_pedido
     FROM Pedidos p
@@ -1052,6 +1052,12 @@ CREATE PROCEDURE DatosPedido(
     IN id_pedido_in INTEGER
 )
 datos_pedido:BEGIN
+	IF(NOT PedidoExiste(id_pedido_in)) THEN
+		SELECT 'El pedido que se envió no existe' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE datos_pedido;
+    END IF;
+
   SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, ce.imagen AS img_categoria,
   CONCAT(u.nombre, " ", u.apellidos) AS repartidor, p.calificacion, d.direccion, p.total AS costo, p.fecha_pedido AS fecha,
   p.estado, fp.numero_tarjeta, p.descripcion AS nota, JSON_ARRAYAGG(
@@ -1062,8 +1068,14 @@ datos_pedido:BEGIN
     ELSE JSON_OBJECT(
       'id', co.id_combo, 'Combo', true, 'titulo', co.nombre, 'imagen', '', 'descripcion', co.descripcion, 
       'cantidad', dp.cantidad, 'precio', co.precio
-    ) END
-  ) AS productos
+    ) END 
+  ) AS productos,
+  (CASE WHEN p.id_cupon IS NOT NULL THEN JSON_OBJECT(
+		'nombre', cu.nombre, 'porcentaje', cu.descuento
+	)
+  ELSE 
+	NULL
+  END ) AS cupon
   FROM Pedidos p
   JOIN Empresas e ON p.correo_e = e.correo AND p.id_pedido = id_pedido_in
   JOIN Categorias_empresa ce ON e.id_cat = ce.id_cat
@@ -1073,6 +1085,7 @@ datos_pedido:BEGIN
   JOIN Detalle_pedidos dp ON p.id_pedido = dp.id_pedido
   LEFT JOIN Productos prod ON dp.id_prod = prod.id_prod
   LEFT JOIN Combos co ON dp.id_combo = co.id_combo
+  LEFT JOIN Cupones cu ON p.id_cupon = cu.id_cupon
   GROUP BY id;
 END $$
 

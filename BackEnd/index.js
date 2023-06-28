@@ -761,7 +761,9 @@ app.post('/obtenerDirecciones', cors(), (req,res)=>{
 //-- ##################################### Obtener listado de los cupones registrados #####################################
 app.post('/obtenerCupones', cors(), (req, res)=>{
   const correo = req.body.correo;
-  const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado FROM Cupones;`;
+  const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado 
+  FROM Cupones c
+  WHERE c.canjeado = false;`;
 
   mysql.query(query, [correo], (err, results)=>{
     if(err){
@@ -908,6 +910,7 @@ app.post('/datosPedido', cors(), (req, res)=>{
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
     }
     results[0][0].productos = JSON.parse(results[0][0].productos)
+    results[0][0].cupon = JSON.parse(results[0][0].cupon)
     res.status(200).json(results[0][0]);
   }); 
 });
