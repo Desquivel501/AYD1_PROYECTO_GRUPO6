@@ -53,18 +53,15 @@ app.post('/RegistrarCliente',upload.single('document'), cors(), (req, res) => {
     mysql.query('CALL RegistrarCliente(?,?,?,?)', [parametro1, parametro2, parametro3, parametro4], (err, results) => {
         if (err) {
           console.error('Error al ejecutar el procedimiento almacenado RegistrarCliente:', err);
-          return;
+          res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+          return
         }
-        console.log('Procedimiento almacenado ejecutado exitosamente RegistrarCliente');
         
         const formattedResult = results[0].map(row => ({
           MENSAJE: row.MENSAJE,
           TIPO: row.TIPO
         }));
-        
-        res.json(formattedResult);
-        console.log(formattedResult);
-
+        res.status(200).json(formattedResult);
       });
       
 });
@@ -77,18 +74,15 @@ app.post('/InicioSesion',upload.single('document'), cors(), (req, res) => {
   mysql.query('CALL InicioSesion(?,?)', [parametro1, parametro2], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado InicioSesion:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente InicioSesion');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
-      res.json(formattedResult);
-      console.log(parametro1);
-      console.log(parametro2);
-
+      res.status(200).json(formattedResult);
     });
 });
 
@@ -111,18 +105,16 @@ app.post('/RegistrarRepartidor',upload.single('document'), cors(), (req, res) =>
     parametro5, parametro6, parametro7, parametro8, parametro9, (parametro9 + ", " + parametro8 + ", Zona " + parametro10), parametro11], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarRepartidor:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente RegistrarRepartidor');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
 
 });
@@ -139,18 +131,16 @@ app.post('/AceptarRepartidor', cors(), (req, res) => {
   mysql.query(`CALL ${procedimeinto}(?,?)`, [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AceptarRepartidor:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente AceptarRepartidor');
-      
+
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -172,18 +162,16 @@ app.post('/RegistrarEmpresa',upload.single('document'), cors(), (req, res) => {
   mysql.query('CALL RegistrarEmpresa(?,?,?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7, parametro8, parametro9], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado RegistrarEmpresa:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente RegistrarEmpresa');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -200,18 +188,15 @@ app.post('/AceptarEmpresa', cors(), (req, res) => {
   mysql.query(`CALL ${procedimeinto}(?,?)`, [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AceptarEmpresa:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente AceptarEmpresa');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -236,23 +221,19 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
     const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
 
-    console.log(parametro6)
-
   mysql.query('CALL AlmacenarProducto(?,?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado AlmacenarProducto:', err);
-        return;
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+        return
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente AlmacenarProducto');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -263,7 +244,6 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
   /// estas se colocan en lugar de parametro1, parametro2; etc...
     const parametro0 = req.body.id;
     const parametro1 = (req.file === undefined) ? "" : req.file.location;
-    console.log(parametro1)
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
     const parametro4 = req.body.descripcion;
@@ -271,23 +251,19 @@ app.post('/EditarProducto',upload.single('imagen'), cors(), (req, res) => {
     const parametro6 = (req.body.disponible == "true"?1:0);
     const parametro7 = req.body.empresa;
 
-    console.log(parametro6)
-
   mysql.query('CALL ActualizarProducto(?,?,?,?,?,?,?,?)', [parametro0, parametro1, parametro2, parametro3, parametro4, parametro5, parametro6, parametro7], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ActualizarProducto:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente ActualizarProducto');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -301,18 +277,16 @@ app.post('/EliminarProducto', cors(), (req, res) => {
   mysql.query('CALL EliminarProducto(?,?)', [parametro1, parametro2,], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado EliminarProducto:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente EliminarProducto');
       
       const formattedResult = results[0].map(row => ({
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO
       }));
       
-      res.json(formattedResult);
-      console.log(formattedResult);
-
+      res.status(200).json(formattedResult);
     });
     
 });
@@ -333,25 +307,19 @@ app.post('/CrearCombo', cors(), (req, res) => {
   mysql.query('CALL AlmacenarCombo(?,?,?,?,?,?)', [parametro1, parametro2, parametro3, parametro4, parametro5, parametro6], (err, results) => {
     if (err) {
       console.error('Error al ejecutar el procedimiento almacenado AlmacenarCombo:', err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return;
     }
-    console.log('Procedimiento almacenado ejecutado exitosamente AlmacenarCombo');
 
     formattedResult2 = results[0].map(row => ({
       MENSAJE: row.MENSAJE,
       TIPO: row.TIPO
     }));
 
-    console.log("1111111111111111111111111111111111111111111111111111111111111111111")
-
-    console.log(formattedResult2);
-
     if (formattedResult2.TIPO == "ERROR") {
       res.json(formattedResult2);
       return
     }
-
-    console.log("22222222222222222222222222222222222222222222222222222222222222222")
 
     parametro7.forEach((elemento) => {
       mysql.query('CALL AgregarProductoCombo(?,?,?)', [parametro1, parametro2, elemento], (err, results) => {
@@ -359,16 +327,10 @@ app.post('/CrearCombo', cors(), (req, res) => {
           console.error('Error al ejecutar el procedimiento almacenado AgregarProductoCombo:', err);
           return;
         }
-        console.log('Procedimiento almacenado ejecutado exitosamente AgregarProductoCombo');
 
-        
       });
     });
-
-    // Mover la respuesta aquí dentro del callback de la consulta a la base de datos
     res.json(formattedResult2);
-    console.log(formattedResult2);
-
   });
 
 });
@@ -382,6 +344,7 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
   mysql.query('Call ObtenerCombosConProductos(?)',[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
 
@@ -391,8 +354,6 @@ app.post('/ObtenerCombos', cors(), (req, res) => {
       });
       
       res.json(resultadosParseados);
-      console.log(resultadosParseados);
-
     });
     
 });
@@ -411,14 +372,10 @@ app.post('/ObtenerProductos', cors(), (req, res) => {
   mysql.query(query, [parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerTodosLosProductos:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-      console.log('Procedimiento almacenado ejecutado exitosamente ObtenerTodosLosProductos');
-
-      // Supongamos que 'results' contiene el arreglo con los resultados
-
       res.json(results);
-      console.log(results);
     }); 
 });
 
@@ -436,13 +393,11 @@ app.post('/ObtenerDatosRepartidor', cors(), (req, res) => {
   mysql.query(query,[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
 
-      
       res.json(results);
-      console.log(results);
-
     });
     
 });
@@ -463,13 +418,10 @@ app.post('/ObtenerDatosEmpresa', cors(), (req, res) => {
   mysql.query(query,[parametro1], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-
-      
       res.json(results);
-      console.log(results);
-
     });
     
 });
@@ -493,12 +445,10 @@ app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
   mysql.query(query,[nombre, departamento], (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-
       res.json(results);
-      console.log(results);
-
     });
     
 });
@@ -517,10 +467,10 @@ app.get('/ObtenerDatosEmpresas', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
-      console.log(results);
     });
     
 });
@@ -534,11 +484,10 @@ app.get('/ObtenerUsuarios', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
       res.json(results);
-      console.log(results);
-
     });
 });
 
@@ -551,13 +500,10 @@ app.get('/ObtenerHabilitados', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-
-      
       res.json(results);
-      console.log(results);
-
     });
 });
 
@@ -573,13 +519,10 @@ app.get('/SolicitudesRepartidores', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-
-      
       res.json(results);
-      console.log(results);
-
     });
     
 });
@@ -595,13 +538,10 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
       if (err) {
         console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+        res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
-
-      
       res.json(results);
-      console.log(results);
-
     });
     
 });
@@ -613,11 +553,10 @@ app.get('/CategoriasEmpresa', cors(), (req, res) => {
   mysql.query(query, (err, results) => {
     if (err) {
       console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
+      res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return;
     }
-
     res.json(results);
-    console.log(results);
   });
 
 });
