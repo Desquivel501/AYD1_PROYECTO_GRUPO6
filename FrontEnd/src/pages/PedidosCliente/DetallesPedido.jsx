@@ -16,6 +16,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { ProductCard3 } from "../../Componentes/ProductCard/ProductCard3";
+import Swal from 'sweetalert2'
 
 export const DetallesPedido = (props) => {
 
@@ -73,9 +74,40 @@ export const DetallesPedido = (props) => {
     },[])
 
 
+    const handleSubmit = () => {
+        fetch("http://localhost:3000/calificarPedido", {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({ calificacion: calificacion, id: id })
+        })
+        .then(res => res.json())
+        .then(response =>{
+            console.log(response[0][0])                
+            if(response[0][0].TIPO != "EXITO"){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ha ocurrido un error',
+                    text: response[0][0].MENSAJE,
+                })
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Gracias por tu calificación',
+                    text: response[0][0].MENSAJE,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate("/Empresas")
+                    }
+                })
+            }
+        })
+    }
+
     const mostrarEstrellas = () => {
-        const entero = Math.trunc(actual.estrellas);
-        const decimal = actual.estrellas % 1;
+        const entero = Math.trunc(pedido.calificacion);
+        const decimal = pedido.calificacion % 1;
         console.log({ entero, decimal });
         const estrellas = []
         while (estrellas.length<entero) {
@@ -124,7 +156,7 @@ export const DetallesPedido = (props) => {
                         
                     > 
 
-                        { estado == "Entregado" && 
+                        { estado == "ENTREGADO" && 
                             <Grid
                                 item
                                 xs={12}
@@ -199,7 +231,7 @@ export const DetallesPedido = (props) => {
                                                         letterSpacing: '.3rem',
                                                         color: '#973f1c',
                                                     }}>
-                                                    John Smith
+                                                    {pedido.repartidor}
                                                 </Typography>
                                                 
                                         
@@ -316,7 +348,6 @@ export const DetallesPedido = (props) => {
                                                     multiline
                                                     name="comentario"
                                                     rows={5}
-                                                    value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer feugiat ex vitae est egestas finibus. Phasellus lacinia nibh quis elit imperdiet pharetra ut gravida lectus. Sed et ultrices neque, quis tristique risus. Suspendisse nec tincidunt metus. "
                                                 />    
                                             
                                             </Grid>
@@ -338,7 +369,7 @@ export const DetallesPedido = (props) => {
                                                                 backgroundColor: '#973f1c',
                                                             }
                                                         }}
-                                                    // onClick={(event) => window.location.href = "/RegistroCliente"}
+                                                    onClick={handleSubmit}
                                                 > 
                                                     Enviar
                                                 </Button>
@@ -353,7 +384,7 @@ export const DetallesPedido = (props) => {
                             </Grid>
                         }
 
-                        { estado != "Entregado" && 
+                        { estado != "ENTREGADO" && 
                             <Grid
                                 item
                                 xs={12}
@@ -577,7 +608,8 @@ export const DetallesPedido = (props) => {
                                                                     lg={12}
                                                                     sx={{border:0}}
                                                                 >
-                                                                    <StarIcon
+                                                                    {mostrarEstrellas()}
+                                                                    {/* <StarIcon
                                                                         sx={{ 
                                                                             fontSize: 50,
                                                                             color:"#ffcc00"
@@ -606,7 +638,7 @@ export const DetallesPedido = (props) => {
                                                                             fontSize: 50,
                                                                             color:"#ffcc00"
                                                                         }}
-                                                                    />
+                                                                    /> */}
                                                                 </Grid>
                                                             }
 
