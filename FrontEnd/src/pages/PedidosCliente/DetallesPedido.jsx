@@ -55,18 +55,6 @@ export const DetallesPedido = (props) => {
     const [total, setTotal] = useState(0)
 
     useEffect(() => {
-        // console.log(id + " - " + estado)
-        // var carrito = window.sessionStorage.getItem("carrito");
-        // if(carrito != null || carrito != undefined){
-        //     carrito = JSON.parse(carrito)
-        //     setPedido(carrito)
-        // } 
-
-        // var total_ = 0
-        // for(var i = 0; i < carrito.productos.length; i++){
-        //     total_ += carrito.productos[i].cantidad * carrito.productos[i].costo
-        // }
-        // setTotal(total_)
 
         fetch("http://localhost:3000/datosPedido", {
             method: "POST",
@@ -78,6 +66,7 @@ export const DetallesPedido = (props) => {
         .then(res => res.json())
         .then(response =>{
             console.log(response)
+            console.log(response.cupon)
             setPedido(response)
         })
 
@@ -681,8 +670,20 @@ export const DetallesPedido = (props) => {
                                                             cost={item.precio}
                                                             image={item.Combo ? "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png" : item.imagen}
                                                             cantidad={item.cantidad}
+                                                            coupon={false}
                                                         />
                                                     ))}
+
+                                                    { pedido.cupon != null &&
+                                                        <ProductCard3
+                                                            title={JSON.parse(pedido.cupon).nombre}
+                                                            cost={0}
+                                                            image={"https://webiside.com/wp-content/uploads/2021/07/discount.png"}
+                                                            cantidad={0}
+                                                            coupon={true}
+                                                            discount={parseFloat(JSON.parse(pedido.cupon).porcentaje) * ((pedido.costo)/(1 -  parseFloat(JSON.parse(pedido.cupon).porcentaje)))}
+                                                        />
+                                                    }
 
                                                     <Typography variant="h6" component="h6" align='center' 
                                                         sx={{
