@@ -761,7 +761,9 @@ app.post('/obtenerDirecciones', cors(), (req,res)=>{
 //-- ##################################### Obtener listado de los cupones registrados #####################################
 app.post('/obtenerCupones', cors(), (req, res)=>{
   const correo = req.body.correo;
-  const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado FROM Cupones;`;
+  const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado 
+  FROM Cupones c
+  WHERE c.canjeado = false;`;
 
   mysql.query(query, [correo], (err, results)=>{
     if(err){
