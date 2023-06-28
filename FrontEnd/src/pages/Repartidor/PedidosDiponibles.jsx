@@ -5,12 +5,15 @@ import { postData } from "../../api/auth";
 import { useSesion } from "../../hooks/useSesion";
 import Rpedidos from "../../mocks/misPedidos.json";
 import { Tabla } from "../../Componentes/Tabla/Tabla";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { usePedido } from "../../hooks/usePedido";
 const HEADERS = [
   "ID",
   "Restaurante",
   "Cliente",
   "Dirección",
-  "Costo",
+  "Costo (Q)",
   "¿Aceptar?",
 ];
 const objectAttributes = [
@@ -23,11 +26,13 @@ const objectAttributes = [
 export function PedidosDisponibles() {
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
+  const { pedidoActual } = usePedido()
+  const navigate = useNavigate() 
   useEffect(() => {
     const endpoint = "PedidosDisponibles";
     const data = { correo: user.id };
     postData({ endpoint, data })
-      .then((data) => setPedidos(data ?? Rpedidos))
+      .then((data) => setPedidos(data[0] ?? Rpedidos))
       .catch((e) => console.log(e));
   }, []);
   const handleClick = (e) => {
@@ -38,12 +43,17 @@ export function PedidosDisponibles() {
     postData({ endpoint, data })
       .then((response) => {
         const mensaje = response[0][0];
+        console.log(response)
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
             title: "Creado",
             text: mensaje.MENSAJE,
           });
+          const estado = "EN CAMINO"
+          pedidoActual.id = id
+          pedidoActual.estado =  estado
+          console.log(pedidoActual)
         } else {
           Swal.fire({
             icon: "error",
@@ -103,7 +113,7 @@ export function PedidosDisponibles() {
                 }}
                 onClick={handleClick}
               >
-                Ver
+                Aceptar 
               </button>
             </td>
           </Tabla>

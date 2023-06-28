@@ -13,7 +13,6 @@ export const links = {
 
   Repartidor: [
     { text: "Pedidos Disponibles", path: "/Repartidor/Pedidos" },
-    { text: "Pedido Actual", path: "/Repartidor" },
     { text: "Mis pedidos", path: "/Repartidor/MisPedidos" },
     { text: "Mi perfil", path: "/Repartidor/MiPerfil" },
   ],

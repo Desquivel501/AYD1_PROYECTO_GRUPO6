@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import Tooltip from '@mui/material/Tooltip';
+import { usePedido } from "../../hooks/usePedido";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -22,6 +23,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   const { user, logout } = useSesion();
+  const { pedidoActual } = usePedido()
 
   const handleClick = ()=>{
     navigate("/")
@@ -29,9 +31,9 @@ function Navbar() {
     console.log(user.rol)
   }
 
-  // const handleClickCarrito = ()=>{
-  //   navigate("/")
-  // }
+  const handlePedidoActual = ()=>{
+     navigate(`${pedidoActual.id}/${pedidoActual.estado}`)
+   }
 
   return (
     <AppBar position="fixed" sx={{ bgcolor: "#f2890d" }}>
@@ -84,9 +86,9 @@ function Navbar() {
                 {text}
               </Link>
             ))}
-            {/* {user.rol != "Ninguno" && (
-              <Link to={"/"} onClick={handleClick}>Cerrar sesión</Link>
-            )} */}
+            {user.rol == "Repartidor" && (
+              <Link to={`/Repartidor/Pedidos/${pedidoActual.id}/${pedidoActual.estado}`} >Pedido Actual</Link>
+            )}
           </Box>
 
           {user.rol == "Cliente" && (

@@ -71,7 +71,8 @@ export function PedidosEmpresa() {
     const endpoint = "aceptarPedidoEmpresa";
     const data = { id: id, correo: user.id };
     postData({ endpoint, data })
-      .then((mensaje) => {
+      .then((response) => {
+        const mensaje = response[0][0]
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
