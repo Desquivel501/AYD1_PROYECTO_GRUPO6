@@ -206,13 +206,13 @@ app.post('/CrearProducto',upload.single('imagen'), cors(), (req, res) => {
 
     const parametro1 = (req.file === undefined) ? "" : req.file.location;
 
-    if(parametro1 == ""){
-      res.json([{
-        MENSAJE: "No se ha seleccionado una imagen",
-        TIPO: "ERROR"
-      }]);
-      return
-    }
+    // if(parametro1 == ""){
+    //   res.json([{
+    //     MENSAJE: "No se ha seleccionado una imagen",
+    //     TIPO: "ERROR"
+    //   }]);
+    //   return
+    // }
 
     const parametro2 = req.body.nombre;
     const parametro3 = req.body.categoria;
@@ -444,7 +444,6 @@ app.post('/ObtenerDatosEmpresa2', cors(), (req, res) => {
 
   mysql.query(query,[nombre, departamento], (err, results) => {
       if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
@@ -537,7 +536,6 @@ app.get('/SolicitudesEmpresas', cors(), (req, res) => {
 
   mysql.query(query, (err, results) => {
       if (err) {
-        console.error('Error al ejecutar el procedimiento almacenado ObtenerProductosCombo:', err);
         res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
         return;
       }
@@ -752,6 +750,7 @@ app.post('/crearPedido', cors(), (req, res)=>{
             if(err){
               console.log(err);
               res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+              return
             }
           });
           
@@ -762,6 +761,8 @@ app.post('/crearPedido', cors(), (req, res)=>{
       }
     });
 });
+
+
 //-- ##################################### Obtener los pedidos de un repartidor #####################################
 app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
   const correo = req.body.correo;
@@ -776,6 +777,7 @@ app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      return
     }
     res.status(200).json(results);
   });
@@ -792,6 +794,7 @@ app.post('/obtenerPedidosEmpresa', cors(), (req, res)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      return
     }
     res.status(200).json(results);
   });
@@ -805,6 +808,7 @@ app.post('/aceptarPedidoEmpresa', cors(), (req, res)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      return
     }
     res.status(200).json(results);
   });
@@ -828,6 +832,7 @@ app.post('/pedidosCliente', cors(), (req, res)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      return
     }
     res.status(200).json(results);
   });  
@@ -842,12 +847,20 @@ app.post('/datosPedido', cors(), (req, res)=>{
     if(err){
       console.log(err);
       res.status(404).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
+      return
     }
+
+    if(results[0][0].TIPO == "ERROR"){
+        res.json(results[0][0]);
+        return
+    }
+
     results[0][0].productos = JSON.parse(results[0][0].productos)
     results[0][0].cupon = JSON.parse(results[0][0].cupon)
     res.status(200).json(results[0][0]);
   }); 
 });
+
 
 //-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
 app.post('/pedidosDisponibles', cors(), (req, res)=>{
@@ -902,7 +915,7 @@ app.post('/entregarPedido', cors(), (req, res)=>{
 });
 
 //-- ##################################### Obtener todos los pedidos #####################################
-app.post('/obtenerPedidos', cors(), (req, res)=>{
+app.get('/obtenerPedidos', cors(), (req, res)=>{
   const query = `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
   FROM Pedidos p`
   mysql.query(query, (err, results)=>{
