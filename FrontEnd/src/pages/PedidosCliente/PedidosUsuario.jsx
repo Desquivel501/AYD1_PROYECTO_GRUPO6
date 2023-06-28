@@ -45,82 +45,37 @@ const columns = [
     createData(9,"McDonald's","David Lee","Anytown",4.95,"11/16/2022", "Terminado"),
     createData(10,"Subway","John Smith","789 Oak St",9.52,"12/16/2022", "Entregado"),
   ];
-
   
 
 export default function PedidosUsuario() {
 
     const { user } = useSesion();
     
-    const [pedido, setPedido] = useState({
-        restaurante: null,
-        departamento: null,
-        productos: [],
-        usuario: user.id
-    })
+    const [pedidos, setPedidos] = useState([])
 
-    const [actual, setActual] = useState(
-        {
-            id: 0,     
-            title: null,
-            cost: 0,
-            image: "https://placehold.co/200",
-            descripcion: "",
-            categoria: "PlatosFuertes",
-            disponible: true
-        }
-    );
-
-    const [cont, setCont] = useState(1)
-
-
-    function subTotal() {
-        var subTotal = 0
-        for(var i = 0; i < pedido.productos.length; i++){
-            subTotal += pedido.productos[i].cantidad * pedido.productos[i].costo
-        }
-        return subTotal
-    }
 
     useEffect(() => {
-        var carrito = window.sessionStorage.getItem("carrito");
-        if(carrito != null || carrito != undefined){
-            carrito = JSON.parse(carrito)
-            setPedido(carrito)
-        } 
+        // var carrito = window.sessionStorage.getItem("carrito");
+        // if(carrito != null || carrito != undefined){
+        //     carrito = JSON.parse(carrito)
+        //     setPedido(carrito)
+        // } 
+
+        fetch("http://localhost:3000/pedidosCliente", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user.id }),
+        })
+        .then(res => res.json())
+        .then(response =>{
+            // setCatalogo(response)
+            console.log(response)
+            setPedidos(response)
+        })
     },[])
 
-    const handleUpdate = (id, cantidad) => {
-        var aux = pedido
-        console.log("Update: " + id + " - " + cantidad)
-        for(var i = 0; i < aux.productos.length; i++){
-            if(aux.productos[i].id == id){
-                if(parseInt(cantidad) <= 0){
-                    aux.productos.splice(i, 1)
-                } else {
-                    aux.productos[i].cantidad = parseInt(cantidad)
-                }
-                window.sessionStorage.setItem("carrito", JSON.stringify(aux));
-                setPedido(aux)
-                break
-            }
-        }
-        setCont(cont + 1)
-    }
-
-    const handleRemove = (id) => {
-        console.log("Remove: " + id)
-        var aux = pedido
-        for(var i = 0; i < aux.productos.length; i++){
-            if(aux.productos[i].id == id){
-                aux.productos.splice(i, 1)
-                window.sessionStorage.setItem("carrito", JSON.stringify(aux));
-                setPedido(aux)
-                break
-            }
-        }
-        setCont(cont + 1)
-    }
 
     const customTheme = createTheme({
         palette: {
@@ -175,7 +130,7 @@ export default function PedidosUsuario() {
                         sx={{border:0}}
                     >
                         <TablaPedidos
-                            rows={rows}
+                            rows={pedidos}
                             columns={columns}
                         />
 
