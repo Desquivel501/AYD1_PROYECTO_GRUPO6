@@ -32,7 +32,7 @@ export const DetallesPedido = (props) => {
   const { pedidoActual } = usePedido();
 
   const [open2, setOpen2] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [pedido, setPedido] = useState({
     calificacion: 0,
@@ -58,7 +58,6 @@ export const DetallesPedido = (props) => {
   };
 
   const [total, setTotal] = useState(0);
-
   useEffect(() => {
     fetch("http://localhost:3000/datosPedido", {
       method: "POST",
@@ -141,7 +140,6 @@ export const DetallesPedido = (props) => {
             if (result.isConfirmed) {
               pedidoActual.id = 0;
               pedidoActual.estado = "";
-              console.log("navigate")
               navigate("/Repartidor/Pedidos");
             }
           });
