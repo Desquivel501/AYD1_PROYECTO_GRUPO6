@@ -2,6 +2,7 @@ import { Box, Button, Dialog, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import users from "../../mocks/usuarios.json";
 import "./Deshabilitar.css";
+import "../../Componentes/Modal/Modal.css"
 import { useState } from "react";
 import { getData, postData } from "../../api/auth";
 import { useEffect } from "react";
@@ -34,16 +35,18 @@ export function Deshabilitar() {
   const [correo, setCorreo] = useState("");
   const [usuarios, setUsuarios] = useState(users);
   const [find, setFind] = useState("");
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
     const endpoint = "ObtenerHabilitados";
     getData({ endpoint })
       .then((data) => setUsuarios(data ?? users))
       .catch((e) => console.log(e));
-  }, []);
+  }, [disable]);
   const quitarCorreo = () => {
     setCorreo("");
   };
+  const request = () => setDisable(!disable);
   const handleClick = (e) => {
     const parent = e.currentTarget.parentElement.parentElement;
     const id = parent.firstChild;
@@ -64,7 +67,7 @@ export function Deshabilitar() {
   });
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDisable email={correo} close={quitarCorreo} />
+      <ModalDisable email={correo} close={quitarCorreo} onSuccess={request} />
       <Box
         component="main"
         display="flex"
@@ -112,7 +115,7 @@ export function Deshabilitar() {
     </ThemeProvider>
   );
 }
-function ModalDisable({ email, close }) {
+function ModalDisable({ email, close, onSuccess }) {
   const [motivo, setMotivo] = useState("");
   const handleClick = () => {
     const endpoint = "deshabilitar";
@@ -126,6 +129,7 @@ function ModalDisable({ email, close }) {
             title: "Creado",
             text: mensaje.MENSAJE,
           });
+          onSuccess();
         } else {
           Swal.fire({
             icon: "error",

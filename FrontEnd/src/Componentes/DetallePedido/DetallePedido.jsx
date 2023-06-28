@@ -1,5 +1,5 @@
 import { postData } from "../../api/auth";
-import {  Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { ListadoProductos } from "../../Componentes/ListadoProductos/ListadoProductos";
 import { useEffect, useState } from "react";
 import detalles from "../../assets/productos.json";
@@ -13,14 +13,14 @@ export function ModalDetallePedido({ id, onClose }) {
   });
   const [productos, setProductos] = useState(detalles);
   useEffect(() => {
-    const endpoint = "detallePedido";
-    const data = { id };
+    const endpoint = "datosPedido";
+    const data = { id: parseInt(id), correo: "" };
     postData({ endpoint, data })
       .then((data) => {
-        setProductos(data.productos ?? detalles);
+        setProductos(data.productos ?? []);
         setDetalle({
           correo: data.correo,
-          notas: data.notas,
+          notas: data.nota,
           direccion: data.direccion,
           estado: data.estado,
         });

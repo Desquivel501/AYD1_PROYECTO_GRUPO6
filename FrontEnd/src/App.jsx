@@ -27,67 +27,77 @@ import { PedidosDisponibles } from "./pages/Repartidor/PedidosDiponibles";
 import PedidosUsuario from "./pages/PedidosCliente/PedidosUsuario";
 import { DetallesPedido } from "./pages/PedidosCliente/DetallesPedido";
 import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
+import { PedidoProvider } from "./context/PedidoContext";
 
 function App() {
   return (
     <SesionProvider>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route index path={"/"} element={<Landing />} />
-          <Route path={"/Login"} element={<Login />} />
-          <Route path={"/RegistroCliente"} element={<RegistroCliente />} />
-          <Route path={"/RegistroEmpresa"} element={<RegistroEmpresa />} />
-          <Route
-            path={"/RegistroRepartidor"}
-            element={<RegistroRepartidor />}
-          />
+      <PedidoProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route index path={"/"} element={<Landing />} />
+            <Route path={"/Login"} element={<Login />} />
+            <Route path={"/RegistroCliente"} element={<RegistroCliente />} />
+            <Route path={"/RegistroEmpresa"} element={<RegistroEmpresa />} />
+            <Route
+              path={"/RegistroRepartidor"}
+              element={<RegistroRepartidor />}
+            />
 
-          <Route path={"/About"} element={<About />} />
-          <Route path={"/404"} element={<Page_404 />} />
-          <Route path="*" element={<Page_404 />} />
+            <Route path={"/About"} element={<About />} />
+            <Route path={"/404"} element={<Page_404 />} />
+            <Route path="*" element={<Page_404 />} />
 
-          <Route
-            path={"/Repartidor"}
-            element={<ControlRuta usuario={"Repartidor"} />}
-          >
-            <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
-            <Route path={"MisPedidos"} element={<MisPedidos />} />
-            <Route path={"Pedidos"} element={<PedidosDisponibles />} />
-          </Route>
-
-          <Route element={<ControlRuta usuario={"Cliente"} />}>
-            <Route path="/">
-              <Route path={"Empresas"} element={<ListadoRestaurantes />} />
+            <Route
+              path={"/Repartidor"}
+              element={<ControlRuta usuario={"Repartidor"} />}
+            >
+              <Route path={"MiPerfil"} element={<PerfilRepartidor />} />
+              <Route path={"MisPedidos"} element={<MisPedidos />} />
+              <Route path={"Pedidos"} element={<PedidosDisponibles />} />
               <Route
-                path={"Empresas/:departamento/:id"}
-                element={<ListadoProductos />}
+                path={"Pedidos/:id/:estado"}
+                element={<DetallesPedido />}
               />
-              <Route path={"Carrito"} element={<Carrito />} />
-              <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
-              <Route path={"Pedidos"} element={<PedidosUsuario />} />
-              <Route path={"Pedidos/:id/:estado"} element={<DetallesPedido />} />
             </Route>
-          </Route>
 
-          <Route element={<ControlRuta usuario={"Empresa"} />}>
-            <Route path="/Empresa">
-              <Route path={"CrearProducto"} element={<CrearProducto />} />
-              <Route path={"EditarProductos"} element={<EditarProductos />} />
-              <Route path={"CrearCombo"} element={<CrearCombo />} />
-              <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
-              <Route path={"Pedidos"} element={<PedidosEmpresa />} />
+            <Route element={<ControlRuta usuario={"Cliente"} />}>
+              <Route path="/">
+                <Route path={"Empresas"} element={<ListadoRestaurantes />} />
+                <Route
+                  path={"Empresas/:departamento/:id"}
+                  element={<ListadoProductos />}
+                />
+                <Route path={"Carrito"} element={<Carrito />} />
+                <Route path={"FinalizarCompra"} element={<FinalizarCompra />} />
+                <Route path={"Pedidos"} element={<PedidosUsuario />} />
+                <Route
+                  path={"Pedidos/:id/:estado"}
+                  element={<DetallesPedido />}
+                />
+              </Route>
             </Route>
-          </Route>
-          <Route element={<ControlRuta usuario={"Administrador"} />}>
-            <Route path="/Administrador">
-              <Route path={"Solicitudes"} element={<Solicitudes />} />
-              <Route path={"Reportes"} element={<Usuarios />} />
-              <Route path={"Deshabilitar"} element={<Deshabilitar />} />
+
+            <Route element={<ControlRuta usuario={"Empresa"} />}>
+              <Route path="/Empresa">
+                <Route path={"CrearProducto"} element={<CrearProducto />} />
+                <Route path={"EditarProductos"} element={<EditarProductos />} />
+                <Route path={"CrearCombo"} element={<CrearCombo />} />
+                <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
+                <Route path={"Pedidos"} element={<PedidosEmpresa />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            <Route element={<ControlRuta usuario={"Administrador"} />}>
+              <Route path="/Administrador">
+                <Route path={"Solicitudes"} element={<Solicitudes />} />
+                <Route path={"Reportes"} element={<Usuarios />} />
+                <Route path={"Deshabilitar"} element={<Deshabilitar />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </PedidoProvider>
     </SesionProvider>
   );
 }

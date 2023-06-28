@@ -13,7 +13,7 @@ const HEADERS = [
   "ID",
   "Cliente",
   "Fecha",
-  "Costo",
+  "Costo (Q)",
   "Productos",
   "¿Aceptar?",
 ];
@@ -29,16 +29,14 @@ export function PedidosEmpresa() {
   const [usuarios, setUsuarios] = useState([]);
   const [find, setFind] = useState({ cliente: "", fecha: "" });
   const [pedido, setPedido] = useState("");
+  const [get, setGet] = useState(false);
   useEffect(() => {
     const endpoint = "ObtenerPedidosEmpresa";
     const data = { correo: user.id };
-    //const id = setInterval(() => {
     postData({ endpoint, data })
-      .then((data) => setUsuarios(data ?? pedidos))
+      .then((data) => setUsuarios(data ?? []))
       .catch((e) => console.log(e));
-    //}, 5000);
-    //return () => clearInterval(id);
-  }, []);
+  }, [get]);
   const filterUsers = () => {
     if (find.fecha == "" && find.cliente == "") return usuarios;
     let temp = usuarios;
@@ -48,7 +46,7 @@ export function PedidosEmpresa() {
       temp = usuarios.filter(({ cliente }) => r.test(cliente));
     }
     if (find.fecha != "") {
-      temp = temp.filter(({ fecha }) => fecha == find.fecha);
+      temp = temp.filter(({ fecha }) => fecha.includes(find.fecha));
     }
     return temp;
   };
@@ -71,13 +69,15 @@ export function PedidosEmpresa() {
     const endpoint = "aceptarPedidoEmpresa";
     const data = { id: id, correo: user.id };
     postData({ endpoint, data })
-      .then((mensaje) => {
+      .then((response) => {
+        const mensaje = response[0][0];
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
             title: "Creado",
             text: mensaje.MENSAJE,
           });
+          setGet(!get);
         } else {
           Swal.fire({
             icon: "error",
@@ -91,7 +91,7 @@ export function PedidosEmpresa() {
 
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDetallePedido id={pedido} onClose={handleClose} />
+      {pedido && <ModalDetallePedido id={pedido} onClose={handleClose} />}
       <Box
         component="main"
         display="flex"
@@ -115,7 +115,6 @@ export function PedidosEmpresa() {
           <FilterPedidos
             find={find}
             onChange={setFind}
-            estado={false}
           />
           <Tabla
             headers={HEADERS}

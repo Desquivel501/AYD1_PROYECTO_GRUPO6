@@ -394,6 +394,9 @@ export const MenuDatos = (props) => {
                 break
             }
         }
+
+        console.log(cupon + ":  " + id_cupon)
+
         json["cupon"] = (cupon != "No Usar") ? id_cupon : 0
 
 
