@@ -5,7 +5,7 @@ const api = supertest(app)
 const fs = require('fs');
 
 describe('POST /RegistrarCliente', () => {
-    it('Deberia retornar confirmacion si se creo el usuario del cliente', async () =>{
+    it('Deberia retornar una respuesta de 200 si se creo el usuario del cliente', async () =>{
         const response = await api.post('/RegistrarCliente')
             .field("email", "test" + Date.now() + "@gmail.com")
             .field("name", "test")
@@ -15,8 +15,15 @@ describe('POST /RegistrarCliente', () => {
     });
 });
 
+describe('POST /RegistrarCliente', () => {
+    it('Deberia retornar una respuesta de 404 si no se puedo crear el cliente', async () =>{
+        const response = await api.post('/RegistrarCliente')
+        expect(response.status).toBe(404);
+    });
+});
+
 describe('POST /RegistrarRepartidor', () => {
-    it('Deberia retornar confirmacion si se creo el usuario del repartidor', async () =>{
+    it('Deberia retornar una respuesta de 200 si se creo el usuario del repartidor', async () =>{
         const response = await api.post('/RegistrarRepartidor')
             .field("email", "test" + Date.now() + "@gmail.com")
             .field("name", "test")
@@ -32,8 +39,15 @@ describe('POST /RegistrarRepartidor', () => {
     });
 });
 
+describe('POST /RegistrarRepartidor', () => {
+    it('Deberia retornar una respuesta de 404 si no se puedo crear el repartidor', async () =>{
+        const response = await api.post('/RegistrarCliente')
+        expect(response.status).toBe(404);
+    });
+});
+
 describe('POST /AceptarRepartidor', () => {
-    it('Deberia retornar confirmacion si se acepto la solicitud del repartidor', async () =>{
+    it('Deberia retornar una respuesta de 200 si se acepto la solicitud del repartidor', async () =>{
         const response = await api.post('/AceptarRepartidor')
             .send({
                 admin: "admin@gmail.com",
@@ -45,9 +59,8 @@ describe('POST /AceptarRepartidor', () => {
 });
 
 
-
 describe('POST /RegistrarEmpresa', () => {
-    it('Deberia retornar confirmacion si se creo el usuario de la empresa', async () =>{
+    it('Deberia retornar una respuesta de 200 si se creo el usuario de la empresa', async () =>{
         const response = await api.post('/RegistrarEmpresa')
             .field("email", "test" + Date.now() + "@gmail.com")
             .field("password", "1234")
@@ -61,9 +74,16 @@ describe('POST /RegistrarEmpresa', () => {
     });
 });
 
+describe('POST /RegistrarEmpresa', () => {
+    it('Deberia retornar una respuesta de 404 si no se puedo crear la empresa', async () =>{
+        const response = await api.post('/RegistrarEmpresa')
+        expect(response.status).toBe(404);
+    });
+});
+
 
 describe('POST /AceptarEmpresa', () => {
-    it('Deberia retornar confirmacion si se acepto la solicitud de la empresa', async () =>{
+    it('Deberia retornar una respuesta de 200 si se acepto la solicitud de la empresa', async () =>{
         const response = await api.post('/AceptarEmpresa')
             .send({
                 admin: "admin@gmail.com",
@@ -75,7 +95,7 @@ describe('POST /AceptarEmpresa', () => {
 });
 
 describe('POST /InicioSesion', () => {
-    it('Deberia retornar confirmacion si las credenciales de usuario son validas', async () =>{
+    it('Deberia retornar una respuesta de 200 si las credenciales de usuario son validas', async () =>{
         const response = await api.post('/InicioSesion')
             .field("email", "admin@gmail.com")
             .field("password", "246810")
@@ -84,7 +104,7 @@ describe('POST /InicioSesion', () => {
 });
 
 describe('POST /CrearProducto', () => {
-    it('Deberia retornar confirmacion si se creo el producto', async () =>{
+    it('Deberia retornar una respuesta de 200 si se creo el producto', async () =>{
         const response = await api.post('/CrearProducto')
             .field("empresa", "test" + Date.now() + "@gmail.com")
             .field("nombre", "Test Product")
@@ -97,8 +117,17 @@ describe('POST /CrearProducto', () => {
 });
 
 
+// describe('POST /CrearProducto', () => {
+//     it('Deberia retornar una respuesta de 404 si no se pudo crear el producto', async () =>{
+//         const response = await api.post('/InicioSesion')
+//             .field("costo", "ajdhajk")
+//             expect(response.status).toBe(404);
+//     });
+// });
+
+
 describe('POST /EditarProducto', () => {
-    it('Deberia retornar confirmacion si se puedo editar el producto', async () =>{
+    it('Deberia retornar una respuesta de 200 si se puedo editar el producto', async () =>{
         const response = await api.post('/EditarProducto')
             .field("empresa", "test" + Date.now() + "@gmail.com")
             .field("id", 0)
@@ -111,31 +140,23 @@ describe('POST /EditarProducto', () => {
     });
 });
 
+describe('POST /EditarProducto', () => {
+    it('Deberia retornar una respuesta de 404 si no se pudo editar el producto', async () =>{
+        const response = await api.post('/EditarProducto')
+            .field("costo", "ajdhajk")
+        expect(response.status).toBe(404);
+    });
+});
+
 
 describe('POST /EliminarProducto', () => {
-    it('Deberia retornar confirmacion si se puedo eliminar el producto', async () =>{
+    it('Deberia retornar una respuesta de 200 si se puedo eliminar el producto', async () =>{
         const response = await api.post('/EliminarProducto')
             .field("empresa", "test" + Date.now() + "@gmail.com")
             .field("producto", 0)
         expect(response.status).toBe(200);
     });
 });
-
-
-// describe('POST /CrearCombo', () => {
-//     it('Deberia retornar confirmacion si se puedo eliminar el producto', async () =>{
-//         const response = await api.post('/CrearCombo')
-//             .field("empresa", "test" + Date.now() + "@gmail.com")
-//             .field("nombre", "Test Product")
-//             .field("descripcion", " ")
-//             .field("costo", 123)
-//             .field("disponible", true)
-//             .field("productos", [])
-        
-//         
-//         expect(response.status).toBe(200);
-//     });
-// });
 
 
 describe('POST /ObtenerCombos', () => {
@@ -154,7 +175,6 @@ describe('POST /ObtenerProductos', () => {
         expect(response.status).toBe(200);
     });
 });
-
 
 
 describe('POST /ObtenerDatosRepartidor', () => {
@@ -231,7 +251,7 @@ describe('GET /CategoriasEmpresa', () => {
 
 
 describe('POST /deshabilitar', () => {
-    it('Deberia retornar confirmacion de que se deshabilito el usuario', async () =>{
+    it('Deberia retornar una respuesta de 200 de que se deshabilito el usuario', async () =>{
         const response = await api.post('/deshabilitar')
             .field("correo", "test" + Date.now() + "@gmail.com");
         expect(response.status).toBe(200);
@@ -240,7 +260,7 @@ describe('POST /deshabilitar', () => {
 
 
 describe('POST /nuevaDireccion', () => {
-    it('Deberia retornar confirmacion de que se registro la solicitud de cambio de direccion', async () =>{
+    it('Deberia retornar una respuesta de 200 de que se registro la solicitud de cambio de direccion', async () =>{
         const response = await api.post('/nuevaDireccion')
             .field("correo", "test" + Date.now() + "@gmail.com");
         expect(response.status).toBe(200);
@@ -257,7 +277,7 @@ describe('GET /obtenerReasignaciones', () => {
 
 
 describe('POST /aceptarReasignacion', () => {
-    it('Deberia retornar confirmacion de que se acepto la solicitud de cambio de direccion', async () =>{
+    it('Deberia retornar una respuesta de 200 de que se acepto la solicitud de cambio de direccion', async () =>{
         const response = await api.post('/aceptarReasignacion')
             .field("correo", "test" + Date.now() + "@gmail.com");
         expect(response.status).toBe(200);
@@ -265,8 +285,18 @@ describe('POST /aceptarReasignacion', () => {
 });
 
 
+describe('POST /rechazarReasignacion', () => {
+    it('Deberia retornar una respuesta de 200 de que se rechazo la solicitud de cambio de direccion', async () =>{
+        const response = await api.post('/rechazarReasignacion')
+            .field("correo", "test" + Date.now() + "@gmail.com");
+        expect(response.status).toBe(200);
+    });
+});
+
+
+
 describe('POST /guardarDireccion', () => {
-    it('Deberia retornar confirmacion de que se guardo una direccion del usuario', async () =>{
+    it('Deberia retornar una respuesta de 200 de que se guardo una direccion del usuario', async () =>{
         const response = await api.post('/guardarDireccion')
             .field("correo", "test" + Date.now() + "@gmail.com")
             .field("alias", "alias" + Date.now())
@@ -276,8 +306,9 @@ describe('POST /guardarDireccion', () => {
 });
 
 
+
 describe('POST /guardarTarjeta', () => {
-    it('Deberia retornar confirmacion de que se guardo una tarjeta del usuario', async () =>{
+    it('Deberia retornar una respuesta de 200 de que se guardo una tarjeta del usuario', async () =>{
         const response = await api.post('/guardarTarjeta')
             .field("correo", "test" + Date.now() + "@gmail.com")
             .field("alias", "alias" + Date.now())
@@ -285,6 +316,100 @@ describe('POST /guardarTarjeta', () => {
             .field("cc", "4894121596230412")
             .field("cvv", "111")
             .field("vencimiento", "28/2025")
+        expect(response.status).toBe(200);
+    });
+});
+
+
+describe('POST /obtenerTarjetas', () => {
+    it('Deberia retornar la lista de tarjeta guardadas del usuario', async () =>{
+        const response = await api.post('/obtenerTarjetas')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+
+describe('POST /obtenerDirecciones', () => {
+    it('Deberia retornar la lista de tarjeta guardadas del usuario', async () =>{
+        const response = await api.post('/obtenerDirecciones')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+
+describe('POST /obtenerCupones', () => {
+    it('Deberia retornar la lista de tarjeta guardadas del usuario', async () =>{
+        const response = await api.post('/obtenerCupones')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+
+describe('POST /obtenerPedidosRepartidor', () => {
+    it('Deberia retornar la lista de pedidos de un repartidor', async () =>{
+        const response = await api.post('/obtenerPedidosRepartidor')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /obtenerPedidosEmpresa', () => {
+    it('Deberia retornar la lista de pedidos de una empresa', async () =>{
+        const response = await api.post('/obtenerPedidosEmpresa')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /pedidosCliente', () => {
+    it('Deberia retornar la lista de pedidos de un cliente', async () =>{
+        const response = await api.post('/obtenerPedidosEmpresa')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /datosPedido', () => {
+    it('Deberia retornar los detalles de un pedido', async () =>{
+        const response = await api.post('/datosPedido')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+            .field("id", 1)
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /pedidosDisponibles', () => {
+    it('Deberia retornar una la lista de pedidos que el repartidor puede tomar', async () =>{
+        const response = await api.post('/pedidosDisponibles')
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /aceptarPedidoRepartidor', () => {
+    it('Deberia retornar una una respuesta de 200 de que se acepto el pedido', async () =>{
+        const response = await api.post('/aceptarPedidoRepartidor')
+            .field("id", 0)
+            .field("correo", "test" + Date.now() + "@gmail.com")
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('POST /entregarPedido', () => {
+    it('Deberia retornar una una respuesta de 200 de que se entreo el pedido', async () =>{
+        const response = await api.post('/entregarPedido')
+            .field("id", 0)
+        expect(response.status).toBe(200);
+    });
+});
+
+
+describe('GET /obtenerPedidos', () => {
+    it('Deberia retornar una lista con todos los pedidos', async () =>{
+        const response = await api.get('/obtenerPedidos')
         expect(response.status).toBe(200);
     });
 });
