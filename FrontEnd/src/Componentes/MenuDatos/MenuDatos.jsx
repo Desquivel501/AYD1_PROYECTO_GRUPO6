@@ -44,64 +44,28 @@ export const MenuDatos = (props) => {
 
     const [direcciones, setDirecciones] = useState([
         {
-            id: 1,
+            id: 0,
             name: "Casa",
             direccion: "4ta calle 3-56, Residenciales El Jaguar",
-        },
-        {
-            id: 2,
-            name: "Trabajo",
-            direccion: "2da avenida 6-17, Colonia El Amanecer",
-        },
-        {
-            id: 3,
-            name: "Suegrita",
-            direccion: "10ma calle 2-12",
         }
     ])
 
     const [tarjetas, setTarjetas] = useState([
         {
-            id: 2,
-            alias: "Tarjeta Banrural",
-            name: "Joao Madukwe",
-            cc: 4057912954290102,
-            date: "08/2023",
-            cvv: 362
-        },
-        {
-            id: 3,
-            alias: "Tarjeta Ficohsa",
-            name: "Robin Aliyev",
-            cc: 4057935092851592,
-            date: "01/2024",
-            cvv: 562
-        },
-        {
-            id: 4,
-            alias: "Tarjeta BI",
-            name: "Paladin Torath",
-            cc: 4057921903144336,
-            date: "11/2026",
-            cvv: 928
+            id: 0,
+            alias: "",
+            name: "",
+            cc: 0,
+            date: "",
+            cvv: 0
         }
     ])
 
     const [cupones, setCupones] = useState([
         {
-            id:1,
-            alias: "Cupon 1",
-            descuento: 0.2
-        },
-        {
-            id:2,
-            alias: "Cupon 2",
-            descuento: 0.17
-        },
-        {
-            id:3,
-            alias: "Cupon 3",
-            descuento: 0.50
+            id:0,
+            alias: "",
+            descuento: 0
         }
     ])  
 
@@ -131,17 +95,33 @@ export const MenuDatos = (props) => {
 
     const [total, setTotal] = useState(0)
 
+    const [vencida, setVencida] = useState(true) 
+
     function handleDateChange(e, date){
         var date = new Date(e);
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const withSlashes = [month, year].join('/');
         setDate(withSlashes)
+
+        var today = new Date();
+        if(year < today.getFullYear()){
+            setVencida(true)
+        } else if(year == today.getFullYear()){
+            if(month < today.getMonth()){
+                setVencida(true)
+            } else {
+                setVencida(false)
+            }
+        } else {
+            setVencida(false)
+        }
+
     }
 
     useEffect(() => {
         for(var i = 0; i < direcciones.length; i++){
-            if(direcciones[i].name == actual){
+            if(direcciones[i].name == actual){ 
                 setDireccion(direcciones[i].direccion)
             }
         }
@@ -258,6 +238,9 @@ export const MenuDatos = (props) => {
 
     const handleSubmit = (event) => {
 
+        console.log(pedido.productos.length)
+        
+
         if(pedido.productos.length == 0){
             Swal.fire({
                 icon: 'error',
@@ -269,7 +252,18 @@ export const MenuDatos = (props) => {
                 }
             })
         }
-        
+
+        return
+
+        if(direccion == ""){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha ingresado una direccion",
+            })
+            return
+        }
+
         var cambio_dir = false
         var id_dir = 0
         for(var i = 0; i < direcciones.length; i++){
@@ -282,7 +276,17 @@ export const MenuDatos = (props) => {
             }
         }
 
+        if(saveAdd && alias == ""){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha ingresado un alias con el que guardar la direccion",
+            })
+            return
+        }
+
         if(cambio_dir == true || saveAdd){
+            
             fetch("http://localhost:3000/guardarDireccion", {
                 method: "POST",
                 headers: {
@@ -325,6 +329,53 @@ export const MenuDatos = (props) => {
                     }
                     break
                 }
+            }
+
+            if(nameCC == ""){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "No se ha ingresado el nombre en la tarjeta de credito",
+                })
+                return
+            }
+
+            const cc_pattern = /^\d{16}$/g
+            if(!cc_pattern.test(cc)){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "Tarjeta de credito no es valida",
+                })
+                return
+            }
+
+            const cvv_pattern = /^\d{3}$/g
+            if(!cvv_pattern.test(cvv)){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "CVV no es valido",
+                })
+                return
+            }
+
+            if(vencida){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "La tarjeta de credito ingresada ya expiró",
+                })
+                return
+            }
+
+            if(saveCC && aliasCC == ""){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "No se ha ingresado un alias con el que guardar la tarjeta",
+                })
+                return
             }
 
             if(cambio_tar == true || saveCC){
