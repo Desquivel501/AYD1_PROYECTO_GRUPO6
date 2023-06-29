@@ -62,11 +62,11 @@ function getToken(datos, res) {
     sameSite: "none",
   });
 }
-const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD, {
+/*const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD, {
   expiresIn: "24h",
 });
 console.log(encoded);
-
+*/
 function verificartoken(rol) {
   return (req, res, next) => {
     console.log(req.path);
