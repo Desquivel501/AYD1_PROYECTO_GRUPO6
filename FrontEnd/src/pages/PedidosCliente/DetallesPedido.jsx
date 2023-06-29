@@ -31,7 +31,7 @@ export const DetallesPedido = (props) => {
   const [calificacion, setCalificacion] = useState(5);
   const { pedidoActual } = usePedido();
 
-  const [open2, setOpen2] = useState(false);
+  const [open2, setOpen2] = useState(user.rol == "Repartidor" ? true : false);
   const navigate = useNavigate();
 
   const [pedido, setPedido] = useState({
@@ -58,6 +58,7 @@ export const DetallesPedido = (props) => {
   };
 
   const [total, setTotal] = useState(0);
+  
   useEffect(() => {
     fetch("http://localhost:3000/datosPedido", {
       method: "POST",
@@ -119,6 +120,7 @@ export const DetallesPedido = (props) => {
     }
     return estrellas;
   };
+
   const handleClick = () => {
     const endpoint = "entregarPedido";
     const data = { id };
@@ -591,50 +593,52 @@ export const DetallesPedido = (props) => {
                       xs={6.1}
                       sx={{ border: 0 }}
                     >
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        sx={{ border: 0 }}
-                      >
+                      {(user.rol != "Repartidor") &&
                         <Grid
-                          item
-                          xs={12}
-                          sx={{ border: 0, mt: 2 }}
+                          container
+                          direction="row"
+                          justifyContent="center"
+                          alignItems="center"
+                          sx={{ border: 0 }}
                         >
-                          <Typography
-                            variant="h6"
-                            component="h6"
-                            align="left"
+                          <Grid
+                            item
+                            xs={12}
+                            sx={{ border: 0, mt: 2 }}
+                          >
+                            <Typography
+                              variant="h6"
+                              component="h6"
+                              align="left"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontWeight: 700,
+                                letterSpacing: ".3rem",
+                                color: "#973f1c",
+                              }}
+                            >
+                              Estado:
+                            </Typography>
+                          </Grid>
+
+                          <Box
                             sx={{
-                              fontFamily: "monospace",
-                              fontWeight: 700,
-                              letterSpacing: ".3rem",
-                              color: "#973f1c",
+                              backgroundColor: estados[pedido.estado],
+                              height: 50,
+                              width: 200,
+                              borderRadius: "1em 1em 1em 1em",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
-                            Estado:
-                          </Typography>
+                            {pedido.estado}
+                          </Box>
                         </Grid>
-
-                        <Box
-                          sx={{
-                            backgroundColor: estados[pedido.estado],
-                            height: 50,
-                            width: 200,
-                            borderRadius: "1em 1em 1em 1em",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {pedido.estado}
-                        </Box>
-                      </Grid>
+                      }
                     </Grid>
 
-                    {pedido.repartidor != null &&
+                    {(pedido.repartidor != null) || (user.rol == "Repartidor") &&
                       (
                         <Grid
                           item
@@ -712,38 +716,6 @@ export const DetallesPedido = (props) => {
                                       sx={{ border: 0 }}
                                     >
                                       {mostrarEstrellas()}
-                                      {
-                                        /* <StarIcon
-                                                                        sx={{
-                                                                            fontSize: 50,
-                                                                            color:"#ffcc00"
-                                                                        }}
-                                                                    />
-                                                                    <StarIcon
-                                                                        sx={{
-                                                                            fontSize: 50,
-                                                                            color:"#ffcc00"
-                                                                        }}
-                                                                    />
-                                                                    <StarIcon
-                                                                        sx={{
-                                                                            fontSize: 50,
-                                                                            color:"#ffcc00"
-                                                                        }}
-                                                                    />
-                                                                    <StarIcon
-                                                                        sx={{
-                                                                            fontSize: 50,
-                                                                            color:"#ffcc00"
-                                                                        }}
-                                                                    />
-                                                                    <StarHalfIcon
-                                                                        sx={{
-                                                                            fontSize: 50,
-                                                                            color:"#ffcc00"
-                                                                        }}
-                                                                    /> */
-                                      }
                                     </Grid>
                                   )}
                               </Grid>
@@ -780,7 +752,8 @@ export const DetallesPedido = (props) => {
                               color: "#973f1c",
                             }}
                           >
-                            Tu Pedido:
+                            {user.rol == "Repartidor" ? "Pedido" : "Tu Pedido:"}
+                            
                           </Typography>
                         </Grid>
 
@@ -944,20 +917,31 @@ export const DetallesPedido = (props) => {
                           />
                         </Collapse>
                       </Grid>
+                     
                       {user.rol == "Repartidor" && (
-                        <Button
-                          sx={{
-                            backgroundColor: estados["ENTREGADO"],
-                            color: "#000",
-                            height: 50,
-                            width: 200,
-                            borderRadius: "1em 1em 1em 1em",
-                            border: "1px solid" + estados["ENTREGADO"],
-                          }}
-                          onClick={handleClick}
+
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ border: 0, mt: 2 }}
                         >
-                          Entregado
-                        </Button>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              backgroundColor: estados["ENTREGADO"],
+                              color: "#000",
+                              height: 50,
+                              width: 200,
+                              borderRadius: "1em 1em 1em 1em",
+                              border: "1px solid" + estados["ENTREGADO"],
+                            }}
+                            onClick={handleClick}
+                          >
+                            Entregado
+                          </Button>
+                        </Grid>
+                        
+                        
                       )}
                     </Grid>
                   </Grid>
