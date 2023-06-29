@@ -253,8 +253,6 @@ export const MenuDatos = (props) => {
             })
         }
 
-        return
-
         if(direccion == ""){
             Swal.fire({
                 icon: 'error',
