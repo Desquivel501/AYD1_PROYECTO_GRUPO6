@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import {  registrar, sendFormData } from "../api/auth";
+import {  getData, registrar, sendFormData } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -63,6 +63,8 @@ export function SesionProvider({ children }) {
   };
   const logout = () => {
     setUser(userDefault);
+    const endpoint = "logout"
+    getData({endpoint})
     window.sessionStorage.setItem("user", JSON.stringify(userDefault));
   };
   return (

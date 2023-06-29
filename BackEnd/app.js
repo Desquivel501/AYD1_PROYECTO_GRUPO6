@@ -2,12 +2,14 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 // Importa tu archivo de conexión
 const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cookieParser());
 
 /*Configuración de de express*/
 app.use(express.json());
@@ -54,17 +56,30 @@ function getToken(datos, res) {
     expiresIn: "24h",
   });
   //res.cookie("x-token", encoded, { httpOnly: true,secure:true,sameSite:"lax"});
-  res.cookie("x-token", encoded, { httpOnly: true });
+  res.cookie("x-token", encoded, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 }
+const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD, {
+  expiresIn: "24h",
+});
+console.log(encoded);
+
 function verificartoken(rol) {
   return (req, res, next) => {
     console.log(req.path);
     try {
-      const cookie = req.headers.cookie;
+      const cookie = req.cookies["x-token"];
       const decoded = jwt.verify(
-        cookie.split("=")[1],
+        cookie,
         process.env.JWT_PASSWORD,
       );
+      if ("todo" == decoded.rol) {
+        next();
+        return;
+      }
       if (roles[rol] != decoded.rol) {
         res.status(401).json({
           "TIPO": "ERROR",
@@ -74,7 +89,6 @@ function verificartoken(rol) {
       }
       next();
     } catch (error) {
-      console.log(error);
       res.status(401).json({
         "TIPO": "ERROR",
         "MENSAJE": "No tiene autorización para hacer esta acción",
@@ -84,12 +98,12 @@ function verificartoken(rol) {
 }
 
 // ########################### INSERTAR UN CLIENTE NUEVO A TABLA USUARIOS ###########################
-app.post("/RegistrarCliente", upload.single("document"), cors(), (req, res) => {
+app.post("/RegistrarCliente", upload.single("document"), (req, res) => {
   const parametro1 = req.body.email;
   const parametro2 = req.body.name;
   const parametro3 = req.body.lastname;
   const parametro4 = req.body.password;
-
+  console.log(req.body);
   mysql.query("CALL RegistrarCliente(?,?,?,?)", [
     parametro1,
     parametro2,
@@ -117,7 +131,7 @@ app.post("/RegistrarCliente", upload.single("document"), cors(), (req, res) => {
 });
 
 // ########################### INICIAR SESIÓN ###########################
-app.post("/InicioSesion", upload.single("document"), cors(), (req, res) => {
+app.post("/InicioSesion", upload.single("document"), (req, res) => {
   const parametro1 = req.body.email;
   const parametro2 = req.body.password;
 
@@ -152,7 +166,6 @@ app.post("/InicioSesion", upload.single("document"), cors(), (req, res) => {
 app.post(
   "/RegistrarRepartidor",
   upload.single("document"),
-  cors(),
   (req, res) => {
     const parametro1 = req.body.name;
     const parametro2 = req.body.lastname;
@@ -202,7 +215,7 @@ app.post(
 );
 
 // -- ########################### ACEPTAR LA PETICIÓN DE UN REPARTIDOR ###########################
-app.post("/AceptarRepartidor", cors(), verificartoken("admin"), (req, res) => {
+app.post("/AceptarRepartidor", verificartoken("admin"), (req, res) => {
   const parametro1 = req.body.admin;
   const parametro2 = req.body.email;
   const parametro3 = req.body.aceptado;
@@ -236,7 +249,7 @@ app.post("/AceptarRepartidor", cors(), verificartoken("admin"), (req, res) => {
 });
 
 //-- ########################### INSERTAR UNA EMPRESA NUEVA A LA BASE DE DATOS ###########################
-app.post("/RegistrarEmpresa", upload.single("document"), cors(), (req, res) => {
+app.post("/RegistrarEmpresa", upload.single("document"), (req, res) => {
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
   const parametro1 = req.body.email;
   const parametro2 = req.body.password;
@@ -281,7 +294,7 @@ app.post("/RegistrarEmpresa", upload.single("document"), cors(), (req, res) => {
 });
 
 //-- ########################### ACEPTAR LA PETICIÓN DE UNA EMPRESA ###########################
-app.post("/AceptarEmpresa", cors(), verificartoken("admin"), (req, res) => {
+app.post("/AceptarEmpresa", verificartoken("admin"), (req, res) => {
   const parametro1 = req.body.admin;
   const parametro2 = req.body.email;
   const parametro3 = req.body.aceptado;
@@ -318,7 +331,6 @@ app.post(
   "/CrearProducto",
   upload.single("imagen"),
   verificartoken("empresa"),
-  cors(),
   (req, res) => {
     const parametro1 = (req.file === undefined) ? "" : req.file.location;
     const parametro2 = req.body.nombre;
@@ -363,7 +375,6 @@ app.post(
 app.post(
   "/EditarProducto",
   upload.single("imagen"),
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     /// estas se colocan en lugar de parametro1, parametro2; etc...
@@ -409,7 +420,7 @@ app.post(
 );
 
 //-- ########################### ELIMINAR UN PRODUCTO EN ESPECIFICO ###########################
-app.post("/EliminarProducto", cors(), verificartoken("empresa"), (req, res) => {
+app.post("/EliminarProducto", verificartoken("empresa"), (req, res) => {
   const parametro1 = req.body.correo;
   const parametro2 = req.body.producto;
 
@@ -440,7 +451,7 @@ app.post("/EliminarProducto", cors(), verificartoken("empresa"), (req, res) => {
 });
 
 // -- ########################### ALMACENAR COMBO ###########################
-app.post("/CrearCombo", cors(), verificartoken("empresa"), (req, res) => {
+app.post("/CrearCombo", verificartoken("empresa"), (req, res) => {
   const parametro1 = req.body.empresa;
   const parametro2 = req.body.nombre;
   const parametro3 = "";
@@ -505,7 +516,7 @@ app.post("/CrearCombo", cors(), verificartoken("empresa"), (req, res) => {
 });
 
 //-- ##################################### Retornar todos los combos #####################################
-app.post("/ObtenerCombos", cors(), (req, res) => {
+app.post("/ObtenerCombos", (req, res) => {
   ///// estas se colocan en lugar de parametro1, parametro2; etc...
   const parametro1 = req.body.correo;
 
@@ -536,7 +547,7 @@ app.post("/ObtenerCombos", cors(), (req, res) => {
 });
 
 //-- ##################################### Retornar todos los Productos #####################################
-app.post("/ObtenerProductos", cors(), (req, res) => {
+app.post("/ObtenerProductos", (req, res) => {
   const parametro1 = req.body.correo;
 
   let query =
@@ -566,7 +577,6 @@ app.post("/ObtenerProductos", cors(), (req, res) => {
 //-- ##################################### Obtener datos de un repartidor #####################################
 app.post(
   "/ObtenerDatosRepartidor",
-  cors(),
   verificartoken("repartidor"),
   (req, res) => {
     const correo = req.body.correo;
@@ -590,7 +600,7 @@ app.post(
 );
 
 //-- ##################################### Obtener los datos de una empresa #####################################
-app.post("/ObtenerDatosEmpresa", cors(), (req, res) => {
+app.post("/ObtenerDatosEmpresa", (req, res) => {
   const parametro1 = req.body.correo;
   let query = `SELECT * 
   FROM Usuarios u 
@@ -619,7 +629,7 @@ app.post("/ObtenerDatosEmpresa", cors(), (req, res) => {
 });
 
 //-- ##################################### Obtener los datos de una empresa en base a su departamento y nombre #####################################
-app.post("/ObtenerDatosEmpresa2", cors(), (req, res) => {
+app.post("/ObtenerDatosEmpresa2", (req, res) => {
   const nombre = req.body.nombre;
   const departamento = req.body.departamento;
 
@@ -649,7 +659,6 @@ app.post("/ObtenerDatosEmpresa2", cors(), (req, res) => {
 //-- ##################################### Obtener los datos de todas las empresas #####################################
 app.get(
   "/ObtenerDatosEmpresas",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     let query = `SELECT * 
@@ -668,7 +677,7 @@ app.get(
 );
 
 //-- ##################################### Obtener listado de usuarios#####################################
-app.get("/ObtenerUsuarios", cors(), verificartoken("admin"), (req, res) => {
+app.get("/ObtenerUsuarios", verificartoken("admin"), (req, res) => {
   query = `SELECT correo AS id, nombre, apellidos, rol, fecha_registro, estado 
   FROM Usuarios 
   WHERE Usuarios.rol != 0`;
@@ -679,7 +688,7 @@ app.get("/ObtenerUsuarios", cors(), verificartoken("admin"), (req, res) => {
 });
 
 //-- ##################################### Obtener listado de usuarios#####################################
-app.get("/ObtenerHabilitados", cors(), verificartoken("admin"), (req, res) => {
+app.get("/ObtenerHabilitados", verificartoken("admin"), (req, res) => {
   query =
     `SELECT correo AS id, nombre, apellidos, rol, fecha_registro AS fecha,contrasenia, estado 
   FROM Usuarios 
@@ -693,7 +702,6 @@ app.get("/ObtenerHabilitados", cors(), verificartoken("admin"), (req, res) => {
 //-- ##################################### Obtener las solicitudes de repartidores #####################################
 app.get(
   "/SolicitudesRepartidores",
-  cors(),
   verificartoken("admin"),
   (req, res) => {
     let query = `SELECT * FROM Usuarios
@@ -709,7 +717,7 @@ app.get(
 );
 
 //-- ##################################### Obtener las solicitudes de empresas #####################################
-app.get("/SolicitudesEmpresas", cors(), verificartoken("admin"), (req, res) => {
+app.get("/SolicitudesEmpresas", verificartoken("admin"), (req, res) => {
   let query = `SELECT * FROM Usuarios
   JOIN Empresas
   ON Usuarios.correo = Empresas.correo 
@@ -721,7 +729,7 @@ app.get("/SolicitudesEmpresas", cors(), verificartoken("admin"), (req, res) => {
 });
 
 //-- ##################################### Obtener las categorias de empresa #####################################
-app.get("/CategoriasEmpresa", cors(), (req, res) => {
+app.get("/CategoriasEmpresa", (req, res) => {
   let query =
     `SELECT id_cat AS id, nombre AS categoria, imagen FROM Categorias_empresa`;
 
@@ -731,7 +739,7 @@ app.get("/CategoriasEmpresa", cors(), (req, res) => {
 });
 
 //-- ##################################### Deshabilitar cliente #####################################
-app.post("/deshabilitar", cors(), verificartoken("admin"), (req, res) => {
+app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
   const correo = req.body.correo;
   //const motivo = req.body.motivo;
 
@@ -751,7 +759,6 @@ app.post("/deshabilitar", cors(), verificartoken("admin"), (req, res) => {
 app.post(
   "/nuevaDireccion",
   upload.single("document"),
-  cors(),
   verificartoken("repartidor"),
   (req, res) => {
     const correo = req.body.correo;
@@ -784,7 +791,6 @@ app.post(
 //-- ##################################### Retornar solicitudes de reasignación #####################################
 app.get(
   "/obtenerReasignaciones",
-  cors(),
   verificartoken("admin"),
   (req, res) => {
     const query =
@@ -802,7 +808,6 @@ app.get(
 //-- ##################################### Aceptar solicitud de reasignación #####################################
 app.post(
   "/aceptarReasignacion",
-  cors(),
   verificartoken("admin"),
   (req, res) => {
     const correo = req.body.correo;
@@ -825,7 +830,7 @@ app.post(
 );
 
 //-- ##################################### Guardar una nueva dirección #####################################
-app.post("/guardarDireccion", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/guardarDireccion", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   let alias = req.body.alias;
   const direccion = req.body.direccion;
@@ -849,7 +854,7 @@ app.post("/guardarDireccion", cors(), verificartoken("cliente"), (req, res) => {
 });
 
 //-- ##################################### Guardar una nueva dirección #####################################
-app.post("/guardarTarjeta", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/guardarTarjeta", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   let alias = req.body.alias;
   const name = req.body.name;
@@ -879,7 +884,7 @@ app.post("/guardarTarjeta", cors(), verificartoken("cliente"), (req, res) => {
 });
 
 //-- ##################################### Obtener listado de las tarjetas registradas #####################################
-app.post("/obtenerTarjetas", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/obtenerTarjetas", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   const query =
     `SELECT id_formap AS id, alias, nombre AS name, numero_tarjeta AS cc
@@ -901,7 +906,6 @@ app.post("/obtenerTarjetas", cors(), verificartoken("cliente"), (req, res) => {
 //-- ##################################### Obtener listado de las direcciones registradas #####################################
 app.post(
   "/obtenerDirecciones",
-  cors(),
   verificartoken("cliente"),
   (req, res) => {
     const correo = req.body.correo;
@@ -944,7 +948,6 @@ app.post("/obtenerCupones", cors("cliente"), (req, res) => {
 //-- ##################################### Rechazar solicitud de reasignación #####################################
 app.post(
   "/rechazarReasignacion",
-  cors(),
   verificartoken("admin"),
   (req, res) => {
     const correo = req.body.correo;
@@ -967,7 +970,7 @@ app.post(
 );
 
 //-- ##################################### Crear nuevo pedido #####################################
-app.post("/crearPedido", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/crearPedido", verificartoken("cliente"), (req, res) => {
   const departamento = req.body.departamento;
   const restaurante = req.body.restaurante;
   const cliente = req.body.usuario;
@@ -1036,7 +1039,6 @@ app.post("/crearPedido", cors(), verificartoken("cliente"), (req, res) => {
 //-- ##################################### Obtener los pedidos de un repartidor #####################################
 app.post(
   "/obtenerPedidosRepartidor",
-  cors(),
   verificartoken("repartidor"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1065,7 +1067,6 @@ app.post(
 //-- ##################################### Obtener los pedidos de una empresa #####################################
 app.post(
   "/obtenerPedidosEmpresa",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1091,7 +1092,6 @@ app.post(
 //-- ##################################### Aceptar el pedido de una empresa #####################################
 app.post(
   "/aceptarPedidoEmpresa",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     const id_pedido = req.body.id;
@@ -1115,7 +1115,7 @@ app.post(
 );
 
 //-- ##################################### Obtener los pedidos de un cliente #####################################
-app.post("/pedidosCliente", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/pedidosCliente", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   const query =
     `SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, CONCAT(u.nombre, " ", u.apellidos) AS repartidor, 
@@ -1143,7 +1143,7 @@ app.post("/pedidosCliente", cors(), verificartoken("cliente"), (req, res) => {
 });
 
 //-- ##################################### Obtener datos de un pedido específico #####################################
-app.post("/datosPedido", cors(), (req, res) => {
+app.post("/datosPedido", (req, res) => {
   const correo = req.body.correo;
   const id_pedido = req.body.id;
 
@@ -1171,7 +1171,6 @@ app.post("/datosPedido", cors(), (req, res) => {
 //-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
 app.post(
   "/pedidosDisponibles",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1189,7 +1188,7 @@ app.post(
 );
 
 //-- ##################################### Calificar un pedido específico #####################################
-app.post("/calificarPedido", cors(), verificartoken("cliente"), (req, res) => {
+app.post("/calificarPedido", verificartoken("cliente"), (req, res) => {
   const id_pedido = req.body.id;
   const calificacion = req.body.calificacion;
   mysql.query(
@@ -1211,7 +1210,6 @@ app.post("/calificarPedido", cors(), verificartoken("cliente"), (req, res) => {
 //-- ##################################### Aceptar un pedido #####################################
 app.post(
   "/aceptarPedidoRepartidor",
-  cors(),
   verificartoken("repartidor"),
   (req, res) => {
     const id_pedido = req.body.id;
@@ -1237,7 +1235,6 @@ app.post(
 //-- ##################################### Entregar un pedido #####################################
 app.post(
   "/entregarPedido",
-  cors(),
   verificartoken("repartidor"),
   (req, res) => {
     const id_pedido = req.body.id;
@@ -1256,7 +1253,7 @@ app.post(
 );
 
 //-- ##################################### Obtener todos los pedidos #####################################
-app.get("/obtenerPedidos", cors(), (req, res) => {
+app.get("/obtenerPedidos", (req, res) => {
   const query =
     `SELECT id_pedido AS id, correo_c AS cliente, fecha_pedido AS fecha, total AS costo
   FROM Pedidos p`;
@@ -1266,7 +1263,7 @@ app.get("/obtenerPedidos", cors(), (req, res) => {
 });
 
 //-- ##################################### Top de las empresas que más pedidos generan #####################################
-app.get("/topPedidosEmpresas", cors(), verificartoken("admin"), (req, res) => {
+app.get("/topPedidosEmpresas", verificartoken("admin"), (req, res) => {
   mysql.query("CALL TopPedidosEmpresas()", (err, results) => {
     if (err) {
       console.log(err);
@@ -1282,7 +1279,6 @@ app.get("/topPedidosEmpresas", cors(), verificartoken("admin"), (req, res) => {
 //-- ##################################### Historial de pedidos de una empresa específica #####################################
 app.post(
   "/historialPedidosEmpresa",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1302,7 +1298,6 @@ app.post(
 //-- ##################################### Historial de pedidos de un cliente específico #####################################
 app.post(
   "/historialPedidosCliente",
-  cors(),
   verificartoken("cliente"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1322,7 +1317,6 @@ app.post(
 //-- ##################################### Top de los mejores repartidores #####################################
 app.get(
   "/topMejoresRepartidores",
-  cors(),
   verificartoken("admin"),
   (req, res) => {
     mysql.query("CALL TopMejoresRepartidores()", (err, results) => {
@@ -1339,7 +1333,7 @@ app.get(
 );
 
 //-- ##################################### Top global de productos #####################################
-app.get("/topProductosGlobal", cors(), verificartoken("admin"), (req, res) => {
+app.get("/topProductosGlobal", verificartoken("admin"), (req, res) => {
   mysql.query("CALL TopProductosGlobal()", (err, results) => {
     if (err) {
       console.log(err);
@@ -1355,7 +1349,6 @@ app.get("/topProductosGlobal", cors(), verificartoken("admin"), (req, res) => {
 //-- ##################################### Top producto de cada empresa #####################################
 app.post(
   "/topProductoEmpresa",
-  cors(),
   verificartoken("empresa"),
   (req, res) => {
     const correo = req.body.correo;
@@ -1372,7 +1365,7 @@ app.post(
     });
   },
 );
-app.get("/logout", cors(), (req, res) => {
+app.get("/logout", (req, res) => {
   res.cookie("x-token", "", {
     httpOnly: true,
     secure: true,
