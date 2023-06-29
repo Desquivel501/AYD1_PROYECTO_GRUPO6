@@ -25,8 +25,18 @@ export const ComboDialog = (props) => {
   };
 
   const handleSelect = () => {
-    onOrder(id, title, "combo", cantidad, cost, "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png");  
-    onClose(true);  
+    onClose(true);
+
+    if(cantidad < 1){
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `La cantidad de la orden debe de ser igual o mayor a 1`,
+        })  
+        return   
+    }
+
+    onOrder(id, title, "combo", parseInt(cantidad), cost, "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png");  
     Swal.fire({
         icon: 'success',
         title: 'Agregado',
