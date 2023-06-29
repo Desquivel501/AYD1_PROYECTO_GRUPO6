@@ -88,6 +88,7 @@ export default function ListadoProductos() {
                 nombre: decodeURI(id),
                 departamento: departamento
              }),
+            credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{
@@ -102,6 +103,7 @@ export default function ListadoProductos() {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify({ correo: datos.correo }),
         })
         .then(res => res.json())
@@ -115,6 +117,7 @@ export default function ListadoProductos() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ correo: datos.correo }),
+          credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{

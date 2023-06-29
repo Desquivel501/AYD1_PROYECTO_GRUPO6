@@ -162,6 +162,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify({
                 correo: user.id,
             })
@@ -177,6 +178,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify({
                 correo: user.id,
             })
@@ -470,6 +472,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify(json)
         })
         .then(res => res.json())

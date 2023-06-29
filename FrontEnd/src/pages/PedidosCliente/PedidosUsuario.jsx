@@ -66,6 +66,7 @@ export default function PedidosUsuario() {
             headers: {
                 "Content-Type": "application/json",
             },
+          credentials: "include",
             body: JSON.stringify({ correo: user.id }),
         })
         .then(res => res.json())

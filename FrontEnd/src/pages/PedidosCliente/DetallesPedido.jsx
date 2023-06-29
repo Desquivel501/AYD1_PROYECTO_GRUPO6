@@ -64,6 +64,7 @@ export const DetallesPedido = (props) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ correo: user.id, id: id }),
     })
       .then((res) => res.json())
@@ -79,6 +80,7 @@ export const DetallesPedido = (props) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ calificacion: calificacion, id: id }),
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((response) => {
