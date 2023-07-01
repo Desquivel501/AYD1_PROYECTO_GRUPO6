@@ -23,11 +23,14 @@ export const links = {
     { text: "Crear Combo", path: "/Empresa/CrearCombo" },
     { text: "Catalogo", path: "/Empresa/CatalogoEmpresa" },
     { text: "Pedidos", path: "/Empresa/Pedidos" },
+    { text: "Top", path: "/Empresa/Top" },
   ],
 
   Administrador: [
     { text: "Solicitudes", path: "/Administrador/Solicitudes" },
     { text: "Deshabilitar", path: "/Administrador/Deshabilitar" },
-    { text: "Reportes", path: "/Administrador/Reportes" },
+    { text: "Usuarios", path: "/Administrador/Reportes/Usuarios" },
+    { text: "Ventas", path: "/Administrador/Reportes/Ventas" },
+    { text: "Repartidores", path: "/Administrador/Reportes/Repartidores" },
   ],
 };

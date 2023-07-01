@@ -140,7 +140,7 @@ export function PedidosEmpresa() {
                 className="sombra"
                 onClick={aceptarPedido}
                 style={{
-                  backgroundColor: "#198754",
+                  backgroundColor: "#33cc40",
                   color: "#000",
                   border: "1px solid #198754 ",
                   borderRadius: "5px",

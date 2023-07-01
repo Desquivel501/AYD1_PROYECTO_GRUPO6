@@ -158,6 +158,7 @@ function Solicitud(
           ))}
         </div>
       </div>
+      
       <Box
         component="form"
         autoComplete="off"
@@ -187,6 +188,7 @@ function Solicitud(
               </a>
             </PersonAttribute>
           )}
+          
         <Button
           type="button"
           fullWidth
@@ -218,6 +220,7 @@ const HEADERS = [
   "¿Aceptar?",
   "¿Rechazar?",
 ];
+
 const objectAttributes = [
   "correo",
   "departamento",
@@ -225,15 +228,18 @@ const objectAttributes = [
   "direccion",
   "motivo",
 ];
+
 function NuevaDireccion() {
   const [direcciones, setDirecciones] = useState([]);
   const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     const endpoint = "obtenerReasignaciones";
     getData({ endpoint })
       .then((data) => setDirecciones(data))
       .catch((e) => console.log(e));
   }, [refresh]);
+
   const handleClick = (e,endpoint) => {
     const parent = e.currentTarget.parentElement.parentElement;
     const id = parent.firstChild;

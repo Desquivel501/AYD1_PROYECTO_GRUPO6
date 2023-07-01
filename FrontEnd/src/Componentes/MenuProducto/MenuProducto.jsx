@@ -20,7 +20,7 @@ import Swal from 'sweetalert2'
 export const MenuProducto = (props) => {
     const { user } = useSesion();
 
-    const {title, id, name, desc, cost, image, categoria, disponible, addCategorias, edicion, addComp} = props;
+    const {title, id, name, desc, cost, image, categoria, disponible, addCategorias, edicion, ventas, reporte} = props;
 
     const [name_, setName] = useState("")
     const [desc_, setDesc] = useState("")
@@ -263,39 +263,45 @@ export const MenuProducto = (props) => {
                                 <Box
                                     component="img"
                                     sx={{
-                                    height: 'auto', maxWidth: '80%', mt:2, 
+                                        height: 'auto', maxWidth: '80%', mt:2, 
                                     }}
                                     alt="Image"
                                     src={preview}
                                 />
 
                             </Grid>
+                            {reporte &&
+                            <>
 
-                            <Grid
-                                item
-                                xs={12}
-                                sx={{border:0}}
-                            >
-                                <Button
-                                    variant="contained"
-                                    sx={{ mt: 1, mb: 1, bgcolor: "#F2890D" }}
-                                    component="label"
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sx={{border:0}}
                                 >
-                                    Cambiar Imagen
-                                    <input
-                                        type="file"
-                                        id="file"
-                                        hidden
-                                        onChange={onSelectFile}
-                                        accept=".png, .jpeg, .jpg, .gif"
-                                        name="imagen"
-                                    />
-                                </Button>
-                            </Grid>
-
-                            <FormGroup>
-                                <FormControlLabel control={<Checkbox />} label="Disponible" checked={disponible_} onChange={(event) => setDisponible(!disponible_)}/>
-                            </FormGroup> 
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 1, mb: 1, bgcolor: "#F2890D" }}
+                                        component="label"
+                                    >
+                                        Cambiar Imagen
+                                        <input
+                                            type="file"
+                                            id="file"
+                                            hidden
+                                            onChange={onSelectFile}
+                                            accept=".png, .jpeg, .jpg, .gif"
+                                            name="imagen"
+                                        />
+                                    </Button>
+                                </Grid>
+                                
+                                
+                                <FormGroup>
+                                    <FormControlLabel control={<Checkbox />} label="Disponible" checked={disponible_} onChange={(event) => setDisponible(!disponible_)}/>
+                                </FormGroup> 
+                            </>
+                            }
+                            
                  
                         </Grid>
                     </Grid>
@@ -345,6 +351,7 @@ export const MenuProducto = (props) => {
                                         name="categoria"
                                         value={categoria_}
                                         onChange={(event) => setCategoria(event.target.value)}
+                                       
                                     >
                                         <FormControlLabel value="Entradas" control={<Radio  />} label="Entradas"/>
                                         <FormControlLabel value="Platos Fuertes" control={<Radio  />} label="Platos Fuertes" />
@@ -380,21 +387,42 @@ export const MenuProducto = (props) => {
                 </Grid> 
             }
 
-            <Grid
-                item
-                xs={12}
-                sx={{border:0}}
-            >
-                <Button
-                    variant="contained"
-                    type="submit"
-                   
-                    sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
-                    endIcon={<SaveIcon />}
+            {reporte &&
+
+                <Grid
+                    item
+                    xs={12}
+                    sx={{border:0}}
                 >
-                    Guardar Producto
-                </Button>
-            </Grid>  
+                    <Button
+                        variant="contained"
+                        type="submit"
+                    
+                        sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
+                        endIcon={<SaveIcon />}
+                    >
+                        Guardar Producto
+                    </Button>
+                </Grid>  
+            }
+
+            { !reporte &&
+                <Grid
+                    item
+                    xs={12}
+                    sx={{border:0, pt:5}}
+                >
+                    <Typography variant="h5" component="h5" align='center' 
+                        sx={{
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: '#973f1c',
+                        }}>
+                        Cantidad Vendida: {ventas}
+                    </Typography>
+                </Grid>
+            }
 
             </Box>                
 
