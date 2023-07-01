@@ -36,6 +36,7 @@ export function Deshabilitar() {
   const [usuarios, setUsuarios] = useState([]);
   const [find, setFind] = useState("");
   const [disable, setDisable] = useState(false);
+  const [tipo, setTipo] = useState("");
 
   useEffect(() => {
     const endpoint = "ObtenerHabilitados";
@@ -43,21 +44,30 @@ export function Deshabilitar() {
       .then((data) => setUsuarios(data ?? []))
       .catch((e) => console.log(e));
   }, [disable]);
+
   const quitarCorreo = () => {
     setCorreo("");
+    setTipo("")
   };
-  const request = () => setDisable(!disable);
+
+  const request = () => {
+    setDisable(!disable);
+  }
+
   const handleClick = (e) => {
     const parent = e.currentTarget.parentElement.parentElement;
+    setTipo(parent.children[3].innerText)
     const id = parent.firstChild;
     setCorreo(id.innerText);
   };
+
   const filterUsers = () => {
     if (find == "") return usuarios;
     const regex = "^" + find;
     const r = new RegExp(regex);
     return usuarios.filter(({ id }) => r.test(id));
   };
+
   const customTheme = createTheme({
     palette: {
       background: {
@@ -65,9 +75,10 @@ export function Deshabilitar() {
       },
     },
   });
+
   return (
     <ThemeProvider theme={customTheme}>
-      <ModalDisable email={correo} close={quitarCorreo} onSuccess={request} />
+      <ModalDisable email={correo} tipo={tipo} close={quitarCorreo} onSuccess={request} />
       <Box
         component="main"
         display="flex"
@@ -109,16 +120,29 @@ export function Deshabilitar() {
                 Deshabilitar
               </button>
             </td>
+
           </Tabla>
         </Grid>
       </Box>
     </ThemeProvider>
   );
 }
-function ModalDisable({ email, close, onSuccess }) {
+
+function ModalDisable({ email, tipo,  close, onSuccess }) {
+  
   const [motivo, setMotivo] = useState("");
+  
   const handleClick = () => {
-    const endpoint = "deshabilitar";
+
+    var endpoint = "deshabilitar";
+    if(tipo == "Empresa"){
+      endpoint = "deshabilitarEmpresa";
+    }
+    if(tipo == "Repartidor"){
+      endpoint = "deshabilitarRepartidor";
+    }
+
+    
     const data = { correo: email, motivo };
     postData({ endpoint, data })
       .then((response) => {
@@ -126,7 +150,7 @@ function ModalDisable({ email, close, onSuccess }) {
         if (mensaje.TIPO == "EXITO") {
           Swal.fire({
             icon: "success",
-            title: "Creado",
+            title: "Exito",
             text: mensaje.MENSAJE,
           });
           setMotivo("")
@@ -143,9 +167,11 @@ function ModalDisable({ email, close, onSuccess }) {
       })
       .catch((e) => console.log(e));
   };
+
   const handleChange = (e) => {
     setMotivo(e.target.value);
   };
+
   return (
     <Dialog
       onClose={close}
