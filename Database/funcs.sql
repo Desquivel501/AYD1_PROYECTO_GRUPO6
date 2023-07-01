@@ -589,3 +589,20 @@ BEGIN
     ) INTO activo;
     RETURN(activo);
 END $$
+
+-- ########################### RETORNA SI UN PEDIDO SE ENCUENTRA EN CAMINO PARA UNA EMPRESA EN ESPECÍFICO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoActivoEmpresa $$
+CREATE FUNCTION PedidoActivoEmpresa(
+	 correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE activo BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Pedidos p
+    WHERE p.estado = 'EN CAMINO'
+    AND p.correo_e = correo
+    ) INTO activo;
+    RETURN(activo);
+END $$

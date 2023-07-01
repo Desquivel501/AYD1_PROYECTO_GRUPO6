@@ -997,6 +997,85 @@ deshabilitar_cliente:BEGIN
 	'EXITO' AS 'TIPO';
 END $$
 
+-- ########################### PROCEDIMIENTO PARA DESHABILITAR REPARTIDORES ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DeshabilitarRepartidor $$
+CREATE PROCEDURE DeshabilitarRepartidor(
+	IN correo_in VARCHAR(200)
+)
+deshabilitar_repartidor:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_repartidor;
+    END IF;
+
+	IF(NOT ExisteRepartidor(correo_in)) THEN
+		SELECT 'El correo ingresado no pertenece a un repartidor' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_repartidor;
+    END IF;
+    
+	IF(UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta deshabilitar no tiene un estado válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_repartidor;
+    END IF;
+   
+    IF(PedidoActivoRepartidor(correo_in)) THEN
+		SELECT 'No se puede deshabilitar un repartidor con un pedido activo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_repartidor;
+    END IF;
+    
+    UPDATE Usuarios
+    SET estado = 2
+    WHERE correo = correo_in;
+    
+	SELECT 'El repartidor se ha deshabilitado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
+
+-- ########################### PROCEDIMIENTO PARA DESHABILITAR EMPRESAS ###########################
+DELIMITER $$
+DROP PROCEDURE IF EXISTS DeshabilitarEmpresa $$
+CREATE PROCEDURE DeshabilitarEmpresa(
+	IN correo_in VARCHAR(200)
+)
+deshabilitar_empresa:BEGIN
+	IF(NOT ExisteUsuario(correo_in)) THEN
+		SELECT 'El correo ingresado no está registrado en la base de datos' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_empresa;
+    END IF;
+
+	IF(NOT ExisteEmpresa(correo_in)) THEN
+		SELECT 'El correo de empresa ingresado no se encuentra en el sistema' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_empresa;
+    END IF;
+
+	IF(UsuarioPendiente(correo_in)) THEN
+		SELECT 'El usuario que se intenta deshabilitar no tiene un estado válido' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_empresa;
+    END IF;
+   
+    IF(PedidoActivoEmpresa(correo_in)) THEN
+		SELECT 'No se puede deshabilitar un repartidor con un pedido activo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE deshabilitar_empresa;
+    END IF;
+    
+    UPDATE Usuarios
+    SET estado = 2
+    WHERE correo = correo_in;
+    
+	SELECT 'La empresa se ha deshabilitado exitosamente' AS 'MENSAJE',
+	'EXITO' AS 'TIPO';
+END $$
+
 -- ########################### PROCEDIMIENTO PARA ACEPTAR PEDIDO DE EMPRESA ###########################
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AceptarPedidoEmpresa $$
