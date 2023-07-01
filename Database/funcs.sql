@@ -572,3 +572,20 @@ BEGIN
     WHERE p.id_pedido = id_pedido;
     RETURN(camino);
 END $$
+
+-- ########################### RETORNA SI UN PEDIDO SE ENCUENTRA EN CAMINO PARA UN REPARTIDOR EN ESPECÍFICO ###########################
+DELIMITER $$
+DROP FUNCTION IF EXISTS PedidoActivoRepartidor $$
+CREATE FUNCTION PedidoActivoRepartidor(
+	 correo VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE activo BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Pedidos p
+    WHERE p.estado = 'EN CAMINO'
+    AND p.correo_r = correo
+    ) INTO activo;
+    RETURN(activo);
+END $$

@@ -712,7 +712,6 @@ app.post('/crearPedido', cors(), (req, res)=>{
     });
 });
 
-
 //-- ##################################### Obtener los pedidos de un repartidor #####################################
 app.post('/obtenerPedidosRepartidor', cors(), (req, res)=>{
   const correo = req.body.correo;
@@ -799,7 +798,6 @@ app.post('/datosPedido', cors(), (req, res)=>{
       res.status(500).json({'TIPO': 'ERROR', 'MENSAJE':'ERROR INTERNO DEL SERVIDOR'});
       return
     }
-
     if(results[0][0].TIPO == "ERROR"){
         res.json(results[0][0]);
         return
@@ -810,7 +808,6 @@ app.post('/datosPedido', cors(), (req, res)=>{
     res.status(200).json(results[0][0]);
   }); 
 });
-
 
 //-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
 app.post('/pedidosDisponibles', cors(), (req, res)=>{
