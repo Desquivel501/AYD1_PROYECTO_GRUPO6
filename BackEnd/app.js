@@ -752,6 +752,40 @@ app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
   });
 });
 
+//-- ##################################### Deshabilitar Repartidor #####################################
+app.post("/deshabilitarRepartidor", verificartoken("admin"), (req, res) => {
+  const correo = req.body.correo;
+  //const motivo = req.body.motivo;
+
+  mysql.query("CALL DeshabilitarRepartidor(?)", [correo], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({
+        "TIPO": "ERROR",
+        "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
+      });
+    }
+    res.status(200).json(results);
+  });
+});
+
+//-- ##################################### Deshabilitar Empresa #####################################
+app.post("/deshabilitarEmpresa", verificartoken("admin"), (req, res) => {
+  const correo = req.body.correo;
+  //const motivo = req.body.motivo;
+
+  mysql.query("CALL DeshabilitarEmpresa(?)", [correo], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({
+        "TIPO": "ERROR",
+        "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
+      });
+    }
+    res.status(200).json(results);
+  });
+});
+
 //-- ##################################### Solicitar nueva dirección #####################################
 app.post(
   "/nuevaDireccion",
