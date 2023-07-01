@@ -40,6 +40,7 @@ export const MenuProducto = (props) => {
             headers: {
                 "Content-Type": "application/json",
             },
+          credentials: "include",
             body: JSON.stringify({ correo: user.id, producto: id }),
         })
             .then((res) => res.json())
@@ -81,6 +82,7 @@ export const MenuProducto = (props) => {
 
         fetch("http://localhost:3000/" + (edicion ? "EditarProducto":"CrearProducto"), {
             method: "POST",
+          credentials: "include",
             body: data,
         })
             .then((res) => res.json())

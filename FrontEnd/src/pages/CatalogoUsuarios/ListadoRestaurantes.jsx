@@ -45,6 +45,7 @@ export default function ListadoRestaurantes() {
 
         fetch("http://localhost:3000/ObtenerDatosEmpresas", {
             method: "GET",
+            credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{

@@ -1,7 +1,8 @@
 const API = "http://localhost:3000/";
-export function sendFormData({endpoint, data }) {
+export function sendFormData({ endpoint, data }) {
   return fetch(`${API}${endpoint}`, {
     method: "POST",
+    credentials: "include",
     body: data,
   })
     .then((res) => res.json())
@@ -26,13 +27,14 @@ export function registrar(entidad, data) {
  * @param data Información a enviar
  * @return Promesa
  */
-export function postData({endpoint, data }) {
+export function postData({ endpoint, data }) {
   return fetch(`${API}${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin_Origin": "*",
     },
+    credentials: "include",
     body: JSON.stringify(data),
   })
     .then((res) => res.json())
@@ -44,7 +46,7 @@ export function postData({endpoint, data }) {
  * @returns Json con la respuesta
  */
 export function getData({ endpoint }) {
-  return fetch(`${API}${endpoint}`)
+  return fetch(`${API}${endpoint}`, { credentials: "include" })
     .then((res) => res.json())
     .catch((er) => console.log(er));
 }
@@ -55,6 +57,7 @@ export function aceptarSolicitud(data, rol) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials:"include",
     body: JSON.stringify(data),
   }).then((res) => res.json())
     .catch((er) => console.log(er));

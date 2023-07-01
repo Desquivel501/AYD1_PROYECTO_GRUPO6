@@ -56,6 +56,7 @@ export const MenuCombo = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+            credentials: "include",
             body: JSON.stringify(jsonData)
         })
         .then(res => res.json())

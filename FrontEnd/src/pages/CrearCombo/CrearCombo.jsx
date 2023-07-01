@@ -44,6 +44,7 @@ export default function CrearCombo() {
             headers: {
                 "Content-Type": "application/json",
             },
+          credentials: "include",
             body: JSON.stringify({ correo: user.id }),
         })
         .then(res => res.json())
@@ -57,6 +58,7 @@ export default function CrearCombo() {
             headers: {
                 "Content-Type": "application/json",
             },
+          credentials: "include",
             body: JSON.stringify({ correo: user.id }),
         })
         .then(res => res.json())
