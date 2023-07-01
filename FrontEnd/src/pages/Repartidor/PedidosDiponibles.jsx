@@ -28,6 +28,7 @@ export function PedidosDisponibles() {
   const [pedidos, setPedidos] = useState([]);
   const { pedidoActual } = usePedido()
   const [ get,setGet ] = useState(false)
+
   useEffect(() => {
     const endpoint = "PedidosDisponibles";
     const data = { correo: user.id };
@@ -35,11 +36,13 @@ export function PedidosDisponibles() {
       .then((data) => setPedidos(data[0] ?? []))
       .catch((e) => console.log(e));
   }, [get]);
+  
   const handleClick = (e) => {
     const parent = e.currentTarget.parentElement.parentElement;
     const id = parent.firstChild.innerText;
     const endpoint = "AceptarPedidoRepartidor";
     const data = { id, correo: user.id };
+    
     postData({ endpoint, data })
       .then((response) => {
         const mensaje = response[0][0];
@@ -63,6 +66,7 @@ export function PedidosDisponibles() {
       })
       .catch((e) => console.log(e));
   };
+
   const customTheme = createTheme({
     palette: {
       background: {
@@ -70,6 +74,7 @@ export function PedidosDisponibles() {
       },
     },
   });
+
   return (
     <ThemeProvider theme={customTheme}>
       <Box

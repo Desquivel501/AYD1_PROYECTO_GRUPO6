@@ -55,10 +55,12 @@ export function PerfilRepartidor() {
     postData({ endpoint, data })
       .then((response) => {
         const datos = response[0][0];
+        console.log(datos)
         setActual(datos);
       })
       .catch((e) => console.log(e));
   }, []);
+
   const mostrarEstrellas = () => {
     const entero = Math.trunc(actual.estrellas);
     const decimal = actual.estrellas % 1;
