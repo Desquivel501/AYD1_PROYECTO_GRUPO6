@@ -28,5 +28,8 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ayd1_g6_backend:$(date +%s)
       
+    - name: Tag Docker image
+      run: docker tag ayd1_g6_backend ${{secrets.DOCKER_USER}}/ayd1_g6_backend
+      
     - name: Push the Docker image
       run: docker push ${{secrets.DOCKER_USER}}/ayd1_g6_backend
