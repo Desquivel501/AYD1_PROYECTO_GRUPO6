@@ -26,10 +26,7 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ayd1_g6_backend:$(date +%s)
-      
-    - name: Tag Docker image
-      run: docker tag ayd1_g6_backend ${{secrets.DOCKER_USER}}/ayd1_g6_backend
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/ayd1_g6_backend:$(date +%s)
       
     - name: Push the Docker image
       run: docker push ${{secrets.DOCKER_USER}}/ayd1_g6_backend
