@@ -11,6 +11,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./BackEnd
 
     steps:
     - uses: actions/checkout@v3
@@ -22,7 +26,7 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         
     - name: Build the Docker image
-      run: docker build . --file BackEnd/Dockerfile --tag ayd1_g6_backend:$(date +%s)
+      run: docker build . --file Dockerfile --tag ayd1_g6_backend:$(date +%s)
       
     - name: Push the Docker image
       run: docker push ${{secrets.DOCKER_USER}}/ayd1_g6_backend
