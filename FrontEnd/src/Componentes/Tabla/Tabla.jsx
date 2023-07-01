@@ -21,6 +21,7 @@ export function Tabla({ headers, fields, data, children, categoria }) {
               display: "table",
               width: "100%",
               tableLayout: "fixed",
+              height:40
             }}
             key={index}
           >

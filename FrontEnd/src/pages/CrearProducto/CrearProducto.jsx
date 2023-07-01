@@ -85,6 +85,7 @@ export default function CrearProducto() {
                             image={"https://placehold.co/200"}
                             edicion={false}
                             addCategorias={true}
+                            reporte={true}
                         />
                     </Grid>
         

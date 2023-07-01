@@ -16,8 +16,6 @@ import { useNavigate } from "react-router-dom";
 import Tooltip from '@mui/material/Tooltip';
 import { usePedido } from "../../hooks/usePedido";
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 function Navbar() {
 
   const navigate = useNavigate();
