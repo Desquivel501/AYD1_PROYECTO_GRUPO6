@@ -4,7 +4,7 @@ const api = supertest(app);
 const fs = require("fs");
 
 const token =
-  "x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2wiOiJ0b2RvIiwiaWF0IjoxNjg4MDc5NTk2LCJleHAiOjE2ODgxNjU5OTZ9.yCFSjz0DolhsCZGku6TA_a9VMzCPqrc9pNbnEK3HS-E; Path=/; HttpOnly; Secure; SameSite=None";
+  "x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2wiOiJ0b2RvIiwiaWF0IjoxNjg4MTg5Mzg2fQ.LnG4e5GVsJRrXc8pmWhzXVWpsjnRcM8tqItu2i3ZwRY; Path=/; HttpOnly; Secure; SameSite=None";
 describe("POST /RegistrarCliente", () => {
   it("Deberia retornar una respuesta de 200 si se creo el usuario del cliente", async () => {
     const response = await api.post("/RegistrarCliente")
@@ -412,9 +412,42 @@ describe("GET /Logout", () => {
     expect(response.status).toBe(200);
   });
 });
-describe("GET /historialPedidosEmpresa", () => {
+describe("POST /historialPedidosEmpresa", () => {
   it("Deberia retornar un status 200", async () => {
-    const response = await api.get("/logout").set("Cookie",[token]);
+    const response = await api.post("/historialPedidosEmpresa").set("Cookie",[token])
+    .field("correo","mc@gmail.com");
+    expect(response.status).toBe(200);
+  });
+});
+describe("POST /topProductoEmpresa", () => {
+  it("Deberia retornar un status 200", async () => {
+    const response = await api.post("/topProductoEmpresa").set("Cookie",[token])
+    .field("correo","mc@gmail.com");
+    expect(response.status).toBe(200);
+  });
+});
+describe("GET /topMejoresRepartidores", () => {
+  it("Deberia retornar un status 200", async () => {
+    const response = await api.get("/topMejoresRepartidores").set("Cookie",[token]);
+    expect(response.status).toBe(200);
+  });
+});
+describe("POST /historialPedidosCliente", () => {
+  it("Deberia retornar un status 200", async () => {
+    const response = await api.post("/historialPedidosCliente").set("Cookie",[token])
+    .field("correo","test2@gmail.com");
+    expect(response.status).toBe(200);
+  });
+});
+describe("GET /topPedidosEmpresas", () => {
+  it("Deberia retornar un status 200", async () => {
+    const response = await api.get("/topPedidosEmpresas").set("Cookie",[token]);
+    expect(response.status).toBe(200);
+  });
+});
+describe("GET /topProductosGlobal", () => {
+  it("Deberia retornar un status 200", async () => {
+    const response = await api.get("/topProductosGlobal").set("Cookie",[token]);
     expect(response.status).toBe(200);
   });
 });

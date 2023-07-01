@@ -62,14 +62,11 @@ function getToken(datos, res) {
     sameSite: "none",
   });
 }
-/*const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD, {
-  expiresIn: "24h",
-});
-console.log(encoded);
-*/
+//const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD);
+//console.log(encoded);
+
 function verificartoken(rol) {
   return (req, res, next) => {
-    console.log(req.path);
     try {
       const cookie = req.cookies["x-token"];
       const decoded = jwt.verify(
