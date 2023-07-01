@@ -1108,7 +1108,7 @@ pedidos_disponibles:BEGIN
         LEAVE pedidos_disponibles;
     END IF;
     
-    SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, p.correo_c AS cliente, d.direccion, p.total AS costo
+    SELECT p.id_pedido AS id, e.nombre_entidad AS restaurante, CONCAT(u.nombre, ' ', u.apellidos) AS cliente, d.direccion, p.total AS costo
     FROM Pedidos p
 	JOIN Empresas e
     ON p.correo_e = e.correo
@@ -1117,7 +1117,9 @@ pedidos_disponibles:BEGIN
     AND r.correo = correo_in
     AND p.estado = 'EN PROCESO'
     JOIN Direcciones d
-    ON d.id_direccion = p.id_direccion;
+    ON d.id_direccion = p.id_direccion
+    JOIN Usuarios u
+    ON u.correo = p.correo_c;
 END $$
 
 -- ########################### PROCEDIMIENTO PARA CALIFICAR UN PEDIDO ###########################
@@ -1183,6 +1185,12 @@ aceptar_pedido_repartidor:BEGIN
     
     IF(NOT PedidoEnProceso(id_pedido_in)) THEN
 		SELECT 'Estado de pedido inválido para poder aceptarlo' AS 'MENSAJE',
+        'ERROR' AS 'TIPO';
+        LEAVE aceptar_pedido_repartidor;
+    END IF;
+   
+    IF(PedidoActivoRepartidor(correo_in)) THEN
+		SELECT 'No se pudo aceptar el pedido debido a existe un pedido sin entregar' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE aceptar_pedido_repartidor;
     END IF;
@@ -1259,7 +1267,7 @@ obtener_datos_repartidor:BEGIN
 		FROM Pedidos p
 		JOIN Repartidores r
 		ON p.correo_r = r.correo
-        AND p.correo = id
+        AND p.correo_r = id
 	) as estrellas
 	FROM Usuarios u 
 	JOIN Repartidores r 
@@ -1401,6 +1409,10 @@ top_producto_empresa:BEGIN
 		CASE WHEN dp.id_prod IS NOT NULL THEN dp.id_prod ELSE dp.id_combo END AS id,
 		CASE WHEN dp.id_prod IS NOT NULL THEN false ELSE true END AS combo,
 		CASE WHEN dp.id_prod IS NOT NULL THEN p.nombre ELSE c.nombre END AS nombre,
+        CASE WHEN dp.id_prod IS NOT NULL THEN p.precio ELSE c.precio END AS precio,
+        CASE WHEN dp.id_prod IS NOT NULL THEN p.descripcion ELSE c.descripcion END AS descripcion,
+        CASE WHEN dp.id_prod IS NOT NULL THEN p.imagen ELSE '' END AS imagen,  
+        cp.nombre AS categoria,
 		SUM(dp.cantidad) AS ventas
 	FROM Detalle_pedidos dp
 	LEFT JOIN Productos p
@@ -1410,7 +1422,9 @@ top_producto_empresa:BEGIN
 	LEFT JOIN Empresas e
 	ON p.correo = e.correo OR c.correo = e.correo
     AND e.correo = correo_in
-	GROUP BY dp.id_prod, dp.id_combo
+	JOIN Categorias_productos cp
+	ON cp.id_catp = p.id_catp OR cp.id_catp = c.id_catp
+	GROUP BY dp.id_prod, dp.id_combo, cp.id_catp
     ORDER BY ventas DESC
     LIMIT 1;
     

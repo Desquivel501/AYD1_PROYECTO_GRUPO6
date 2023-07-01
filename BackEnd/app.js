@@ -1154,10 +1154,10 @@ app.post("/datosPedido", (req, res) => {
       });
       return;
     }
-    console.log(results)
-    if (results[0][0].TIPO == "ERROR") {
-      res.json(results[0][0]);
-      return;
+
+    if(results[0][0].TIPO == "ERROR"){
+        res.json(results[0][0]);
+        return
     }
 
     results[0][0].productos = JSON.parse(results[0][0].productos);
