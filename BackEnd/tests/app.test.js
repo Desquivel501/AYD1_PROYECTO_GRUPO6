@@ -251,6 +251,22 @@ describe("POST /deshabilitar", () => {
   });
 });
 
+describe("POST /deshabilitarRepartidor", () => {
+  it("Deberia retornar una respuesta de 200 de que se deshabilito el repartidor", async () => {
+    const response = await api.post("/deshabilitarRepartidor").set("Cookie",[token])
+      .field("correo", "test" + Date.now() + "@gmail.com");
+    expect(response.status).toBe(200);
+  });
+});
+
+describe("POST /deshabilitarEmpresa", () => {
+  it("Deberia retornar una respuesta de 200 de que se deshabilito la empresa", async () => {
+    const response = await api.post("/deshabilitarEmpresa").set("Cookie",[token])
+      .field("correo", "test" + Date.now() + "@gmail.com");
+    expect(response.status).toBe(200);
+  });
+});
+
 describe("POST /nuevaDireccion", () => {
   it("Deberia retornar una respuesta de 200 de que se registro la solicitud de cambio de direccion", async () => {
     const response = await api.post("/nuevaDireccion").set("Cookie",[token])
