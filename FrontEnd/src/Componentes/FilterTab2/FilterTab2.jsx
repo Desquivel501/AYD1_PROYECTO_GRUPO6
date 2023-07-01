@@ -21,6 +21,7 @@ export const FilterTab = (props) => {
     useEffect(() => {
         fetch("http://localhost:3000/CategoriasEmpresa", {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             }

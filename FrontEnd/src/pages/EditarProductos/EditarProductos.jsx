@@ -44,6 +44,7 @@ export default function EditarProductos() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ correo: user.id }),
+          credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{
@@ -57,6 +58,7 @@ export default function EditarProductos() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ correo: user.id }),
+          credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{

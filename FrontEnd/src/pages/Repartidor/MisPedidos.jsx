@@ -7,6 +7,7 @@ import Rpedidos from "../../mocks/misPedidos.json";
 import { FilterPedidos } from "../../Componentes/FilterPedidos/FilterPedidos";
 import { ModalDetallePedido } from "../../Componentes/DetallePedido/DetallePedido";
 import { Tabla } from "../../Componentes/Tabla/Tabla";
+import { usePedido } from "../../hooks/usePedido";
 const HEADERS = [
   "ID",
   "Restaurante",
@@ -47,11 +48,20 @@ export function MisPedidos() {
   const [find, setFind] = useState({ cliente: "", fecha: "", categoria: "" });
   const { user } = useSesion();
   const [pedidos, setPedidos] = useState([]);
+  const { pedidoActual } = usePedido();
   useEffect(() => {
     const endpoint = "ObtenerPedidosRepartidor";
     const data = { correo: user.id };
     postData({ endpoint, data })
-      .then((data) => setPedidos(data ?? []))
+      .then((data) => {
+        const actual = data.find(({estado}) => estado=="EN CAMINO" )
+        if (actual){
+          pedidoActual.id = actual.id
+          pedidoActual.estado = "EN CAMINO"
+        }
+        console.log(actual)
+        setPedidos(data ?? []);
+      })
       .catch((e) => console.log(e));
   }, []);
   const filterUsers = () => {

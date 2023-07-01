@@ -144,6 +144,7 @@ export const MenuDatos = (props) => {
 
         fetch("http://localhost:3000/obtenerTarjetas", {
             method: "POST",
+            credentials: "include",
             headers: {
                 'Content-Type':'application/json'
             },
@@ -162,6 +163,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify({
                 correo: user.id,
             })
@@ -177,6 +179,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify({
                 correo: user.id,
             })
@@ -468,6 +471,7 @@ export const MenuDatos = (props) => {
             headers: {
                 'Content-Type':'application/json'
             },
+          credentials: "include",
             body: JSON.stringify(json)
         })
         .then(res => res.json())
