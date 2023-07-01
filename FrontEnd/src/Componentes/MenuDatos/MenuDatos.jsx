@@ -144,6 +144,7 @@ export const MenuDatos = (props) => {
 
         fetch("http://localhost:3000/obtenerTarjetas", {
             method: "POST",
+            credentials: "include",
             headers: {
                 'Content-Type':'application/json'
             },

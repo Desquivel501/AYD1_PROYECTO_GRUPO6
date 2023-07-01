@@ -129,6 +129,7 @@ function ModalDisable({ email, close, onSuccess }) {
             title: "Creado",
             text: mensaje.MENSAJE,
           });
+          setMotivo("")
           onSuccess();
         } else {
           Swal.fire({

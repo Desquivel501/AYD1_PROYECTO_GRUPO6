@@ -78,6 +78,7 @@ function verificartoken(rol) {
         return;
       }
       if (roles[rol] != decoded.rol) {
+        console.log(decoded.rol, roles[rol]);
         res.status(401).json({
           "TIPO": "ERROR",
           "MENSAJE": "No tiene autorización para hacer esta acción",
@@ -170,7 +171,7 @@ app.post(
     const parametro4 = req.body.password;
     const parametro5 = req.body.phone;
     const parametro6 = req.body.Licencia;
-    const parametro7 = req.body.Vehiculo;
+    const parametro7 = !!req.body.Vehiculo;
     const parametro8 = req.body.Municipio;
     const parametro9 = req.body.Departamento;
     const parametro10 = req.body.zona;
@@ -656,7 +657,6 @@ app.post("/ObtenerDatosEmpresa2", (req, res) => {
 //-- ##################################### Obtener los datos de todas las empresas #####################################
 app.get(
   "/ObtenerDatosEmpresas",
-  verificartoken("empresa"),
   (req, res) => {
     let query = `SELECT * 
   FROM Usuarios u 
@@ -924,7 +924,7 @@ app.post(
 );
 
 //-- ##################################### Obtener listado de los cupones registrados #####################################
-app.post("/obtenerCupones", cors("cliente"), (req, res) => {
+app.post("/obtenerCupones", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado 
   FROM Cupones c
@@ -1143,6 +1143,7 @@ app.post("/pedidosCliente", verificartoken("cliente"), (req, res) => {
 app.post("/datosPedido", (req, res) => {
   const correo = req.body.correo;
   const id_pedido = req.body.id;
+  console.log(correo,id_pedido)
 
   mysql.query("CALL DatosPedido(?,?)", [correo, id_pedido], (err, results) => {
     if (err) {
@@ -1153,7 +1154,7 @@ app.post("/datosPedido", (req, res) => {
       });
       return;
     }
-
+    console.log(results)
     if (results[0][0].TIPO == "ERROR") {
       res.json(results[0][0]);
       return;
@@ -1168,7 +1169,7 @@ app.post("/datosPedido", (req, res) => {
 //-- ##################################### Obtener los pedidos disponibles para aceptar #####################################
 app.post(
   "/pedidosDisponibles",
-  verificartoken("empresa"),
+  verificartoken("repartidor"),
   (req, res) => {
     const correo = req.body.correo;
     mysql.query("CALL PedidosDisponibles(?)", [correo], (err, results) => {
