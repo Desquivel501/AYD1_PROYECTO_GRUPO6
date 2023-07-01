@@ -28,6 +28,9 @@ import PedidosUsuario from "./pages/PedidosCliente/PedidosUsuario";
 import { DetallesPedido } from "./pages/PedidosCliente/DetallesPedido";
 import { Deshabilitar } from "./pages/Administrador/Deshabilitar";
 import { PedidoProvider } from "./context/PedidoContext";
+import { Ventas } from "./pages/Administrador/Ventas";
+import { Repartidores } from "./pages/Administrador/Repartidores";
+import { TopProductos } from "./pages/Empresa/TopProductos";
 
 function App() {
   return (
@@ -86,12 +89,16 @@ function App() {
                 <Route path={"CrearCombo"} element={<CrearCombo />} />
                 <Route path={"CatalogoEmpresa"} element={<CatalogoEmpresa />} />
                 <Route path={"Pedidos"} element={<PedidosEmpresa />} />
+                <Route path={"Top"} element={<TopProductos />} />
+
               </Route>
             </Route>
             <Route element={<ControlRuta usuario={"Administrador"} />}>
               <Route path="/Administrador">
                 <Route path={"Solicitudes"} element={<Solicitudes />} />
-                <Route path={"Reportes"} element={<Usuarios />} />
+                <Route path={"Reportes/Usuarios"} element={<Usuarios />} />
+                <Route path={"Reportes/Ventas"} element={<Ventas />} />
+                <Route path={"Reportes/Repartidores"} element={<Repartidores />} />
                 <Route path={"Deshabilitar"} element={<Deshabilitar />} />
               </Route>
             </Route>

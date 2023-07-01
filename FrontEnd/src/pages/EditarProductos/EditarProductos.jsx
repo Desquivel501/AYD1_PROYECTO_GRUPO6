@@ -203,6 +203,7 @@ export default function EditarProductos() {
                             disponible={actual.disponible}
                             edicion={true}
                             addCategorias={true}
+                            reporte={true}
                         />
                     </Grid>
         
