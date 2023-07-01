@@ -29,7 +29,7 @@ export function PerfilRepartidor() {
     const data = new FormData(e.currentTarget);
     data.append("correo", user.id);
     const endpoint = "nuevaDireccion";
-    const respuesta = sendFormData({ endpoint, data })
+    sendFormData({ endpoint, data })
       .then((response) => {
         const mensaje = response[0][0];
         if (mensaje.TIPO == "EXITO") {
@@ -55,10 +55,12 @@ export function PerfilRepartidor() {
     postData({ endpoint, data })
       .then((response) => {
         const datos = response[0][0];
+        console.log(datos)
         setActual(datos);
       })
       .catch((e) => console.log(e));
   }, []);
+
   const mostrarEstrellas = () => {
     const entero = Math.trunc(actual.estrellas);
     const decimal = actual.estrellas % 1;

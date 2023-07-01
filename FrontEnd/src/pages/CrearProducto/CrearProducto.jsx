@@ -24,6 +24,7 @@ export default function CrearProducto() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ correo: user.id }),
+            credentials: "include",
         })
         .then(res => res.json())
         .then(response =>{

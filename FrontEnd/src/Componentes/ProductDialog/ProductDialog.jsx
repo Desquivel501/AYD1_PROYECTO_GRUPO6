@@ -28,8 +28,19 @@ export const ProductDialog = (props) => {
   };
 
   const handleSelect = () => {
-    onOrder(id, title, "producto", cantidad, cost, image);   
+
     onClose(true);
+
+    if(cantidad < 1){
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `La cantidad de la orden debe de ser igual o mayor a 1`,
+        })  
+        return   
+    }
+
+    onOrder(id, title, "producto", parseInt(cantidad), cost, image);   
     Swal.fire({
         icon: 'success',
         title: 'Agregado',
