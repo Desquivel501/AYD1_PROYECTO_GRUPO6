@@ -49,7 +49,7 @@ registrar_cliente:BEGIN
     VALUES(correo_in, nombre_in, apellidos_in, contrasenia_in, 1, 1);
     
     INSERT INTO Clientes VALUES (correo_in);
-    
+    INSERT INTO Cupones(correo, nombre, descuento) VALUES (correo_in, 'CUPON DE BIENVENIDA', 0.15);
 	SELECT 'Se registró correctamente en la aplicación' AS 'MENSAJE',
 	'EXITO' AS 'TIPO';
 END $$

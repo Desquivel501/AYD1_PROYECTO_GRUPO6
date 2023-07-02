@@ -9,9 +9,14 @@ const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors({ credentials: true, origin: "http://34.127.75.197:5173", exposedHeaders: ["set-cookie"], }));
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://34.127.75.197:5173",
+    exposedHeaders: ["set-cookie"],
+  }),
+);
 app.use(cookieParser());
-
 
 /*Configuración de de express*/
 app.use(express.json());
@@ -124,6 +129,14 @@ app.post("/RegistrarCliente", upload.single("document"), (req, res) => {
       MENSAJE: row.MENSAJE,
       TIPO: row.TIPO,
     }));
+    if (formattedResult[0].TIPO == "EXITO") {
+      sendEmail(
+        parametro1,
+        "Nueve cuenta en Alchilazo",
+        "Cuenta creada",
+        "¡Bienvenido(a) a nuestra plataforma!, por ser nuevo usuario recibiste un cupon del 15% de descuento en tu próximo pedido (funciona solamente una vez)",
+      );
+    }
     res.status(200).json(formattedResult);
   });
 });
@@ -767,13 +780,13 @@ app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
       });
     }
     if (results[0][0].TIPO == "EXITO") {
-        sendEmail(
-          correo,
-          "Usuario deshabilitado",
-          "Su usuario ha sido deshabilitado de nuestra plataforma",
-          motivo
-        );
-      }
+      sendEmail(
+        correo,
+        "Usuario deshabilitado",
+        "Su usuario ha sido deshabilitado de nuestra plataforma",
+        motivo,
+      );
+    }
     res.status(200).json(results);
   });
 });
@@ -792,13 +805,13 @@ app.post("/deshabilitarRepartidor", verificartoken("admin"), (req, res) => {
       });
     }
     if (results[0][0].TIPO == "EXITO") {
-        sendEmail(
-          correo,
-          "Usuario deshabilitado",
-          "Su usuario ha sido deshabilitado de nuestra plataforma",
-          motivo
-        );
-      }
+      sendEmail(
+        correo,
+        "Usuario deshabilitado",
+        "Su usuario ha sido deshabilitado de nuestra plataforma",
+        motivo,
+      );
+    }
     res.status(200).json(results);
   });
 });
@@ -817,13 +830,13 @@ app.post("/deshabilitarEmpresa", verificartoken("admin"), (req, res) => {
       });
     }
     if (results[0][0].TIPO == "EXITO") {
-        sendEmail(
-          correo,
-          "Usuario deshabilitado",
-          "Su usuario ha sido deshabilitado de nuestra plataforma",
-          motivo
-        );
-      }
+      sendEmail(
+        correo,
+        "Usuario deshabilitado",
+        "Su usuario ha sido deshabilitado de nuestra plataforma",
+        motivo,
+      );
+    }
     res.status(200).json(results);
   });
 });
@@ -1457,8 +1470,8 @@ app.post(
 );
 app.get("/logout", (req, res) => {
   res.cookie("x-token", "", {
-    httpOnly: true, 
-    sameSite:"lax",
+    httpOnly: true,
+    sameSite: "lax",
     expires: new Date(1),
   });
   return res.sendStatus(200);
