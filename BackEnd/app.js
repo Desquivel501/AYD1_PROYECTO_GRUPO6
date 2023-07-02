@@ -9,7 +9,7 @@ const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: process.env.URL_FRONTEND }));
 app.use(cookieParser());
 
 /*Configuración de de express*/
@@ -79,7 +79,6 @@ function verificartoken(rol) {
         return;
       }
       if (roles[rol] != decoded.rol) {
-        console.log(decoded.rol, roles[rol]);
         res.status(401).json({
           "TIPO": "ERROR",
           "MENSAJE": "No tiene autorización para hacer esta acción",
