@@ -1,6 +1,16 @@
-const API = "http://localhost:3000/";
+const API = import.meta.env.VITE_API;
 export function sendFormData({ endpoint, data }) {
   return fetch(`${API}${endpoint}`, {
+    method: "POST",
+    credentials: "include",
+    body: data,
+  })
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+}
+// Función para iniciar sesion
+export function InicioSesion({ data }) {
+  return fetch(`${API}InicioSesion`, {
     method: "POST",
     credentials: "include",
     body: data,

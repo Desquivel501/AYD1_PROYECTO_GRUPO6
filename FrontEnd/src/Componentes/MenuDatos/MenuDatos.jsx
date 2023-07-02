@@ -29,6 +29,7 @@ import { json } from "react-router-dom";
 import { gridColumnGroupsLookupSelector } from "@mui/x-data-grid";
 
 import { useNavigate } from "react-router-dom";
+import { postData } from "../../api/auth";
 
 export const MenuDatos = (props) => {
 
@@ -141,52 +142,24 @@ export const MenuDatos = (props) => {
     // },[vencimiento])
 
     useEffect(() => {
-
-        fetch("http://localhost:3000/obtenerTarjetas", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body: JSON.stringify({
+        postData({endpoint:"obtenerTarjetas",data:{
                 correo: user.id,
-            })
-        })
-        .then(res => res.json())
+        }})
         .then(response =>{
             console.log(response)
             setTarjetas(response)
         })
-
-        fetch("http://localhost:3000/obtenerDirecciones", {
-            method: "POST",
-            headers: {
-                'Content-Type':'application/json'
-            },
-          credentials: "include",
-            body: JSON.stringify({
+        postData({endpoint:"obtenerDirecciones",data:{
                 correo: user.id,
-            })
-        })
-        .then(res => res.json())
+        }})
         .then(response =>{
             console.log(response)
             setDirecciones(response)
         })
-
-        fetch("http://localhost:3000/obtenerCupones", {
-            method: "POST",
-            headers: {
-                'Content-Type':'application/json'
-            },
-          credentials: "include",
-            body: JSON.stringify({
-                correo: user.id,
-            })
-        })
-        .then(res => res.json())
+        postData({endpoint:"obtenerCupones",data:{
+            correo: user.id,
+        }})
         .then(response =>{
-            console.log(response)
             setCupones(response)
         })
 
@@ -287,21 +260,12 @@ export const MenuDatos = (props) => {
         }
 
         if(cambio_dir == true || saveAdd){
-            
-            fetch("http://localhost:3000/guardarDireccion", {
-                method: "POST",
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify({
+           postData({endpoint:"guardarDireccion",data:{
                     correo: saveAdd ? user.id : null,
                     alias: saveAdd ? alias : null,
                     direccion: direccion
-                })
-            })
-            .then(res => res.json())
+            }}) 
             .then(response =>{
-                console.log(response[0][0])
                     
                 if(response[0][0].TIPO != "EXITO"){
                     Swal.fire({
@@ -380,21 +344,14 @@ export const MenuDatos = (props) => {
             }
 
             if(cambio_tar == true || saveCC){
-                fetch("http://localhost:3000/guardarTarjeta", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify({
+                postData({endpoint:"guardarTarjeta",data:{
                         correo: saveCC ? user.id : null,
                         alias: saveCC ? aliasCC : null,
                         name: nameCC,
                         cc: cc,
                         vencimiento: date,
                         cvv: cvv
-                    })
-                })
-                .then(res => res.json())
+                }})
                 .then(response =>{
                     console.log(response[0][0])
                         
@@ -465,18 +422,8 @@ export const MenuDatos = (props) => {
         }
 
         console.log(json)
-
-        fetch("http://localhost:3000/crearPedido", {
-            method: "POST",
-            headers: {
-                'Content-Type':'application/json'
-            },
-          credentials: "include",
-            body: JSON.stringify(json)
-        })
-        .then(res => res.json())
+        postData({endpoint:"crearPedido",data:json})
         .then(response =>{
-            console.log(response)                
             if(response.TIPO != "EXITO"){
                 Swal.fire({
                     icon: 'error',
