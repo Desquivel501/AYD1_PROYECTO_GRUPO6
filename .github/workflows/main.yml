@@ -37,6 +37,7 @@ jobs:
         echo JWT_PASSWORD=${{ secrets.JWT_PASSWORD }} >> .env
         echo EMAIL_APP=${{ secrets.EMAIL_APP }} >> .env
         echo PASS_EMAIL_APP=${{ secrets.PASS_EMAIL_APP }} >> .env
+        echo URL_FRONTEND=${{ secrets.URL_FRONTEND }} >> .env
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -78,6 +79,9 @@ jobs:
         echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
         echo AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} >> .env
         echo JWT_PASSWORD=${{ secrets.JWT_PASSWORD }} >> .env
+        echo EMAIL_APP=${{ secrets.EMAIL_APP }} >> .env
+        echo PASS_EMAIL_APP=${{ secrets.PASS_EMAIL_APP }} >> .env
+        echo URL_FRONTEND=${{ secrets.URL_FRONTEND }} >> .env
         
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag desquivel501/ayd1_g6_backend
