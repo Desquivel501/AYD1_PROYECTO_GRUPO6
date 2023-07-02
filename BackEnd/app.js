@@ -720,11 +720,11 @@ app.get(
   "/SolicitudesRepartidores",
   verificartoken("admin"),
   (req, res) => {
-    let query = `SELECT * FROM Usuarios
-  JOIN Repartidores
-  ON Usuarios.correo = Repartidores.correo AND estado = 0
-  JOIN Departamentos
-  ON Repartidores.id_dep = Departamentos.id_dep`;
+    let query = `SELECT u.nombre, u.apellidos, u.correo, u.contrasenia,
+  r.celular, r.direccion, r.tipo_licencia, r.cv 
+  FROM Usuarios u
+  JOIN Repartidores r
+  ON u.correo = r.correo AND u.estado = 0`;
 
     mysql.query(query, (err, results) => {
       res.json(results);
