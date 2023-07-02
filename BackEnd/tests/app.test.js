@@ -1,6 +1,7 @@
 const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
+const sendEmail = require("../email")
 const fs = require("fs");
 
 const token =
@@ -465,5 +466,11 @@ describe("GET /topProductosGlobal", () => {
   it("Deberia retornar un status 200", async () => {
     const response = await api.get("/topProductosGlobal").set("Cookie",[token]);
     expect(response.status).toBe(200);
+  });
+});
+describe("Envío de correo", () => {
+  it("Deberia dar una respuesta", async () => {
+    const response = await sendEmail("danchiacabal@gmail.com","Test","test","test")
+    expect(response.includes("OK")).toBe(true);
   });
 });
