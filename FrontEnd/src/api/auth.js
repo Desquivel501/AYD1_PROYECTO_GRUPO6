@@ -8,6 +8,16 @@ export function sendFormData({ endpoint, data }) {
     .then((res) => res.json())
     .catch((err) => console.log(err));
 }
+// Función para iniciar sesion
+export function InicioSesion({ data }) {
+  return fetch(`${API}InicioSesion`, {
+    method: "POST",
+    credentials: "include",
+    body: data,
+  })
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+}
 // Función para registrar usuario,empresa o repartidor
 export function registrar(entidad, data) {
   const endpoint = {

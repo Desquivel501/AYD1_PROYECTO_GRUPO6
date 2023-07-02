@@ -9,7 +9,7 @@ const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors({ credentials: true, origin: "http://190.104.112.217:5173" }));
+app.use(cors({ credentials: true, origin: "http://34.127.75.197:5173", exposedHeaders: ["set-cookie"], }));
 app.use(cookieParser());
 
 
@@ -60,8 +60,7 @@ function getToken(datos, res) {
   //res.cookie("x-token", encoded, { httpOnly: true,secure:true,sameSite:"lax"});
   res.cookie("x-token", encoded, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    sameSite:"lax"
   });
 }
 //const encoded = jwt.sign({ rol: "todo" }, process.env.JWT_PASSWORD);
@@ -1458,9 +1457,9 @@ app.post(
 );
 app.get("/logout", (req, res) => {
   res.cookie("x-token", "", {
-    httpOnly: true,
-    secure: true,
-    expires: new Date(0),
+    httpOnly: true, 
+    sameSite:"lax",
+    expires: new Date(1),
   });
   return res.sendStatus(200);
 });
