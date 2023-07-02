@@ -212,10 +212,7 @@ export const MenuDatos = (props) => {
 
 
 
-    const handleSubmit = (event) => {
-
-        console.log(pedido.productos.length)
-        
+    const handleSubmit = async (event) => {
 
         if(pedido.productos.length == 0){
             Swal.fire({
@@ -260,7 +257,7 @@ export const MenuDatos = (props) => {
         }
 
         if(cambio_dir == true || saveAdd){
-           postData({endpoint:"guardarDireccion",data:{
+           await postData({endpoint:"guardarDireccion",data:{
                     correo: saveAdd ? user.id : null,
                     alias: saveAdd ? alias : null,
                     direccion: direccion
@@ -274,19 +271,23 @@ export const MenuDatos = (props) => {
                         text: response[0][0].MENSAJE,
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            console.log("here")
                             return
                         }
                     })
                 } else {
+                    console.log("Nueva direccion: ")
+                    console.log(response[0][0].MENSAJE)
                     id_dir = response[0][0].MENSAJE
                 }
             })
+
         }
 
         if(metodo == "tarjeta"){
             var cambio_tar = false
             var id_tar = 0
-            for(var i = 0; i < direcciones.length; i++){
+            for(var i = 0; i < tarjetas.length; i++){
                 if(tarjetas[i].alias == actualCC){
                     id_tar = tarjetas[i].id
                     if(tarjetas[i].cc != cc && tarjetas[i].name == nameCC){
@@ -344,7 +345,7 @@ export const MenuDatos = (props) => {
             }
 
             if(cambio_tar == true || saveCC){
-                postData({endpoint:"guardarTarjeta",data:{
+                await postData({endpoint:"guardarTarjeta",data:{
                         correo: saveCC ? user.id : null,
                         alias: saveCC ? aliasCC : null,
                         name: nameCC,
@@ -366,6 +367,8 @@ export const MenuDatos = (props) => {
                             }
                         })
                     } else {
+                        console.log("Nueva tarjeta: ")
+                        console.log(response[0][0].MENSAJE)
                         id_tar = response[0][0].MENSAJE
                     }
                 })
@@ -403,8 +406,6 @@ export const MenuDatos = (props) => {
                 break
             }
         }
-
-        console.log(cupon + ":  " + id_cupon)
 
         json["cupon"] = (cupon != "No Usar") ? id_cupon : 0
 
