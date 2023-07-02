@@ -9,7 +9,7 @@ const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: "http://190.104.112.217:5173" }));
 app.use(cookieParser());
 
 
