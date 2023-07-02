@@ -5,9 +5,10 @@ import repartidores from "../../mocks/repartidores.json";
 import empresas from "../../mocks/empresas.json";
 import { PersonAttribute } from "../../Componentes/Persona";
 import { useSesion } from "../../hooks/useSesion";
-import { aceptarSolicitud, getData } from "../../api/auth";
+import { aceptarSolicitud, getData, postData } from "../../api/auth";
 import { useEffect } from "react";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
+import { Tabla } from "../../Componentes/Tabla/Tabla";
 
 export function Solicitudes() {
   const { user } = useSesion();
@@ -26,32 +27,29 @@ export function Solicitudes() {
 
   const submitAceptar = async (email, aceptado, entidad) => {
     if (email) {
-      console.log(user)
       const respuesta = await aceptarSolicitud({
         admin: user.id,
         email,
         aceptado,
       }, entidad);
-      console.log(respuesta);
 
       if (respuesta[0].TIPO == "EXITO") {
         Swal.fire({
-          icon: 'success',
-          title: (aceptado ? "Aceptado!": "Rechazado"),
+          icon: "success",
+          title: (aceptado ? "Aceptado!" : "Rechazado"),
           text: respuesta[0].MENSAJE,
         }).then((result) => {
           if (result.isConfirmed) {
-            setCont(cont+1)
+            setCont(cont + 1);
           }
-        })
+        });
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
+          icon: "error",
+          title: "Oops...",
           text: respuesta[0].MENSAJE,
-        })
+        });
       }
-
     }
   };
 
@@ -71,6 +69,9 @@ export function Solicitudes() {
         <button type="button" className="tabbed-button" onClick={handleClick}>
           Empresas
         </button>
+        <button type="button" className="tabbed-button" onClick={handleClick}>
+          Direcciones
+        </button>
       </div>
       {reporte === "Repartidores" &&
         (
@@ -81,6 +82,7 @@ export function Solicitudes() {
             documento="cv"
             handleSubmit={submitAceptar}
             usuario={"Repartidor"}
+            cont={cont}
           />
         )}
       {reporte === "Empresas" &&
@@ -92,8 +94,10 @@ export function Solicitudes() {
             documento="doc"
             handleSubmit={submitAceptar}
             usuario={"Empresa"}
+            cont={cont}
           />
         )}
+      {reporte === "Direcciones" && <NuevaDireccion />}
     </Box>
   );
 }
@@ -110,24 +114,25 @@ const campos = [
   { id: "last_name", label: "Apellido", name: "apellidos" },
   { id: "email", label: "Correo", name: "correo" },
   { id: "password", label: "Contraseña", name: "contrasenia" },
-  { id: "phone", label: "Celular", name: "phone" },
+  { id: "celular", label: "Celular", name: "celular" },
   { id: "address", label: "Dirección", name: "direccion" },
   { id: "licencia", label: "Licencia", name: "tipo_licencia" },
 ];
 function Solicitud(
-  { id, fields, title, documento, handleSubmit, usuario },
+  { id, fields, title, documento, handleSubmit, usuario, cont },
 ) {
   const [entidad, setEntidad] = useState({});
   const [data, setData] = useState([]);
- 
+
   useEffect(() => {
     const endpoint = usuario == "Empresa"
       ? "SolicitudesEmpresas"
       : "SolicitudesRepartidores";
-    getData({ endpoint }).then((data) => setData(data))
+    getData({ endpoint }).then((data) => setData(data ?? []))
       .catch((e) => console.log(e));
-  }, []);
-  
+    setEntidad([]);
+  }, [cont]);
+
   const handleClick = (e) => {
     const entidadSeleccionado = data.find((value) =>
       value[id] == e.target.innerText
@@ -139,7 +144,7 @@ function Solicitud(
   };
   return (
     <section className="panel-repartidores">
-      <div style={{ width: "40%", maxHeight: "70vh" }}>
+      <div style={{ maxHeight: "65vh" }}>
         <h2>{title}</h2>
         <div className="lista-repartidores">
           {data.map((value) => (
@@ -153,11 +158,12 @@ function Solicitud(
           ))}
         </div>
       </div>
+
       <Box
         component="form"
         autoComplete="off"
         sx={{
-          width: "55%",
+          width: "60vh",
           borderLeft: "1px solid black",
           paddingLeft: "15px",
         }}
@@ -182,6 +188,7 @@ function Solicitud(
               </a>
             </PersonAttribute>
           )}
+
         <Button
           type="button"
           fullWidth
@@ -201,6 +208,86 @@ function Solicitud(
           Rechazar
         </Button>
       </Box>
+    </section>
+  );
+}
+const HEADERS = [
+  "Correo",
+  "Departamento",
+  "Municipio",
+  "Dirección",
+  "Motivo",
+  "¿Aceptar?",
+  "¿Rechazar?",
+];
+
+const objectAttributes = [
+  "correo",
+  "departamento",
+  "municipio",
+  "direccion",
+  "motivo",
+];
+
+function NuevaDireccion() {
+  const [direcciones, setDirecciones] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    const endpoint = "obtenerReasignaciones";
+    getData({ endpoint })
+      .then((data) => setDirecciones(data ?? []))
+      .catch((e) => console.log(e));
+  }, [refresh]);
+
+  const handleClick = (e, endpoint) => {
+    const parent = e.currentTarget.parentElement.parentElement;
+    const id = parent.firstChild;
+    const data = { correo: id.innerText };
+    postData({ endpoint, data })
+      .then((response) => {
+        const mensaje = response[0][0];
+        if (mensaje.TIPO == "EXITO") {
+          Swal.fire({
+            icon: "success",
+            title: "Acción exitosa",
+            text: mensaje.MENSAJE,
+          });
+          setRefresh(!refresh);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: mensaje.MENSAJE,
+          });
+        }
+      })
+      .catch((e) => console.log(e));
+  };
+  return (
+    <section className="panel-repartidores" style={{ width: "170vh" }}>
+      <Tabla
+        headers={HEADERS}
+        fields={objectAttributes}
+        data={direcciones}
+      >
+        <td>
+          <button
+            className="btn-enable"
+            onClick={(e) => handleClick(e, "aceptarReasignacion")}
+          >
+            Aceptar
+          </button>
+        </td>
+        <td>
+          <button
+            className="btn-disable"
+            onClick={(e) => handleClick(e, "rechazarReasignacion")}
+          >
+            Rechazar
+          </button>
+        </td>
+      </Tabla>
     </section>
   );
 }

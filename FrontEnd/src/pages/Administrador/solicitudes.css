@@ -14,11 +14,10 @@
   border-radius: 5px;
   padding: 20px;
   justify-content: space-between;
-  width: 100vh;
 }
 .lista-repartidores {
   overflow-y: scroll;
-  max-height: 60vh;
+  max-height: 55vh;
   border-radius: 5px;
 }
 .item-repartidores {

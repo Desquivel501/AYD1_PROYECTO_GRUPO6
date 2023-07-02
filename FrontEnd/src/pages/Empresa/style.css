@@ -1,0 +1,20 @@
+.item-pedido span {
+  width: 20%;
+}
+.item-pedido button {
+  width: 20%;
+}
+.header-pedido {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 5px;
+  margin: 10px 5px;
+}
+.filter-pedidos {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}

@@ -21,9 +21,19 @@ export default function RegistroCliente() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo no valido",
+      })
+      return
+    }
+
     const mensaje = await registrarme("Usuario", data);
-    // setMensaje(mensaje);
-    console.log(mensaje)
 
     if (mensaje.TIPO == "EXITO") {
       Swal.fire({
@@ -148,7 +158,7 @@ export default function RegistroCliente() {
                   id="email"
                   label="Correo Electronico"
                   name="email"
-                  type="email"
+                  // type="email"
                 />
                 <TextField
                   margin="normal"

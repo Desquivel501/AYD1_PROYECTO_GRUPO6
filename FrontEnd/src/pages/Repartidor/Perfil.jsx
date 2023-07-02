@@ -2,22 +2,94 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAttribute } from "../../Componentes/Persona";
 import "./Perfil.css";
 import { useSesion } from "../../hooks/useSesion";
+import { useEffect } from "react";
+import { useState } from "react";
+import { DireccionEnRegistro } from "../../Componentes/Direccion";
+import { postData, sendFormData } from "../../api/auth";
+import Swal from "sweetalert2";
 
 export function PerfilRepartidor() {
-  const { solicitarNuevaDireccion, user } = useSesion();
+  const { user } = useSesion();
+
+  const [actual, setActual] = useState({
+    nombre: "",
+    apellidos: "",
+    id: "",
+    contrasenia: "****",
+    celular: 0,
+    direccion: "",
+    tipo_licencia: "",
+    cv: "",
+    estrellas: 4.5,
+    comisiones: 0,
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const respuesta = solicitarNuevaDireccion(data);
-    console.log(respuesta);
+    data.append("correo", user.id);
+    const endpoint = "nuevaDireccion";
+    sendFormData({ endpoint, data })
+      .then((response) => {
+        const mensaje = response[0][0];
+        if (mensaje.TIPO == "EXITO") {
+          Swal.fire({
+            icon: "success",
+            title: "Solicitud",
+            text: mensaje.MENSAJE,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: mensaje.MENSAJE,
+          });
+        }
+      });
     e.target.reset();
   };
+
+  useEffect(() => {
+    const endpoint = "ObtenerDatosRepartidor";
+    const data = { correo: user.id };
+    postData({ endpoint, data })
+      .then((response) => {
+        const datos = response[0][0];
+        console.log(datos)
+        setActual(datos);
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
+  const mostrarEstrellas = () => {
+    const entero = Math.trunc(actual.estrellas);
+    const decimal = actual.estrellas % 1;
+    const estrellas = [];
+    while (estrellas.length < entero) {
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/star.png" />,
+      );
+    }
+    if (decimal != 0) {
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/halfStar.png" />,
+      );
+    }
+    while (estrellas.length < 5) {
+      estrellas.push(
+        <img key={estrellas.length} src="/src/assets/icons/emptyStar.png" />,
+      );
+    }
+    return estrellas;
+  };
+
   return (
     <Box
       display="flex"
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
+      width={"120vh"}
     >
       <Grid
         container
@@ -45,16 +117,22 @@ export function PerfilRepartidor() {
             autoComplete="off"
             sx={{ mt: 1 }}
           >
-            <PersonAttribute attribute={"Nombre"} value={user.nombre} />
-            <PersonAttribute attribute={"Apellido"} value={user.apellido} />
-            <PersonAttribute attribute={"Correo"} value={user.email} />
-            <PersonAttribute attribute={"Contraseña"} value={"******"} />
-            <PersonAttribute attribute={"Celular"} value={user.phone} />
-            <PersonAttribute attribute={"Dirección"} value={user.address} />
-            <PersonAttribute attribute={"Licencia"} value={user.licencia} />
+            <PersonAttribute attribute={"Nombre"} value={actual.nombre} />
+            <PersonAttribute attribute={"Apellido"} value={actual.apellidos} />
+            <PersonAttribute attribute={"Correo"} value={actual.id} />
+            <PersonAttribute
+              attribute={"Contraseña"}
+              value={actual.contrasenia}
+            />
+            <PersonAttribute attribute={"Celular"} value={actual.celular} />
+            <PersonAttribute attribute={"Dirección"} value={actual.direccion} />
+            <PersonAttribute
+              attribute={"Licencia"}
+              value={actual.tipo_licencia}
+            />
             <PersonAttribute attribute={"Hoja de vida"}>
               <a
-                href={user.documento}
+                href={actual.cv}
                 target="_blank"
                 className="enlace"
               >
@@ -82,18 +160,14 @@ export function PerfilRepartidor() {
             <h2 className="calificacion">
               Calificación:
               <div className="stars">
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/star.png" />
-                <img src="./src/assets/icons/halfStar.png" />
+                {mostrarEstrellas()}
               </div>
             </h2>
             <h3 style={{ margin: 0 }}>
               Total de comisiones
             </h3>
             <h1>
-              {`$${245.70}`}
+              {`Q${actual.comisiones}`}
             </h1>
           </Grid>
           <Grid item>
@@ -105,15 +179,9 @@ export function PerfilRepartidor() {
               autoComplete="off"
               onSubmit={handleSubmit}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="address"
-                label="Nueva Dirección"
-                name="newAddress"
-                autoFocus
-              />
+              <Grid container>
+                <DireccionEnRegistro />
+              </Grid>
               <TextField
                 margin="normal"
                 required
@@ -121,7 +189,7 @@ export function PerfilRepartidor() {
                 id="description"
                 label="Motivo del Cambio"
                 multiline
-                name="description"
+                name="Motivo"
                 maxRows={3}
               />
               <Button

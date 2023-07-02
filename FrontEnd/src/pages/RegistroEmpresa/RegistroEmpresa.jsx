@@ -11,7 +11,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Departamentos from "../../assets/departamentos.js";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
@@ -19,6 +18,7 @@ import { Link } from "react-router-dom";
 import { getData } from "../../api/auth.js";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
+import { DireccionEnRegistro } from "../../Componentes/Direccion.jsx";
 
 export default function RegistroEmpresa() {
   const { registrarme } = useContext(sesionContext);
@@ -29,8 +29,20 @@ export default function RegistroEmpresa() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const mensaje = await registrarme("Empresa", data);
+
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    }
     
+    const mensaje = await registrarme("Empresa", data);
+
     if (mensaje.TIPO == "EXITO") {
       Swal.fire({
         icon: 'success',
@@ -257,94 +269,4 @@ export default function RegistroEmpresa() {
     </ThemeProvider>
   );
 }
-export function DireccionEnRegistro() {
-  const [departamento, setDepartamento] = useState("Guatemala");
-  const [municipios, setMunicipios] = useState([]);
 
-  useEffect(() => {
-    console.log(departamento);
-    const nuevosMunicipios = Departamentos.find((value) =>
-      value.title == departamento
-    );
-    setMunicipios(nuevosMunicipios.mun);
-  }, [departamento]);
-
-  return (
-    <>
-      <Grid
-        item
-        xs={4}
-        sx={{ pr: 1 }}
-        alignItems="center"
-        justify="flex-end"
-      >
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel id="departamento">Departamento</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            defaultValue=""
-            label="Departamento"
-            onChange={(e) => setDepartamento(e.target.value)}
-            name="Departamento"
-          >
-            {Departamentos.map((departamento) => (
-              <MenuItem
-                value={departamento.title}
-                key={departamento.title}
-              >
-                {departamento.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>
-
-      <Grid
-        item
-        xs={4}
-        sx={{ pr: 1 }}
-        alignItems="center"
-        justify="flex-end"
-      >
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel id="Municipio">Municipio</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            defaultValue=""
-            label="Municipio"
-            name="Municipio"
-          >
-            {municipios.map((muni) => (
-              <MenuItem
-                value={muni}
-                key={muni}
-              >
-                {muni}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>
-
-      <Grid
-        item
-        xs={4}
-        alignItems="center"
-        justify="flex-end"
-      >
-        <TextField
-          type="number"
-          margin="normal"
-          required
-          fullWidth
-          id="zona"
-          label="Zona"
-          name="zona"
-          InputProps={{ inputProps: { min: 0, max: 99 } }}
-        />
-      </Grid>
-    </>
-  );
-}

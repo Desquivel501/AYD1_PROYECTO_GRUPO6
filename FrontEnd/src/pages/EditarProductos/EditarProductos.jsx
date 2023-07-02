@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSesion } from "../../hooks/useSesion";
+import { postData } from '../../api/auth';
 
 export default function EditarProductos() {
 
@@ -38,27 +39,12 @@ export default function EditarProductos() {
     })
 
     useEffect(() => {
-        fetch("http://localhost:3000/ObtenerProductos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerProductos",data:{correo:user.id}})
         .then(response =>{
             setCatalogo(response)
-            console.log(response)
         })
 
-        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerDatosEmpresa",data:{correo:user.id}})
         .then(response =>{
             setDatos({
                 title: response[0].nombre_entidad,
@@ -203,6 +189,7 @@ export default function EditarProductos() {
                             disponible={actual.disponible}
                             edicion={true}
                             addCategorias={true}
+                            reporte={true}
                         />
                     </Grid>
         

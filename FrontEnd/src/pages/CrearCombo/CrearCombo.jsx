@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { MenuCombo } from '../../Componentes/MenuCombo/MenuCombo';
 import SaveIcon from '@mui/icons-material/Save';
 import { useSesion } from "../../hooks/useSesion";
+import { postData } from '../../api/auth';
 
 export default function CrearCombo() {
     
@@ -39,27 +40,13 @@ export default function CrearCombo() {
 
 
     useEffect(() => {
-        fetch("http://localhost:3000/ObtenerProductos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerProductos",data:{correo:user.id}})
         .then(response =>{
             setCatalogo(response)
             console.log(response)
         })
 
-        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerDatosEmpresa",data:{correo:user.id}})
         .then(response =>{
             setDatos({
                 title: response[0].nombre_entidad,
