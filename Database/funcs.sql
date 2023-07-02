@@ -381,21 +381,21 @@ BEGIN
 END $$
 
 -- ########################### VERIFICAR SI UNA DIRECCION YA EXISTE ###########################
-DELIMITER $$
-DROP FUNCTION IF EXISTS DireccionExistente $$
-CREATE FUNCTION DireccionExistente(
-    nombre VARCHAR(150),
-	correo VARCHAR(200)
-)
-RETURNS BOOLEAN
-DETERMINISTIC
-BEGIN
-	DECLARE existe BOOLEAN;
-    SELECT EXISTS( SELECT 1 FROM Direcciones d
-	WHERE d.correo = correo
-    AND d.nombre = nombre) INTO existe;
-	RETURN(existe);
-END $$
+-- DELIMITER $$
+-- DROP FUNCTION IF EXISTS DireccionExistente $$
+-- CREATE FUNCTION DireccionExistente(
+--     nombre VARCHAR(150),
+-- 	correo VARCHAR(200)
+-- )
+-- RETURNS BOOLEAN
+-- DETERMINISTIC
+-- BEGIN
+-- 	DECLARE existe BOOLEAN;
+--     SELECT EXISTS( SELECT 1 FROM Direcciones d
+-- 	WHERE d.correo = correo
+--     AND d.nombre = nombre) INTO existe;
+-- 	RETURN(existe);
+-- END $$
 
 -- ########################### VERIFICAR SI UNA DIRECCION YA EXISTE (POR ID)###########################
 DELIMITER $$

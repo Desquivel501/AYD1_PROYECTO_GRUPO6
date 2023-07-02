@@ -4,6 +4,9 @@ export function sendFormData({ endpoint, data }) {
     method: "POST",
     credentials: "include",
     body: data,
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+    },
   })
     .then((res) => res.json())
     .catch((err) => console.log(err));
@@ -14,6 +17,9 @@ export function InicioSesion({ data }) {
     method: "POST",
     credentials: "include",
     body: data,
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+    },
   })
     .then((res) => res.json())
     .catch((err) => console.log(err));
@@ -28,6 +34,9 @@ export function registrar(entidad, data) {
   return fetch(`${API}${endpoint[entidad]}`, {
     method: "POST",
     body: data,
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+    },
   })
     .then((res) => res.json())
     .catch((err) => console.log(err));
@@ -37,7 +46,7 @@ export function registrar(entidad, data) {
  * @param data Información a enviar
  * @return Promesa
  */
-export function postData({ endpoint, data }) {
+export async function postData({ endpoint, data }) {
   return fetch(`${API}${endpoint}`, {
     method: "POST",
     headers: {
