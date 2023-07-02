@@ -1,4 +1,4 @@
-const API = "http://localhost:3000/";
+const API = import.meta.env.VITE_API;
 export function sendFormData({ endpoint, data }) {
   return fetch(`${API}${endpoint}`, {
     method: "POST",

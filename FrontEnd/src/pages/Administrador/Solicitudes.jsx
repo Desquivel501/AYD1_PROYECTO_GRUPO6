@@ -128,7 +128,7 @@ function Solicitud(
     const endpoint = usuario == "Empresa"
       ? "SolicitudesEmpresas"
       : "SolicitudesRepartidores";
-    getData({ endpoint }).then((data) => setData(data))
+    getData({ endpoint }).then((data) => setData(data ?? []))
       .catch((e) => console.log(e));
     setEntidad([]);
   }, [cont]);
@@ -158,7 +158,7 @@ function Solicitud(
           ))}
         </div>
       </div>
-      
+
       <Box
         component="form"
         autoComplete="off"
@@ -188,7 +188,7 @@ function Solicitud(
               </a>
             </PersonAttribute>
           )}
-          
+
         <Button
           type="button"
           fullWidth
@@ -236,11 +236,11 @@ function NuevaDireccion() {
   useEffect(() => {
     const endpoint = "obtenerReasignaciones";
     getData({ endpoint })
-      .then((data) => setDirecciones(data))
+      .then((data) => setDirecciones(data ?? []))
       .catch((e) => console.log(e));
   }, [refresh]);
 
-  const handleClick = (e,endpoint) => {
+  const handleClick = (e, endpoint) => {
     const parent = e.currentTarget.parentElement.parentElement;
     const id = parent.firstChild;
     const data = { correo: id.innerText };
@@ -274,7 +274,7 @@ function NuevaDireccion() {
         <td>
           <button
             className="btn-enable"
-            onClick={(e)=>handleClick(e,"aceptarReasignacion")}
+            onClick={(e) => handleClick(e, "aceptarReasignacion")}
           >
             Aceptar
           </button>
@@ -282,7 +282,7 @@ function NuevaDireccion() {
         <td>
           <button
             className="btn-disable"
-            onClick={(e)=>handleClick(e,"rechazarReasignacion")}
+            onClick={(e) => handleClick(e, "rechazarReasignacion")}
           >
             Rechazar
           </button>

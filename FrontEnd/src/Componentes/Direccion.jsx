@@ -7,7 +7,6 @@ export function DireccionEnRegistro() {
   const [municipios, setMunicipios] = useState([]);
 
   useEffect(() => {
-    console.log(departamento);
     const nuevosMunicipios = Departamentos.find((value) =>
       value.title == departamento
     );

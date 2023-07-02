@@ -3,12 +3,13 @@ const app = express();
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const sendEmail = require("./email");
 // Importa tu archivo de conexión
 const mysql = require("./conexion");
 require("dotenv").config();
 
 /*Habilitar los cors para todos los accesos*/
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: process.env.URL_FRONTEND }));
 app.use(cookieParser());
 
 /*Configuración de de express*/
@@ -78,7 +79,6 @@ function verificartoken(rol) {
         return;
       }
       if (roles[rol] != decoded.rol) {
-        console.log(decoded.rol, roles[rol]);
         res.status(401).json({
           "TIPO": "ERROR",
           "MENSAJE": "No tiene autorización para hacer esta acción",
@@ -240,7 +240,16 @@ app.post("/AceptarRepartidor", verificartoken("admin"), (req, res) => {
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO,
       }));
-
+      if (formattedResult[0].TIPO == "EXITO") {
+        sendEmail(
+          parametro2,
+          "Solicitud de repartidor",
+          parametro3 ? "Solicitud Aceptada" : "Solicitud Rechazada",
+          parametro3
+            ? "Bienvenido a Alchilazo, fuiste aceptado para ser repartidor"
+            : "Lo sentimos pero su perfil no cumple con los requisitos necesarios",
+        );
+      }
       res.status(200).json(formattedResult);
     },
   );
@@ -318,7 +327,16 @@ app.post("/AceptarEmpresa", verificartoken("admin"), (req, res) => {
         MENSAJE: row.MENSAJE,
         TIPO: row.TIPO,
       }));
-
+      if (formattedResult[0].TIPO == "EXITO") {
+        sendEmail(
+          parametro2,
+          "Solicitud de empresa",
+          parametro3 ? "Solicitud Aceptada" : "Solicitud Rechazada",
+          parametro3
+            ? "Bienvenido a Alchilazo, fuiste aceptado para vender tus productos"
+            : "Lo sentimos pero su perfil no cumple con los requisitos necesarios",
+        );
+      }
       res.status(200).json(formattedResult);
     },
   );
@@ -701,11 +719,11 @@ app.get(
   "/SolicitudesRepartidores",
   verificartoken("admin"),
   (req, res) => {
-    let query = `SELECT * FROM Usuarios
-  JOIN Repartidores
-  ON Usuarios.correo = Repartidores.correo AND estado = 0
-  JOIN Departamentos
-  ON Repartidores.id_dep = Departamentos.id_dep`;
+    let query = `SELECT u.nombre, u.apellidos, u.correo, u.contrasenia,
+  r.celular, r.direccion, r.tipo_licencia, r.cv 
+  FROM Usuarios u
+  JOIN Repartidores r
+  ON u.correo = r.correo AND u.estado = 0`;
 
     mysql.query(query, (err, results) => {
       res.json(results);
@@ -738,7 +756,7 @@ app.get("/CategoriasEmpresa", (req, res) => {
 //-- ##################################### Deshabilitar cliente #####################################
 app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
   const correo = req.body.correo;
-  //const motivo = req.body.motivo;
+  const motivo = req.body.motivo;
 
   mysql.query("CALL DeshabilitarCliente(?)", [correo], (err, results) => {
     if (err) {
@@ -748,6 +766,14 @@ app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
         "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
       });
     }
+    if (results[0][0].TIPO == "EXITO") {
+        sendEmail(
+          correo,
+          "Usuario deshabilitado",
+          "Su usuario ha sido deshabilitado de nuestra plataforma",
+          motivo
+        );
+      }
     res.status(200).json(results);
   });
 });
@@ -755,7 +781,7 @@ app.post("/deshabilitar", verificartoken("admin"), (req, res) => {
 //-- ##################################### Deshabilitar Repartidor #####################################
 app.post("/deshabilitarRepartidor", verificartoken("admin"), (req, res) => {
   const correo = req.body.correo;
-  //const motivo = req.body.motivo;
+  const motivo = req.body.motivo;
 
   mysql.query("CALL DeshabilitarRepartidor(?)", [correo], (err, results) => {
     if (err) {
@@ -765,6 +791,14 @@ app.post("/deshabilitarRepartidor", verificartoken("admin"), (req, res) => {
         "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
       });
     }
+    if (results[0][0].TIPO == "EXITO") {
+        sendEmail(
+          correo,
+          "Usuario deshabilitado",
+          "Su usuario ha sido deshabilitado de nuestra plataforma",
+          motivo
+        );
+      }
     res.status(200).json(results);
   });
 });
@@ -772,7 +806,7 @@ app.post("/deshabilitarRepartidor", verificartoken("admin"), (req, res) => {
 //-- ##################################### Deshabilitar Empresa #####################################
 app.post("/deshabilitarEmpresa", verificartoken("admin"), (req, res) => {
   const correo = req.body.correo;
-  //const motivo = req.body.motivo;
+  const motivo = req.body.motivo;
 
   mysql.query("CALL DeshabilitarEmpresa(?)", [correo], (err, results) => {
     if (err) {
@@ -782,6 +816,14 @@ app.post("/deshabilitarEmpresa", verificartoken("admin"), (req, res) => {
         "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
       });
     }
+    if (results[0][0].TIPO == "EXITO") {
+        sendEmail(
+          correo,
+          "Usuario deshabilitado",
+          "Su usuario ha sido deshabilitado de nuestra plataforma",
+          motivo
+        );
+      }
     res.status(200).json(results);
   });
 });
@@ -853,6 +895,14 @@ app.post(
             "TIPO": "ERROR",
             "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
           });
+        }
+        if (results[0][0].TIPO == "EXITO") {
+          sendEmail(
+            correo,
+            "Solicitud de cambio de dirección",
+            "Solicitud Aceptada",
+            "Te notificamos que ahora solo podrás cubrir órdenes en tu nuevo departamento",
+          );
         }
         res.status(200).json(results);
       },
@@ -993,6 +1043,14 @@ app.post(
             "TIPO": "ERROR",
             "MENSAJE": "ERROR INTERNO DEL SERVIDOR",
           });
+        }
+        if (results[0][0].TIPO == "EXITO") {
+          sendEmail(
+            correo,
+            "Solicitud de cambio de dirección",
+            "Solicitud Rechazada",
+            "Lamentamos rechazar tu solicitud, el motivo no es suficiente para hacer el cambio",
+          );
         }
         res.status(200).json(results);
       },
@@ -1177,7 +1235,7 @@ app.post("/pedidosCliente", verificartoken("cliente"), (req, res) => {
 app.post("/datosPedido", (req, res) => {
   const correo = req.body.correo;
   const id_pedido = req.body.id;
-  console.log(correo,id_pedido)
+  console.log(correo, id_pedido);
 
   mysql.query("CALL DatosPedido(?,?)", [correo, id_pedido], (err, results) => {
     if (err) {
@@ -1189,9 +1247,9 @@ app.post("/datosPedido", (req, res) => {
       return;
     }
 
-    if(results[0][0].TIPO == "ERROR"){
-        res.json(results[0][0]);
-        return
+    if (results[0][0].TIPO == "ERROR") {
+      res.json(results[0][0]);
+      return;
     }
 
     results[0][0].productos = JSON.parse(results[0][0].productos);

@@ -7,6 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useSesion } from "../../hooks/useSesion";
+import { postData } from '../../api/auth';
 
 export default function CrearProducto() {
 
@@ -18,15 +19,7 @@ export default function CrearProducto() {
     })
 
     useEffect(() => {
-        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-            credentials: "include",
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerDatosEmpresa",data:{ correo: user.id }})
         .then(response =>{
             setDatos({
                 title: response[0].nombre_entidad,
