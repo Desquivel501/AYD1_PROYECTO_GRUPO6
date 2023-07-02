@@ -20,6 +20,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { TablaPedidos } from '../../Componentes/TablaPedidos/TablaPedidos';
+import { postData } from '../../api/auth';
 
 const columns = [
     { id: 'restaurante', label: 'Restaurante', minWidth: 100 },
@@ -60,19 +61,9 @@ export default function PedidosUsuario() {
         //     carrito = JSON.parse(carrito)
         //     setPedido(carrito)
         // } 
-
-        fetch("http://localhost:3000/pedidosCliente", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-          credentials: "include",
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"pedidosCliente",data:{ correo: user.id }})
         .then(response =>{
             // setCatalogo(response)
-            console.log(response)
             setPedidos(response)
         })
     },[])

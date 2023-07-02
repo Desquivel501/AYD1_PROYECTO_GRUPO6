@@ -60,30 +60,14 @@ export const DetallesPedido = (props) => {
   const [total, setTotal] = useState(0);
   
   useEffect(() => {
-    fetch("http://localhost:3000/datosPedido", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ correo: user.id, id: id }),
-    })
-      .then((res) => res.json())
+    postData({endpoint:"datosPedido", data:{ correo: user.id, id: id } })
       .then((response) => {
         setPedido(response);
       });
   }, []);
 
   const handleSubmit = () => {
-    fetch("http://localhost:3000/calificarPedido", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ calificacion: calificacion, id: id }),
-      credentials: "include",
-    })
-      .then((res) => res.json())
+    postData({endpoint:"calificarPedido",data:{calificacion: calificacion, id: id }})
       .then((response) => {
         if (response[0][0].TIPO != "EXITO") {
           Swal.fire({

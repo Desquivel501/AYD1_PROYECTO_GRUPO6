@@ -8,6 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import { useState } from "react";
 import { useEffect } from "react";
+import { getData } from '../../api/auth';
 
 export const FilterTab = (props) => {
 
@@ -19,14 +20,7 @@ export const FilterTab = (props) => {
     const [lista, setLista] = useState([])
     
     useEffect(() => {
-        fetch("http://localhost:3000/CategoriasEmpresa", {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then(res => res.json())
+        getData({endpoint:"CategoriasEmpresa"})
         .then(response =>{
             console.log(response)
             setLista(response)  

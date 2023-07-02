@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { FilterTab } from '../../Componentes/FilterTab2/FilterTab2';
 import { useNavigate } from "react-router-dom";
+import { getData } from '../../api/auth';
 
 export default function ListadoRestaurantes() {
 
@@ -42,14 +43,8 @@ export default function ListadoRestaurantes() {
     }
 
     useEffect(() => {
-
-        fetch("http://localhost:3000/ObtenerDatosEmpresas", {
-            method: "GET",
-            credentials: "include",
-        })
-        .then(res => res.json())
+        getData({endpoint:"ObtenerDatosEmpresas"})
         .then(response =>{
-            console.log(response)
             setEmpresas(response)
         })
         
