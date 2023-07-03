@@ -696,7 +696,8 @@ app.get(
   JOIN Departamentos d 
   ON e.id_dep = d.id_dep
   JOIN Categorias_empresa ce
-  ON ce.id_cat = e.id_cat`;
+  ON ce.id_cat = e.id_cat
+  WHERE u.estado = 1`;
 
     mysql.query(query, (err, results) => {
       res.json(results);
@@ -1025,7 +1026,8 @@ app.post("/obtenerCupones", verificartoken("cliente"), (req, res) => {
   const correo = req.body.correo;
   const query = `SELECT id_cupon AS id, nombre AS alias, descuento, canjeado 
   FROM Cupones c
-  WHERE c.canjeado = false;`;
+  WHERE c.canjeado = false
+  AND c.correo = ?;`;
 
   mysql.query(query, [correo], (err, results) => {
     if (err) {

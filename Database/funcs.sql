@@ -601,7 +601,7 @@ DETERMINISTIC
 BEGIN
 	DECLARE activo BOOLEAN;
     SELECT EXISTS( SELECT 1 FROM Pedidos p
-    WHERE p.estado = 'EN CAMINO'
+    WHERE p.estado = 'EN CAMINO' OR p.estado = 'EN PROCESO'
     AND p.correo_e = correo
     ) INTO activo;
     RETURN(activo);
