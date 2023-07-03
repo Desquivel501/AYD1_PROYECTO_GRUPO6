@@ -66,6 +66,7 @@ export function SesionProvider({ children }) {
     const endpoint = "logout"
     getData({endpoint})
     window.sessionStorage.setItem("user", JSON.stringify(userDefault));
+    window.sessionStorage.removeItem("carrito");
   };
   return (
     <sesionContext.Provider
