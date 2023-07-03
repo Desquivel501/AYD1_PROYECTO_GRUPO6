@@ -1063,7 +1063,7 @@ deshabilitar_empresa:BEGIN
     END IF;
    
     IF(PedidoActivoEmpresa(correo_in)) THEN
-		SELECT 'No se puede deshabilitar un repartidor con un pedido activo' AS 'MENSAJE',
+		SELECT 'No se puede deshabilitar una empresa con un pedido activo' AS 'MENSAJE',
         'ERROR' AS 'TIPO';
         LEAVE deshabilitar_empresa;
     END IF;
