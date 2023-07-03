@@ -8,14 +8,41 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import { ProductCard } from '../ProductCard/ProductCard';
+import Button from "@mui/material/Button";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import Divider from '@mui/material/Divider';
+import Swal from 'sweetalert2'
+import { useState } from "react";
 
 export const ComboDialog = (props) => {
 
-  const { onClose, open, title, descripcion, cost, disponible, productos } = props;
+  const { onClose, open, title, descripcion, cost, disponible, productos, venta, onOrder, id } = props;
+
+  const [cantidad, setCantidad] = useState(1);
 
   const handleClose = () => {
     onClose(true);
   };
+
+  const handleSelect = () => {
+    onClose(true);
+
+    if(cantidad < 1){
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `La cantidad de la orden debe de ser igual o mayor a 1`,
+        })  
+        return   
+    }
+
+    onOrder(id, title, "combo", parseInt(cantidad), cost, "https://www.freeiconspng.com/thumbs/promotion-icon-png/leistungen-promotion-icon-png-0.png");  
+    Swal.fire({
+        icon: 'success',
+        title: 'Agregado',
+        text: `"${title}" agregado al carrito`,
+      })        
+  }
 
   return (
     <Dialog onClose={handleClose} open={open} fullWidth maxWidth="md">
@@ -95,14 +122,15 @@ export const ComboDialog = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="description"
-                                    maxRows={3}
                                     rows={3}
                                     value={descripcion}
                                 />
 
+                            {!venta && 
                                 <FormGroup>
-                                    <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={disponible}/>
+                                    <FormControlLabel control={<Checkbox disabled/>} label="Disponible" checked={(disponible)}/>
                                 </FormGroup>
+                            }
                             
                             </Box>
                         </Grid>
@@ -171,6 +199,61 @@ export const ComboDialog = (props) => {
                    
                 </Grid>
             </Grid>
+
+            {venta && 
+                
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="right"
+                    alignItems="center"
+                    sx={{border:0}}
+                >
+                    <Divider variant="middle" sx={{my:2, width:'90%'}}/>
+                    <Grid
+                        item
+                        xs={3}
+                        sx={{border:0, p:1}}
+                    >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="cantidad"
+                            label="Cantidad"
+                            type="number"
+                            id="cantidad"
+                            autoComplete="cantidad"
+                            InputProps={{ inputProps: { min: 0 } }}
+                            value={cantidad}
+                            onChange={(event) => setCantidad(event.target.value)}
+                        />
+                    </Grid> 
+
+                    <Grid
+                        xs={3}
+                        sx={{border:0}}
+                    >
+                        <Box textAlign='center' sx={{border:0}}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                sx={{ mt: 2, mb: 1, bgcolor: "#F2890D" }}
+                                endIcon={<AddShoppingCartIcon />}
+                                onClick={handleSelect}
+                            >
+                                Comprar
+                            </Button>
+
+                        </Box>
+                        
+                    </Grid> 
+
+                    
+
+                </Grid>              
+            }
+
         </Grid>
     </Dialog>
   );

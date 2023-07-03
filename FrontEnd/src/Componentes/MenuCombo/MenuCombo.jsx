@@ -20,6 +20,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useSesion } from "../../hooks/useSesion";
 import Swal from 'sweetalert2'
+import { postData } from "../../api/auth";
 
 export const MenuCombo = (props) => {
     const { user } = useSesion();
@@ -50,18 +51,8 @@ export const MenuCombo = (props) => {
             "disponible": disponible_,
             "productos": listado
         }
-
-        fetch("http://localhost:3000/CrearCombo", {
-            method: "POST",
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-        .then(res => res.json())
+        postData({endpoint:"CrearCombo",data:jsonData})
         .then(response =>{
-            console.log(response)
-                
             if(response[0].TIPO == "EXITO"){
                 Swal.fire({
                     icon: 'success',
@@ -180,7 +171,6 @@ export const MenuCombo = (props) => {
                                     label="Descripción"
                                     multiline
                                     name="description"
-                                    maxRows={3}
                                     rows={3}
                                     value={desc_}
                                     onChange={(event) => setDesc(event.target.value)}

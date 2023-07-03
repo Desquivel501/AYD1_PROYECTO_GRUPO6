@@ -1,0 +1,119 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./BackEnd
+        
+    strategy:
+      matrix:
+        node-version: [19.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create and populate .env file
+      run: |
+        touch .env
+        echo HOST_DB=${{ secrets.HOST_DB }} >> .env
+        echo USER_DB=${{ secrets.USER_DB }} >> .env
+        echo PASS_DB=${{ secrets.PASS_DB }} >> .env
+        echo PORT_DB=${{ secrets.PORT_DB }} >> .env
+        echo NAME_DB=${{ secrets.NAME_DB }} >> .env
+        echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} >> .env
+        echo AWS_SECRET_ACCES_KEY=${{ secrets.AWS_SECRET_ACCES_KEY }} >> .env
+        echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
+        echo AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} >> .env
+        echo JWT_PASSWORD=${{ secrets.JWT_PASSWORD }} >> .env
+        echo EMAIL_APP=${{ secrets.EMAIL_APP }} >> .env
+        echo PASS_EMAIL_APP=${{ secrets.PASS_EMAIL_APP }} >> .env
+        echo URL_FRONTEND=${{ secrets.URL_FRONTEND }} >> .env
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: './BackEnd/package-lock.json'
+    - run: npm install
+    - run: npm test
+
+
+  build_backend:
+
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./BackEnd
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run:
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        
+    - name: Create and populate .env file
+      run: |
+        touch .env
+        echo HOST_DB=${{ secrets.HOST_DB }} >> .env
+        echo USER_DB=${{ secrets.USER_DB }} >> .env
+        echo PASS_DB=${{ secrets.PASS_DB }} >> .env
+        echo PORT_DB=${{ secrets.PORT_DB }} >> .env
+        echo NAME_DB=${{ secrets.NAME_DB }} >> .env
+        echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} >> .env
+        echo AWS_SECRET_ACCES_KEY=${{ secrets.AWS_SECRET_ACCES_KEY }} >> .env
+        echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
+        echo AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} >> .env
+        echo JWT_PASSWORD=${{ secrets.JWT_PASSWORD }} >> .env
+        echo EMAIL_APP=${{ secrets.EMAIL_APP }} >> .env
+        echo PASS_EMAIL_APP=${{ secrets.PASS_EMAIL_APP }} >> .env
+        echo URL_FRONTEND=${{ secrets.URL_FRONTEND }} >> .env
+        
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag desquivel501/ayd1_g6_backend
+      
+    - name: Push the Docker image
+      run: docker push desquivel501/ayd1_g6_backend
+
+  
+  build_frontend:
+
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./FrontEnd
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run:
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        
+    - name: Create and populate .env file
+      run: |
+        touch .env
+        echo VITE_API=${{ secrets.VITE_API }} >> .env
+        
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag desquivel501/ayd1_g6_frontend
+
+    - name: Push the Docker image
+      run: docker push desquivel501/ayd1_g6_frontend

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createContext } from "react";
-import { nuevaDireccion, registrar, userLogin } from "../api/auth";
+import {  getData, registrar, sendFormData, InicioSesion } from "../api/auth";
 
 export const sesionContext = createContext();
 
@@ -25,7 +25,7 @@ export function SesionProvider({ children }) {
   });
 
   const login = async (data) => {
-    const newSesion = await userLogin({ data });
+    const newSesion = await InicioSesion({ data });
     /* const newSesion = {
       MENSAJE:"asdsf",
       TIPO:"ERROR"
@@ -40,9 +40,9 @@ export function SesionProvider({ children }) {
       setUser(newUser);
       window.sessionStorage.setItem("user", JSON.stringify(newUser));
       if (newUser.rol == "Administrador") return "/Administrador/Solicitudes";
-      if (newUser.rol == "Repartidor") return "/Repartidor";
+      if (newUser.rol == "Repartidor") return "/Repartidor/MisPedidos";
       if (newUser.rol == "Empresa") return "/Empresa/CatalogoEmpresa";
-      if (newUser.rol == "Cliente") return "/";
+      if (newUser.rol == "Cliente") return "/Empresas";
     }
     // Si es un mensaje string entonces es error
     return newSesion[0];
@@ -57,12 +57,16 @@ export function SesionProvider({ children }) {
   };
   const solicitarNuevaDireccion = async (data) => {
     console.log(data);
-    const mensaje = await nuevaDireccion({ data });
-    return mensaje;
+    //const mensaje = await nuevaDireccion({ data });
+    //return mensaje;
+    return ""
   };
   const logout = () => {
     setUser(userDefault);
+    const endpoint = "logout"
+    getData({endpoint})
     window.sessionStorage.setItem("user", JSON.stringify(userDefault));
+    window.sessionStorage.removeItem("carrito");
   };
   return (
     <sesionContext.Provider

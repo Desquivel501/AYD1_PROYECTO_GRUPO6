@@ -124,6 +124,7 @@ CREATE TABLE Repartidores (
     direccion VARCHAR(200),
     celular INTEGER,
     cv VARCHAR(250),
+    comisiones DECIMAL(12,2) DEFAULT 0,
     PRIMARY KEY(correo),
     FOREIGN KEY(correo) REFERENCES Usuarios(correo),
     FOREIGN KEY(id_dep) REFERENCES Departamentos(id_dep)
@@ -202,4 +203,93 @@ CREATE TABLE Detalle_combos(
     PRIMARY KEY(id_combo, id_prod),
     FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
     FOREIGN KEY(id_prod) REFERENCES Productos(id_prod)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR DIRECCIONES ###########################
+DROP TABLE IF EXISTS Direcciones;
+CREATE TABLE Direcciones(
+	id_direccion INTEGER AUTO_INCREMENT NOT NULL,
+	alias VARCHAR(150),
+    direccion VARCHAR(200),
+    correo VARCHAR(200),
+    PRIMARY KEY(id_direccion),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo),
+    UNIQUE(alias, correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR FORMAS DE PAGO ###########################
+DROP TABLE IF EXISTS Formas_pago;
+CREATE TABLE Formas_pago(
+	id_formap INTEGER AUTO_INCREMENT NOT NULL,
+	alias VARCHAR(150),
+    nombre VARCHAR(200),
+	numero_tarjeta BIGINT,
+    vencimiento VARCHAR(10),
+    cvv INTEGER,
+    correo VARCHAR(200),
+    PRIMARY KEY(id_formap),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA ALMACENAR PEDIDOS ###########################
+DROP TABLE IF EXISTS Pedidos;
+CREATE TABLE Pedidos(
+	id_pedido INTEGER AUTO_INCREMENT NOT NULL,
+    correo_c VARCHAR(200),
+    correo_r VARCHAR(200),
+    correo_e VARCHAR(200),
+    descripcion VARCHAR(250),
+    estado VARCHAR(50),
+    id_direccion INTEGER,
+    fecha_pedido DATETIME,
+	id_formap INTEGER,
+    id_cupon INTEGER,
+    calificacion INTEGER,
+    confirmado BOOLEAN,
+    total DECIMAL(12,2),
+    
+    PRIMARY KEY(id_pedido),
+    FOREIGN KEY(id_formap) REFERENCES Formas_pago(id_formap),
+    FOREIGN KEY(id_direccion) REFERENCES Direcciones(id_direccion),
+    FOREIGN KEY(correo_c) REFERENCES Clientes(correo),
+    FOREIGN KEY(correo_r) REFERENCES Repartidores(correo),
+    FOREIGN KEY(correo_e) REFERENCES Empresas(correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR EL DETALLE DE LOS PEDIDOS ###########################
+DROP TABLE IF EXISTS Detalle_pedidos;
+CREATE TABLE Detalle_pedidos(
+	id_pedido INTEGER,
+    id_prod INTEGER,
+    id_combo INTEGER,
+    cantidad INTEGER,
+    total DECIMAL(12,2),
+    FOREIGN KEY(id_pedido) REFERENCES Pedidos(id_pedido),
+    FOREIGN KEY(id_prod) REFERENCES Productos(id_prod),
+    FOREIGN KEY(id_combo) REFERENCES Combos(id_combo),
+    CHECK (((id_prod IS NOT NULL) AND (id_combo IS NULL)) OR ((id_prod IS NULL) AND (id_combo IS NOT NULL)))
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR SOLICITUDES DE REASIGNACION ###########################
+DROP TABLE IF EXISTS Solicitudes_reasignacion;
+CREATE TABLE Solicitudes_reasignacion(
+	correo VARCHAR(200),
+    id_dep INTEGER,
+    municipio VARCHAR(200),
+    direccion VARCHAR(200),
+    motivo VARCHAR(250),
+    PRIMARY KEY(correo),
+    FOREIGN KEY(correo) REFERENCES Repartidores(correo)
+);
+
+-- ########################### CREACIÓN DE LA TABLA PARA GUARDAR CUPONES ###########################
+DROP TABLE IF EXISTS Cupones;
+CREATE TABLE Cupones(
+	id_cupon INTEGER AUTO_INCREMENT NOT NULL,
+	correo VARCHAR(200),
+    nombre VARCHAR(200),
+    descuento DECIMAL(12,2),
+    canjeado BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY(id_cupon),
+    FOREIGN KEY(correo) REFERENCES Clientes(correo)
 );

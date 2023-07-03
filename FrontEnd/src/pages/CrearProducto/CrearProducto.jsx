@@ -5,8 +5,13 @@ import { MenuProducto } from '../../Componentes/MenuProducto/MenuProducto';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect } from "react";
+import { useState } from "react";
+import { useSesion } from "../../hooks/useSesion";
+import { postData } from '../../api/auth';
 
 export default function CrearProducto() {
+
+    const { user } = useSesion();
 
     const [datos, setDatos] = useState({
         title: "",
@@ -14,14 +19,7 @@ export default function CrearProducto() {
     })
 
     useEffect(() => {
-        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerDatosEmpresa",data:{ correo: user.id }})
         .then(response =>{
             setDatos({
                 title: response[0].nombre_entidad,
@@ -78,9 +76,10 @@ export default function CrearProducto() {
                     >
                         <MenuProducto 
                             title={"Crear Producto"}
-                            image={"https://picsum.photos/200"}
+                            image={"https://placehold.co/200"}
                             edicion={false}
                             addCategorias={true}
+                            reporte={true}
                         />
                     </Grid>
         

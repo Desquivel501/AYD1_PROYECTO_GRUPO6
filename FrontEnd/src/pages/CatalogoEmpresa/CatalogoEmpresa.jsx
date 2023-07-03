@@ -10,6 +10,7 @@ import { FilterTab } from '../../Componentes/FilterTab/FilterTab';
 import { ProductDialog } from '../../Componentes/ProductDialog/ProductDialog';
 import { ComboDialog } from '../../Componentes/ComboDialog/ComboDialog';
 import { useSesion } from "../../hooks/useSesion";
+import { postData } from '../../api/auth';
 
 export default function CatalogoEmpresa() {
 
@@ -77,40 +78,17 @@ export default function CatalogoEmpresa() {
     }
 
     useEffect(() => {
-        fetch("http://localhost:3000/ObtenerCombos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerCombos",data:{ correo: user.id }})
         .then(response =>{
             setCombo(response)
             
         })
-
-        fetch("http://localhost:3000/ObtenerProductos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerProductos",data:{correo:user.id}})
         .then(response =>{
             setCatalogo(response)
             // console.log(response)
         })
-
-        fetch("http://localhost:3000/ObtenerDatosEmpresa", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo: user.id }),
-        })
-        .then(res => res.json())
+        postData({endpoint:"ObtenerDatosEmpresa", data:{ correo: user.id }})
         .then(response =>{
             setDatos({
                 title: response[0].nombre_entidad,

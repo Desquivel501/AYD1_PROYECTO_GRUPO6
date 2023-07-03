@@ -1,0 +1,49 @@
+.tabbed-button {
+    background-color: #bbb;
+    padding: 15px;
+    border: none;
+  }
+  
+  .tabbed-button.enable {
+    background-color: #fff;
+  }
+  .panel-usuarios {
+    /* display: flex; */
+    /* max-height: 70vh; */
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    /* justify-content: space-between; */
+  }
+
+  .lista-repartidores {
+    overflow-y: scroll;
+    max-height: 55vh;
+    border-radius: 5px;
+  }
+  .item-repartidores {
+    margin: 10px;
+    text-align: left;
+    background-color: #ddd;
+    padding: 5px;
+    border-radius: 2px;
+  }
+  .item-repartidores:hover {
+    background: #ccc;
+  }
+  
+  .enlace {
+    padding: 10px;
+    width: 70%;
+    color: #444;
+    text-align: center;
+  }
+  .enlace:hover {
+    color: #999;
+    cursor: pointer;
+    text-decoration-line: underline;
+  }
+  .tabla {
+    background-color: #ccc;
+  }
+  

@@ -15,7 +15,7 @@ import Select from "@mui/material/Select";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
-import { DireccionEnRegistro } from "../RegistroEmpresa/RegistroEmpresa.jsx";
+import { DireccionEnRegistro } from "../../Componentes/Direccion.jsx";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SesionContext.jsx";
 import { useState } from "react";
@@ -30,6 +30,30 @@ export default function RegistroRepartidor() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    }
+
+    const phone = data.get("phone")
+    const phone_pattern = /^\d{8}$/g
+    if(!phone_pattern.test(phone)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Este no es un numero de telefono valido en Guatemala.",
+      })
+      return
+    }
+    
+    
     const mensaje = await registrarme("Repartidor", data);
     
     if (mensaje.TIPO == "EXITO") {
